@@ -1,0 +1,258 @@
+<ui:composition template="/template/Layout.xhtml"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:p="http://primefaces.org/ui">
+
+	<ui:define name="titulo">CadastroEvento</ui:define>
+
+	<ui:define name="conteudo">
+
+		<div class="ui-fluid">
+			<h:form id="form1"
+				style="margin-left: auto; margin-right:auto; font-weight:bold; font-size: 10px">
+				#{funcionarioController.iniciarPesquisa()}
+				<p:panel header="Cadastrar Evento">
+					<p:panelGrid columns="4" layout="grid"
+						styleClass="panelgrid-noborder"
+						columnClasses="ui-grid-col-4,ui-grid-col-1,ui-grid-col-3,ui-grid-col-4">
+
+						<p:inputText placeholder="Insira o Nome do Funcionário" id="nome"
+							value="#{funcionarioController.nome}"
+							onkeyup="this.value = this.value.toUpperCase()" />
+
+						<p:commandButton icon="fa fa-search" process="tbl,nome,busca"
+							id="busca" action="#{funcionarioController.porNome()}"
+							update="tbl" />
+
+					</p:panelGrid>
+					<p:dataTable id="tbl" reflow="true" resizeMode="expand"
+						emptyMessage="Lista Vazia" resizableColumns="true"
+						value="#{funcionarioController.peloNome}" scrollable="true"
+						var="funcionario" style="margin-top:5px" paginator="true"
+						rows="10" rowsPerPageTemplate="5,10" paginatorPosition="bottom"
+						paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} ">
+
+
+						<p:column headerText="Funcionário " width="25%">
+							<h:outputLabel value="#{funcionario.nome}" />
+						</p:column>
+
+						<p:column headerText="CPF" width="10%" style="text-align:center">
+							<h:outputLabel value="#{funcionario.cpf}" />
+						</p:column>
+
+						<p:column headerText="Agência" width="15%"
+							style="text-align:center">
+							<h:outputLabel value="#{funcionario.agencia}" />
+
+						</p:column>
+
+						<p:column width="15%" style="text-align:center">
+
+							<p:commandButton value="Falta" process="@this"
+								style="width: 70px" id="falta" ajax="true"
+								action="#{eventoFuncionarioController.imprimirFalta(funcionario)}"
+								update=":form1:falta" />
+
+							<p:commandButton value="Atestado" process="@this" 
+								style="width: 70px; margin-left:10px" ajax="true"
+								action="#{eventoFuncionarioController.imprimirAtestado(funcionario)}"
+								id="atestado" update=":form1:atestado" />
+
+
+						</p:column>
+					</p:dataTable>
+
+					
+					
+					<p:blockUI block="tbl" trigger="busca" animate="true">
+						PESQUISANDO FUNCIONÁRIOS...<br />
+						<p:graphicImage library="imagens" name="load.gif" />
+					</p:blockUI>
+					
+					
+				</p:panel>
+				<!-- Salvar Faltas -->
+
+				<p:dialog header="Adicionar Falta ao Funcionário" resizable="false"
+					id="falta" position="center" widgetVar="verFalta" width="50%"
+					height="40%" closable="false"
+					style="position: margin-top:30px;"
+					modal="true" showEffect="clip" hideEffect="clip">
+
+					<p:panelGrid columns="4" layout="grid" style="padding:10px"
+						columnClasses="ui-grid-col-2,ui-grid-col-4,ui-grid-col-2,ui-grid-col-4"
+						styleClass="panelgrid-noborder">
+
+						<p:outputLabel value="Funcionário:" />
+						<p:outputLabel
+							value="#{eventoFuncionarioController.eventoFuncionario.funcionario.nome}" />
+						<p:outputLabel value="Agência:" />
+						<p:outputLabel
+							value="#{eventoFuncionarioController.eventoFuncionario.funcionario.agencia}" />
+					</p:panelGrid>
+
+
+					<p:panelGrid columns="1" layout="grid" style="padding:10px"
+						columnClasses="ui-grid-col-3,ui-grid-col-4,ui-grid-col-5"
+						styleClass="panelgrid-noborder">
+
+						<p:outputLabel value="Data da Falta:" />
+						<p:outputLabel />
+						<p:outputLabel />
+
+						<p:calendar pattern="dd/MM/yyyy" mask="99/99/9999" required="true"
+							requiredMessage="Informe a Data" navigator="true" showOn="button"
+							style="width:70px"
+							value="#{eventoFuncionarioController.eventoFuncionario.dataFalta}"
+							effect="fold" locale="pt" title="Clique para abrir o calendário" />
+					</p:panelGrid>
+
+					<p:panelGrid columns="1" layout="grid" style="padding:10px"
+						columnClasses="ui-grid-col-12" styleClass="panelgrid-noborder">
+						<p:outputLabel value="Observação:" />
+						<p:inputTextarea cols="100" rows="6" style="font-size:16px"
+							onkeyup="this.value = this.value.toUpperCase()"
+							value="#{eventoFuncionarioController.eventoFuncionario.obsfalta}"
+							maxlength="250" counterTemplate="{0} Caracteres restantes"
+							counter="display" />
+						<p:outputLabel id="display" style="font-size:10px" />
+					</p:panelGrid>
+
+					<p:panelGrid columns="5" layout="grid" style="padding:10px"
+						columnClasses="ui-grid-col-2,ui-grid-col-3,ui-grid-col-1,ui-grid-col-3,ui-grid-col-3"
+						styleClass="panelgrid-noborder">
+						<p:outputLabel />
+						<p:commandButton value="Salvar" id="salvarFalta" ajax="true"
+							action="#{eventoFuncionarioController.salvarFalta()}"
+							process="falta" />
+						<p:outputLabel />
+						<p:commandButton value="Fechar"
+							action="#{eventoFuncionarioController.fecharFalta}"
+							process="@this" />
+						<p:outputLabel />
+					</p:panelGrid>
+					
+					
+				</p:dialog>
+
+				<!-- Salvar Atestados -->
+
+
+
+				<p:dialog header="Adicionar Atestado ao Funcionário"
+					closable="false" resizable="false" id="atestado" position="center"
+					widgetVar="verAtestado" width="50%" height="40%"
+					style="position: margin-top:40px; "
+					modal="true" showEffect="clip" hideEffect="clip">
+
+					<p:panelGrid columns="1" layout="grid"
+						columnClasses="ui-grid-col-12" styleClass="panelgrid-noborder"
+						id="salvar">
+
+						<p:panelGrid columns="4" layout="grid" style="padding:10px"
+							columnClasses="ui-grid-col-2,ui-grid-col-4,ui-grid-col-2,ui-grid-col-4"
+							styleClass="panelgrid-noborder">
+
+							<p:outputLabel value="Funcionário:" />
+							<p:outputLabel
+								value="#{eventoFuncionarioController.eventoFuncionario.funcionario.nome}" />
+							<p:outputLabel value="Agência:" />
+							<p:outputLabel
+								value="#{eventoFuncionarioController.eventoFuncionario.funcionario.agencia}" />
+						</p:panelGrid>
+
+						<p:panelGrid columns="2" layout="grid"
+							columnClasses="ui-grid-col-6,ui-grid-col-6"
+							styleClass="panelgrid-noborder">
+
+							<p:panelGrid columns="2" layout="grid" style="padding:10px"
+								columnClasses="ui-grid-col-10,ui-grid-col-2"
+								styleClass="panelgrid-noborder">
+
+								<p:outputLabel value="Data do Atestado:" />
+								<p:outputLabel />
+								<p:calendar pattern="dd/MM/yyyy" mask="99/99/9999"
+									required="true" requiredMessage="Informe a Data"
+									navigator="true" showOn="button" style="width:70px"
+									value="#{eventoFuncionarioController.eventoFuncionario.dataAtestado}"
+									effect="fold" locale="pt"
+									title="Clique para abrir o calendário" />
+							</p:panelGrid>
+
+							<p:panelGrid columns="2" layout="grid" style="padding:10px"
+								id="arquivo" columnClasses="ui-grid-col-11,ui-grid-col-1"
+								styleClass="panelgrid-noborder">
+
+								<p:outputLabel value="Atestado:" />
+								<p:outputLabel />
+
+
+								<p:fileUpload auto="true" label="Selecione um Arquivo"
+									allowTypes="/(\.|\/)(pdf)$/" 
+									fileUploadListener="#{eventoFuncionarioController.fileUpLoaderHandler}"
+									id="pdf" update="arquivo" required="true"
+									requiredMessage="Informe o Arquivo" />
+								<p:outputLabel />
+
+								<h:outputText
+									value="#{eventoFuncionarioController.arquivoSelecionado}"
+									style="margin-top: 10px" />
+
+								
+
+							</p:panelGrid>
+						</p:panelGrid>
+						<p:panelGrid columns="1" layout="grid" style="padding:10px"
+							columnClasses="ui-grid-col-12" styleClass="panelgrid-noborder">
+							<p:outputLabel value="Observação:" />
+							<p:inputTextarea cols="80" rows="4" style="font-size:16px"
+								onkeyup="this.value = this.value.toUpperCase()"
+								value="#{eventoFuncionarioController.eventoFuncionario.obsAtestado}"
+								maxlength="250" counterTemplate="{0} Caracteres restantes"
+								counter="contador" />
+							<p:outputLabel id="contador" style="font-size:10px" />
+						</p:panelGrid>
+
+						<p:panelGrid columns="2" layout="grid" style="padding:10px"
+							columnClasses="ui-grid-col-2,ui-grid-col-10"
+							styleClass="panelgrid-noborder">
+
+							<p:outputLabel value="Enviar para: " />
+							<p:outputLabel
+								value="#{eventoFuncionarioController.eventoFuncionario.agencia.email}" />
+						</p:panelGrid>
+
+
+						<p:panelGrid columns="5" layout="grid" style="padding:10px"
+							columnClasses="ui-grid-col-2,ui-grid-col-3,ui-grid-col-1,ui-grid-col-3,ui-grid-col-3"
+							styleClass="panelgrid-noborder">
+							<p:outputLabel />
+							<p:commandButton value="Salvar e Enviar" id="salvarAtestado"
+								icon="fa fa-send" ajax="true"
+								action="#{eventoFuncionarioController.salvarAtestado()}"
+								process="atestado" />
+							<p:outputLabel />
+							<p:commandButton value="Fechar"
+								action="#{eventoFuncionarioController.fecharAtestado}"
+								process="@this" />
+							<p:outputLabel />
+
+							
+						</p:panelGrid>
+						
+					</p:panelGrid>
+						
+				</p:dialog>
+				
+			</h:form>
+
+
+		</div>
+
+
+
+	</ui:define>
+</ui:composition>

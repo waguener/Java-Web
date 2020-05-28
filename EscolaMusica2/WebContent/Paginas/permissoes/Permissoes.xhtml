@@ -1,0 +1,51 @@
+
+<ui:composition template="/Paginas/template/template.xhtml"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui">
+
+	<ui:define name="titulo">Permissões</ui:define>
+
+	<ui:define name="Principal">
+		<p:panel header="Permissões">
+
+			<h:form id="form-permissao">
+				<p:commandButton value="Novo Permissão" icon="novo-icon"
+					style="margin-bottom: 10px"
+					action="#{permissaoController.novaPermissao()}"
+					oncomplete="PF('permissaoDialog').show()" process="@this"
+					update="panel-nova-permissao">
+					<p:resetInput target="panel-nova-permissao" />
+				</p:commandButton>
+				<p:dataTable value="#{permissaoController.permissoes}"
+					var="permissao" style="margin-right:30px" id="tabela-permissoes">
+					<p:column headerText="Nome" width="50%">
+						<h:outputText value="#{permissao.nome}" />
+					</p:column>
+					<p:column width="25%">
+						<p:commandButton icon="fa fa-pencil" title="Editar Permissão"
+							oncomplete="PF('permissaoDialog').show()" process="@this" update=":form-permissao:panel-nova-permissao">
+							<f:setPropertyActionListener value="#{permissao}" target="#{permissaoController.permissao}"></f:setPropertyActionListener>
+						</p:commandButton>
+						<p:commandButton icon="fa fa-trash" title="Excluir Permissão" />
+					</p:column>
+				</p:dataTable>
+				<p:dialog widgetVar="permissaoDialog" modal="true"
+					header="Nova Permissão" resizable="false">
+					<h:panelGrid id="panel-nova-permissao" cellpadding="5">
+						<h:outputLabel value="Nome" />
+						<p:inputText value="#{permissaoController.permissao.nome}" />
+					</h:panelGrid>
+					<p:commandButton value="Salvar"
+						action="#{permissaoController.salvar()}"
+						update="tabela-permissoes panel-nova-permissao"
+						oncomplete="if(!args.validationFailed) PF('permissaoDialog').hide()" />
+					<p:commandButton value="Cancelar"
+						oncomplete="PF('permissaoDialog').hide()" process="@this" />
+				</p:dialog>
+			</h:form>
+		</p:panel>
+	</ui:define>
+</ui:composition>

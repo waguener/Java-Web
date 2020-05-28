@@ -1,0 +1,152 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:p="http://primefaces.org/ui">
+
+<h:head>
+
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+	<title><ui:insert name="titulo">Home</ui:insert></title>
+	<h:outputStylesheet library="css" name="sistema.css" />
+	<h:outputScript library="js" name="moeda.js" />
+	<h:outputScript library="js" name="locale-primefaces.js" />
+	<style>
+.ui-growl {
+	position: fixed;
+	top: 23%;
+	right: 6%;
+	width: 301px;
+}
+
+.cores {
+	font-weight: bold;
+	color: #FF8C00 !important;
+	background-image: none !important;
+}
+
+.ui-dialog {
+	top: 0%;
+}
+
+
+</style>
+	<script type="text/javascript">
+		function onlyNumbers(data) {
+			data.value = data.value.replace(/[^0-9]/g, '');
+
+		};
+		function exportChart() {
+			//export image
+			$('#output').empty().append(PF('graficoBarras').exportAsImage());
+			PF('dlg').show();
+		}
+	</script>
+	
+	
+	
+	
+	
+	
+
+</h:head>
+<h:body>
+
+	<p:growl id="mensagem" life="4000" />
+
+	<div id="cabecalho">
+		<ui:insert name="cabecalho">
+			<h:graphicImage value="/imagens/logoSite.png" styleClass="logo"
+				style="margin-left:20px; margin-top:7px" />
+
+		</ui:insert>
+		
+		<p:commandButton value="Atualizar" action="#{pontoDiarioController.deletar()}"  />
+		
+	</div>
+
+
+	<div id="lateral">
+		<ui:insert name="lateral">
+
+			<h:form>
+
+				<p:button outcome="PontoDiario" value="Ponto Diario"
+					style="margin-left:8px; margin-right:8px;width:88%" />
+					
+				<p:button outcome="AtualCadastral" value="Atualização Cadastral"
+					style="margin-left:8px; margin-right:8px;width:88%" />
+
+				<p:panelMenu style="margin-left:8px; margin-right:8px">
+					<p:submenu label="Epi">
+						<p:menuitem value="Cadastro de Agência" outcome="agencia.xhtml"
+							icon="fa fa-home" style="font-weight:bold" />
+						<p:menuitem value="Pesquisar Agências"
+							outcome="ListaAgencia.xhtml" icon="fa fa-search"
+							style="font-weight:bold" />
+						<p:menuitem value="Cadastro de Funcionário"
+							outcome="cadastro.xhtml" icon="fa fas fa-users"
+							style="font-weight:bold; color:#009933" />
+						<p:menuitem value="Pesquisar Funcionários"
+							outcome="ListaFuncionario.xhtml" icon="fa fa-search"
+							style="font-weight:bold; color:#009933" />
+						<p:menuitem value="Cadastro de EPI" outcome="epi.xhtml"
+							icon="fa far fa-clipboard"
+							style="font-weight:bold; color:#0033cc" />
+						<p:menuitem value="Pesquisar Epis" outcome="ListaEpi.xhtml"
+							icon="fa fa-search" style="font-weight:bold; color:#0033cc" />
+						<p:menuitem value="Entrega de Epi" outcome="Entrega.xhtml"
+							icon="fa far fa-share-square"
+							style="font-weight:bold; color:#cc3300" />
+						<p:menuitem value="Pesquisar Entregas"
+							outcome="ListaEntrega.xhtml" icon="fa fa-search"
+							style="font-weight:bold; color:#cc3300" />
+						<p:menuitem value="Devolução de Epi" outcome="Devolucao.xhtml"
+							icon="fa fas fa-reply" style="font-weight:bold; color:#9400D3" />
+						<p:menuitem value="Controle" outcome="Controle2.xhtml"
+							icon="fa fas fa-book" style="font-weight:bold; color:#2F4F4F" />
+						<p:menuitem value="Histórico de Uso" outcome="HistoricoFunc.xhtml"
+							icon="fa fa-search" style="font-weight:bold; color:#666699" />
+						<p:menuitem value="Vencimentos" outcome="Vencimentos.xhtml"
+							icon="fa fa-search" style="font-weight:bold; color:#666699" />
+
+					</p:submenu>
+					
+				</p:panelMenu>
+				
+			</h:form>
+		</ui:insert>
+
+
+	</div>
+	<div id="content">
+		<ui:insert name="conteudo" />
+
+		<p:growl autoUpdate="true" life="3000" />
+
+	</div>
+
+
+	<div id="rodape">
+		<ui:insert name="rodape">
+			<h:panelGrid columns="2" width="100%">
+				<h4 style="margin: 0px">
+					Sistema para controle de epi - <a href="http://olgber.com.br/"
+						style="text-decoration: none" target="blank">OLGBER
+						ESPECIALIDADES - 2018</a>
+					<h:outputText value="Ver.:1.5 - Devsenvoldo por Wagner Elias" dir="rtl"/>
+
+				</h4>
+			</h:panelGrid>
+
+		</ui:insert>
+
+	</div>
+
+
+</h:body>
+</html>
+

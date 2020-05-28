@@ -1,0 +1,70 @@
+
+<ui:composition template="/Paginas/template/template.xhtml"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui">
+
+	<ui:define name="titulo">Avaliações</ui:define>
+
+	<ui:define name="Principal">
+
+		<p:button value="Novo Avaliação" outcome="CadastroAvaliacao"
+			style="margin-bottom: 10px" />
+		<h:form>
+			<p:dataTable value="#{avaliacaoController.listaAvaliacoes}"
+				var="avaliacao" style="margin-right:30px">
+				<p:column headerText="Aluno" width="25%">
+					<h:outputText value="#{avaliacao.matricula.aluno.nome}" />
+				</p:column>
+				<p:column headerText="Curso" style="text-align: center" width="15%">
+					<h:outputText value="#{avaliacao.matricula.curso.nome}" />
+				</p:column>
+				<p:column headerText="Nota" width="10%" style="text-align: center">
+					<h:outputText value="#{avaliacao.nota}" />
+				</p:column>
+				<p:column headerText="Bimestre/Ano" width="20%"
+					style="text-align: center">
+					<h:outputText value="#{avaliacao.bimestreAno}" />
+				</p:column>
+				<p:column width="10%" style="text-align:center">
+
+					<p:commandButton icon="fa fa-edit" id="editar"
+						action="#{avaliacaoController.editar(avaliacao)}">
+						<p:tooltip for="editar" hideEffect="explode" position="left">
+							<h:outputLabel value="Editar esta linha" />
+						</p:tooltip>
+
+					</p:commandButton>
+					<p:commandButton icon="fa fa-download" ajax="false" id="prova">
+						<p:fileDownload
+							value="#{avaliacaoController.baixarArquivo(avaliacao)}"></p:fileDownload>
+						<p:tooltip for="prova" hideEffect="explode" position="top">
+							<h:outputLabel value="Baixar Prova" />
+						</p:tooltip>
+					</p:commandButton>
+					<p:commandButton icon="fa fa-trash" id="excluir"
+						action="#{avaliacaoController.prepararExclusao(avaliacao)}"
+						oncomplete="PF('confirmarExclusaoAvaliacaoDialog').show()">
+						<p:tooltip for="excluir" hideEffect="explode" position="bottom">
+							<h:outputLabel value="Excluir esta linha" />
+						</p:tooltip>
+
+					</p:commandButton>
+
+				</p:column>
+			</p:dataTable>
+
+			<p:confirmDialog widgetVar="confirmarExclusaoAvaliacaoDialog" closable="false" 
+				header="Atenção" message="Deseja excluir está avaliação?">
+				<p:commandButton value="Sim"
+					oncomplete="PF('confirmarExclusaoAvaliacaoDialog').hide()"
+					action="#{avaliacaoController.excluir()}" update="@form"/>
+				<p:commandButton value="Não"
+					oncomplete="PF('confirmarExclusaoAvaliacaoDialog').hide()"
+					action="#{avaliacaoController.cancelarExclusao()}" />
+			</p:confirmDialog>
+		</h:form>
+	</ui:define>
+</ui:composition>

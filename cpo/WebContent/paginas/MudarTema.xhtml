@@ -1,0 +1,27 @@
+<ui:composition template="/template/Layout.xhtml"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:p="http://primefaces.org/ui">
+
+	<ui:define name="titulo">Mudar Tema</ui:define>
+
+	<ui:define name="conteudo">
+		<div class="ui-fluid">
+			<h:form
+				style="width: 100%; font-weight:bold;font-size: 12px; margin-top:1%">
+				#{temas.init()}
+				
+				<p:themeSwitcher value="#{temas.tema}"
+					style="width:250px;font-size:14px">
+					<f:selectItems value="#{temas.temasDisponiveis}" />
+					<p:ajax listener="#{temas.salvar}" />
+				</p:themeSwitcher>
+				
+
+			</h:form>
+		</div>
+	</ui:define>
+</ui:composition>
+

@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<pretty-config xmlns="http://ocpsoft.com/prettyfaces/3.3.3"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://ocpsoft.com/prettyfaces/3.3.3
+                        http://ocpsoft.com/xml/ns/prettyfaces/ocpsoft-pretty-faces-3.3.3.xsd">
+
+	<url-mapping id="permissoes">
+		<pattern value="/permissoes" />
+		<view-id value="/Paginas/permissoes/permissoes.jsf" />
+		<action onPostback="false">#{permissaoController.init}</action>
+	</url-mapping>
+	
+	<url-mapping id="perfis">
+		<pattern value="/perfis" />
+		<view-id value="/Paginas/Perfis/PerfilWrapper.jsf" />
+		<action onPostback="false">#{perfilController.init}</action>
+	</url-mapping>
+	
+	<url-mapping id="usuario">
+		<pattern value="/usuarios" />
+		<view-id value="/Paginas/Usuarios/CadastroUsuario.jsf" />
+		<action onPostback="false">#{cadastroUsuarioController.init}</action>
+	</url-mapping>
+	
+	<url-mapping id="listausuarios">
+		<pattern value="/usuarios/novo" />
+		<view-id value="/Paginas/Usuarios/ListaUsuarios.jsf" />
+		<action onPostback="false">#{listaUsuariosController.init}</action>
+	</url-mapping>
+
+</pretty-config>

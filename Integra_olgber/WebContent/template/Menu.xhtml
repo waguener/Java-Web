@@ -1,0 +1,59 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:p="http://primefaces.org/ui">
+
+
+	<nav class="aw-menu">
+		<h:form style="margin-left:5px">
+
+			<p:outputLabel
+				value=" Bem vindo(a): #{authenticationContext.usuarioLogado.nome}"
+				style="margin:15px;font-size:12px" />
+
+
+			<p:panelMenu style="width:210px">
+				<p:submenu label="Cadastros" >
+					<p:menuitem value="Usuários" outcome="CadastroUsuario.xhtml" 
+						icon="fa fa-user-plus"
+						rendered="#{authenticationContext.usuarioLogado.usuarioNome() == true }" />
+					<p:menuitem value="Funcionários"
+						outcome="CadastroFuncionario.xhtml" icon="fa fa-user" />
+					<p:menuitem value="Agências" outcome="CadastroAgencia.xhtml"
+						rendered="#{authenticationContext.usuarioLogado.usuarioNome() == true }"
+						icon="fa fa-building" />
+					<p:menuitem value="Projetos" outcome="CadastroProjeto.xhtml"
+						rendered="#{authenticationContext.usuarioLogado.usuarioNome() == true }"
+						icon="fa fa-industry" />
+					<p:menuitem value="Turnos" outcome="CadastroTurno.xhtml"
+						rendered="#{authenticationContext.usuarioLogado.usuarioNome() == true }"
+						icon="fa fa-clock-o" />
+					<p:menuitem value="Eventos" outcome="CadastroEvento.xhtml"
+						rendered="#{authenticationContext.usuarioLogado.usuarioNome() == true }"
+						icon="fa  fa-calendar" />
+				</p:submenu>
+				<p:submenu label="Pesquisar">
+					<p:menuitem value="Usuários" outcome="PesquisaUsuario.xhtml" 
+						rendered="#{authenticationContext.usuarioLogado.usuarioNome() == true }" />
+					<p:menuitem value="Funcionários" icon="fa fa-users"
+						outcome="PesquisaFuncionario.xhtml" />
+					<p:menuitem value="Agências" outcome="PesquisaAgencia.xhtml" 
+						rendered="#{authenticationContext.usuarioLogado.usuarioNome() == true }" />
+					<p:menuitem value="Projetos" outcome="PesquisaProjeto.xhtml"
+						rendered="#{authenticationContext.usuarioLogado.usuarioNome() == true }" />
+					<p:menuitem value="Turnos" outcome="PesquisaTurno.xhtml"
+						rendered="#{authenticationContext.usuarioLogado.usuarioNome() == true }" />
+					<p:menuitem value="Eventos" outcome="PesquisaEvento.xhtml"
+						rendered="#{authenticationContext.usuarioLogado.usuarioNome() == true }" />
+						
+				</p:submenu>
+
+			</p:panelMenu>
+			
+			<p:calendar value="#{funcionarioController.hoje}" locale="pt" style="font-size:10.7px;margin-left:0px"  mode="inline"/>
+			<p:commandButton value="Sair"
+				action="#{authenticationContext.logout}" icon="fa fa-sign-out" style="width:205px"/>
+		</h:form>
+	</nav>
+
+</ui:composition>

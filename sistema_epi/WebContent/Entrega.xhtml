@@ -1,0 +1,364 @@
+<ui:composition template="/template/LayoutPadrao.xhtml"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:p="http://primefaces.org/ui">
+
+	<ui:define name="titulo">Entrega do Epi</ui:define>
+
+	<ui:define name="conteudo">
+
+		<h:form id="entrega">
+				#{sistemaControllerEntrega.novo()}
+					<p:growl for="entrega nome epiGrid" />
+			<p:panel header="Entrega do EPI">
+				<h:panelGrid columns="2">
+					<p:panel header="Busca do Funcionário"
+						style="margin-left:10px;margin-top:5px">
+						<h:panelGrid columns="2">
+
+							<h:panelGrid columns="2" id="nome">
+
+								<h:outputLabel value="Nome: " for="funcionario" />
+								<p:inputText id="funcionario"
+									value="#{sistemaControllerEntrega.entrega.funcionario.nome}"
+									readonly="true" required="true" 
+									requiredMessage="Selecione um funcionário" />
+
+								<h:outputLabel value="CPF:" for="funcionario" />
+								<p:inputText id="cpf" required="true"
+									value="#{sistemaControllerEntrega.entrega.funcionario.cpf}"
+									readonly="#{facesContext.currentPhaseId.name eq 'RENDER_RESPONSE'}" />
+							</h:panelGrid>
+
+							<p:commandButton icon="ui-icon-search" 
+								style="margin-left:10px; width:50px; height:50px"
+								title="Clique para pesquisar funcionários"
+								action="#{sistemaControllerEntrega.abrirDialogo()}"
+								process="@this" update="@none">
+								<p:ajax event="dialogReturn"
+									listener="#{sistemaControllerEntrega.funcionarioSelecionado}"
+									process="@this" update="funcionario, cpf" />
+								<p:resetInput target="funcionario" />
+							</p:commandButton>
+						</h:panelGrid>
+					</p:panel>
+
+					<p:panel header="Busca do EPI"
+						style="margin-left:10px; margin-top:5px">
+
+						<h:panelGrid columns="5">
+							<h:panelGrid columns="2" id="epiGrid">
+								<h:outputLabel value="Descrição: " for="epi" />
+
+								<p:inputText id="epi"
+									value="#{sistemaControllerEntrega.entrega.epi.descricao}"
+									readonly="#{facesContext.currentPhaseId.name eq 'RENDER_RESPONSE'}"
+									required="true" requiredMessage="Informe o EPI" />
+
+								<h:outputLabel value="C.A: " for="epi" />
+
+								<p:inputText id="ca"
+									value="#{sistemaControllerEntrega.entrega.epi.ca}"
+									required="true"
+									readonly="#{facesContext.currentPhaseId.name eq 'RENDER_RESPONSE'}" />
+							</h:panelGrid>
+							<p:commandButton icon="ui-icon-search"
+								title="Clique para pesquisar epis"
+								style="margin-left:10px; width:50px; height:50px"
+								action="#{sistemaControllerEntrega.abrirDialogoEpi}"
+								process="@this" update="@none">
+
+								<p:ajax event="dialogReturn"
+									listener="#{sistemaControllerEntrega.epiSelecionado}"
+									process="@this" update="epi,ca,estoque" />
+								<p:resetInput target="epi, ca" />
+							</p:commandButton>
+
+
+						</h:panelGrid>
+					</p:panel>
+					<h:panelGrid columns="1" style="margin-left:50%; margin-right:50%">
+						<p:panel header="Dados Finais" id="final"
+							style="margin-left:10px; margin-top:15px">
+							<h:panelGrid columns="2">
+								<h:outputLabel value="Data:" for="data" />
+								<p:calendar pattern="dd/MM/yyyy" mask="99/99/9999" id="data"
+									navigator="true" showOn="button"
+									size="10" value="#{sistemaControllerEntrega.entrega.data}"
+									required="true" requiredMessage="Informe a Data" locale="pt"
+									effect="fold"
+								
+									title="Clique para abrir o calendário" />
+
+								<h:outputLabel value="Protocolo:" />
+								<p:inputText
+									value="#{sistemaControllerEntrega.entrega.protocolo}" size="15"
+									required="true"
+									readonly="#{facesContext.currentPhaseId.name eq 'RENDER_RESPONSE'}" />
+							</h:panelGrid>
+
+							<h:panelGrid columns="4">
+								<h:outputLabel value="Quantidade:" />
+								<p:spinner
+									value="#{sistemaControllerEntrega.entrega.quantidade}"
+									onkeyup="onlyNumbers(this)" size="1" min="0" placeholder="0"
+									required="true" requiredMessage="Informe a quantidade" />
+								<h:outputLabel value="Em estoque:" />
+								<p:inputText value="#{sistemaControllerEntrega.epiQtd}" size="1"
+									style="text-align:center; font-weight: bold;" placeholder="0"
+									readonly="#{facesContext.currentPhaseId.name eq 'RENDER_RESPONSE'}"
+									id="estoque" />
+								<h:outputLabel value="Validade:" />
+								<p:inputText value="#{sistemaControllerEntrega.entrega.validade}" size="3"
+									onkeyup="onlyNumbers(this)" 
+									style="text-align:center; font-weight: bold;" />
+								<h:outputLabel value="Dias" />
+							</h:panelGrid>
+							<h:panelGrid columns="2">
+								<h:outputLabel value="Estado:" />
+								<h:selectOneRadio id="estado"
+									value="#{sistemaControllerEntrega.entrega.estado}"
+									required="true" requiredMessage="Situação do EPI:">
+									<f:selectItem itemLabel="Novo" itemValue="Novo" />
+									<f:selectItem itemLabel="Usado" itemValue="Usado" />
+
+								</h:selectOneRadio>
+								<h:outputLabel value="Hora:" />
+								<h:outputText value="#{atualizaHora.hoje}" id="txt_count">
+									<p:poll interval="1" listener="#{atualizaHora.atualizarHora}"
+										update="txt_count" />
+								</h:outputText>
+
+							</h:panelGrid>
+
+							<p:commandButton value="Salvar"
+								action="#{sistemaControllerEntrega.cadastrar()}"
+								validateClient="true" process="@form" update="@form"
+								style="margin-top:5px; margin-left:230px;margin-right:3px" />
+
+						</p:panel>
+					</h:panelGrid>
+				</h:panelGrid>
+
+
+
+				<!-- tela da impressão -->
+				<p:dialog header="Entrega feita com Sucesso!" resizable="false"
+					position="top" widgetVar="imprimirDialog" closable="false"
+					style="position:absolute" modal="true" showEffect="fade"
+					hideEffect="fade" width="70%" height="40%">
+
+					<p:dataGrid columns="1" var="impressao" id="imprimir"
+						value="#{sistemaControllerEntrega.entregaDialog}">
+
+						<h:outputText value="OLGBER ESPECIALIDADES EIRELI"
+							style="font-size:11px;font-weight: bold " />
+						<h:outputText value="CNPJ: 03.293.568/0001-36"
+							style="font-size:11px;font-weight: bold; margin-left:10px  " />
+						<h:outputText value="I.E: 234.100.542.113"
+							style="font-size:11px;font-weight: bold; margin-left:10px  " />
+						<!-- 1º linha -->
+						<h:panelGrid columns="8">
+							<h:outputLabel value="Nome:"
+								style="font-size:10px;font-weight: bold " />
+							<h:outputText value="#{impressao.funcionario.nome}"
+								style="font-size:11px" />
+							<h:outputLabel value="Cpf:"
+								style="font-size:10px; margin-left:10px;font-weight: bold " />
+							<h:outputText value="#{impressao.funcionario.cpf}"
+								style="font-size:10px" />
+							<h:outputLabel value="Dt. entrega:"
+								style="font-size:10px; margin-left:10px;font-weight: bold " />
+							<h:outputText value="#{impressao.data}" style="font-size:10px">
+								<f:convertDateTime pattern="dd/MM/yyyy" locale="pt_BR" />
+							</h:outputText>
+							<h:outputLabel value="Hora entrega:"
+								style="font-size:10px; margin-left:10px;font-weight: bold " />
+							<h:outputLabel value="#{impressao.hora} " style="font-size:11px" />
+						</h:panelGrid>
+						<!-- 2ºlinha -->
+						<h:panelGrid columns="11">
+							<h:outputLabel value="Item:"
+								style="font-size:10px;font-weight: bold " />
+							<h:outputText value="#{impressao.epi.descricao}"
+								style="font-size:10px" />
+							<h:outputLabel value="QTD:"
+								style="font-size:10px; margin-left:10px;font-weight: bold " />
+							<h:outputLabel value="#{impressao.quantidade} "
+								style="font-size:10px" />
+							<h:outputLabel value="C.A:"
+								style="font-size:10px; margin-left:10px;font-weight: bold " />
+							<h:outputLabel value="#{impressao.epi.ca} "
+								style="font-size:10px" />
+							<h:outputLabel value="Lote:"
+								style="font-size:10px; margin-left:10px;font-weight: bold " />
+							<h:outputLabel value="#{impressao.epi.lote} "
+								style="font-size:10px" />
+							<h:outputLabel value="Assinatura: "
+								style="font-size:10px; margin-left:10px;font-weight: bold " />
+							<h:outputText value="______________" />
+							<h:outputText value="(1º Via)"
+								style="margin-left:30px;font-size:8px" />
+							<h:panelGrid columns="1">
+
+							</h:panelGrid>
+
+						</h:panelGrid>
+						<h:panelGrid columns="2">
+							<h:outputLabel value="Data da Emissão: #{data.gerarData()}"
+								style=" font-size:10px;font-weight: bold " />
+							<h:outputText value="Hora da Emissão: #{atualizaHora.hoje}"
+								id="txt_count"
+								style="font-size:10px;font-weight: bold; margin-left: 50px;">
+								<p:poll interval="1" listener="#{atualizaHora.atualizarHora}"
+									update="txt_count" />
+							</h:outputText>
+
+						</h:panelGrid>
+						<h:outputText
+							value="Declaro para todos os efeitos legais que recebi os equipamentos de 
+								proteção individual constantes da lista acima, novos e em perfeitas
+								condições de uso e que estou ciente das obrigações 
+								descritas na NR 06, baixadas pela Portaria MTE 3214/78, subitem 6.7.1, a saber :"
+							style="font-size:10px;margin-top:0px;margin-botton:0px;font-style:lucida console" />
+
+
+						<h:outputText
+							value="A) usar, utilizando-o apenas para a finalidade que se destina;"
+							style="font-size:10px;font-style:lucida console" />
+						<h:outputText
+							value="B) responsabilizar-se pela guarda e conservação;"
+							style="font-size:10px;font-style:lucida console" />
+						<h:outputText
+							value="C ) comunicar ao empregador qualquer alteração que o torne impróprio para uso; "
+							style="font-size:10px;font-style:lucida console" />
+						<h:outputText
+							value="D ) cumprir as determinações do empregador sobre o uso adequado."
+							style="font-size:10px;font-style:lucida console" />
+
+
+						<h:outputText
+							value="Declaro também que estou ciente das disposições do Art. 462 
+					e Paragráfo 1 da CLT, e autorizo o desconto salarial proporcional ao custo de 
+					reparação do dano causado por perda ou mal utilização que os EPI's aos meus cuidados 
+					venham apresentar.Declaro ainda que estou ciente das disposições do artigo 158, alínea 
+					(a), da CLT e do item 1.8 da NR 01, em especial daquela do subitem 1.8.1 de que constitui 
+					ato faltoso á recusa injustificada de usar EPI fornecido pela empresa, incorrendo nas penas da Lei."
+							style="font-size:10px;font-style:lucida console" />
+
+
+						<p:separator />
+						<h:outputText value="OLGBER ESPECIALIDADES EIRELI"
+							style="font-size:11px;font-weight: bold " />
+						<h:outputText value="CNPJ: 03.293.568/0001-36"
+							style="font-size:11px;font-weight: bold; margin-left:10px  " />
+						<h:outputText value="I.E: 234.100.542.113"
+							style="font-size:11px;font-weight: bold; margin-left:10px  " />
+						<!-- cópia -->
+						<h:panelGrid columns="8">
+							<h:outputLabel value="Nome:"
+								style="font-size:10px;font-weight: bold " />
+							<h:outputText value="#{impressao.funcionario.nome}"
+								style="font-size:11px" />
+							<h:outputLabel value="Cpf:"
+								style="font-size:10px; margin-left:10px;font-weight: bold " />
+							<h:outputText value="#{impressao.funcionario.cpf}"
+								style="font-size:11px" />
+							<h:outputLabel value="Dt. entrega:"
+								style="font-size:10px; margin-left:10px;font-weight: bold " />
+							<h:outputText value="#{impressao.data}" style="font-size:10px">
+								<f:convertDateTime pattern="dd/MM/yyyy" locale="pt_BR" />
+							</h:outputText>
+							<h:outputLabel value="Hora entrega:"
+								style="font-size:10px; margin-left:10px;font-weight: bold " />
+							<h:outputLabel value="#{impressao.hora} " style="font-size:10px" />
+						</h:panelGrid>
+						<!-- 2ºlinha -->
+						<h:panelGrid columns="11">
+							<h:outputLabel value="Item:"
+								style="font-size:10px;font-weight: bold " />
+							<h:outputText value="#{impressao.epi.descricao}"
+								style="font-size:10px" />
+							<h:outputLabel value="QTD:"
+								style="font-size:10px; margin-left:10px;font-weight: bold " />
+							<h:outputLabel value="#{impressao.quantidade} "
+								style="font-size:10px" />
+							<h:outputLabel value="C.A: "
+								style="font-size:10px; margin-left:10px;font-weight: bold " />
+							<h:outputLabel value="#{impressao.epi.ca} "
+								style="font-size:10px" />
+							<h:outputLabel value="Lote:"
+								style="font-size:10px; margin-left:10px;font-weight: bold " />
+							<h:outputLabel value="#{impressao.epi.lote} "
+								style="font-size:10px" />
+							<h:outputLabel value="Assinatura: "
+								style="font-size:10px; margin-left:10px;font-weight: bold " />
+							<h:outputText value="______________" />
+							<h:outputText value="(2º Via)"
+								style="margin-left:30px;font-size:8px" />
+
+
+						</h:panelGrid>
+
+						<h:outputText
+							value="Declaro para todos os efeitos legais que recebi os equipamentos de 
+								proteção individual constantes da lista acima, novos e em perfeitas
+								condições de uso e que estou ciente das obrigações 
+								descritas na NR 06, baixadas pela Portaria MTE 3214/78, subitem 6.7.1, a saber:"
+							style="font-size:10px;margin-top:0px;margin-botton:0px;font-family:lucida console" />
+
+
+						<h:outputText
+							value="A) usar, utilizando-o apenas para a finalidade que se destina;"
+							style="font-size:10px;font-family:lucida console" />
+						<h:outputText
+							value="B) responsabilizar-se pela guarda e conservação;"
+							style="font-size:10px;font-family:lucida console" />
+						<h:outputText
+							value="C ) comunicar ao empregador qualquer alteração que o torne impróprio para uso; "
+							style="font-size:10px;font-family:lucida console" />
+						<h:outputText
+							value="D ) cumprir as determinações do empregador sobre o uso adequado."
+							style="font-size:10px;font-family:lucida console" />
+
+
+						<h:outputText
+							value="Declaro também que estou ciente das disposições do Art. 462 
+					e Paragráfo 1 da CLT, e autorizo o desconto salarial proporcional ao custo de 
+					reparação do dano causado por perda ou mal utilização que os EPI's aos meus cuidados 
+					venham apresentar.Declaro ainda que estou ciente das disposições do artigo 158, alínea 
+					(a), da CLT e do item 1.8 da NR 01, em especial daquela do subitem 1.8.1 de que constitui 
+					ato faltoso á recusa injustificada de usar EPI fornecido pela empresa, incorrendo nas penas da Lei."
+							style="font-size:10px;font-family:lucida console" />
+
+					</p:dataGrid>
+
+					<h:outputLabel value="Deseja imprimir ou fazer outra entrega?"
+						style="margin-left: 30%; margin-top: 20px; font-weight:bold" />
+
+					<h:panelGrid columns="3"
+						style="margin-left: auto; margin-right:auto; margin-top: 10px">
+						<p:commandButton value="Imprimir" style="margin-left:10px"
+							action="#{sistemaControllerEntrega.novaImpressao()}"
+							oncomplete="PF('imprimirDialog').hide()" type="button">
+							<p:printer target="imprimir" />
+						</p:commandButton>
+						<p:commandButton value="Fazer nova entrega"
+							action="#{sistemaControllerEntrega.novo2()}"
+							oncomplete="PF('imprimirDialog').hide()" update="entrega"
+							process="@this" />
+						<p:commandButton value="Fechar"
+							action="#{sistemaControllerEntrega.novo3()}" update="entrega"
+							onclick="PF('imprimirDialog').hide()" process="@this" />
+					</h:panelGrid>
+				</p:dialog>
+			</p:panel>
+
+
+		</h:form>
+
+
+	</ui:define>
+</ui:composition>

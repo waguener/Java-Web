@@ -1,0 +1,22 @@
+/* TOGGLE */
+.aw-toggle {
+	float: left;
+	line-height: 50px;
+	margin-right: 15px;
+	color: #fff;
+	transition: all .4s;
+}
+
+.aw-toggle:hover {
+	background-color: #fff;
+	color: #5b859a;
+	border-radius: 40px;"
+}
+
+/* PAGE-TITLE */
+.aw-page-title {
+	margin: 0;
+	padding: 20px 0;
+	font-size: 1.5em;
+	color: #373737;
+}

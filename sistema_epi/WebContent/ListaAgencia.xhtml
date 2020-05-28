@@ -1,0 +1,77 @@
+<ui:composition template="/template/LayoutPadrao.xhtml"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:p="http://primefaces.org/ui">
+
+	<ui:define name="titulo">Lista de Agências</ui:define>
+	<ui:define name="conteudo">
+
+		<h:form style="font-size:9px">
+			#{sistemaControllerAgencia.novaAgencia()}
+			
+			<p:panel header="Agências Cadastradas">
+
+				<p:inputText value="#{sistemaControllerAgencia.nome}"
+					onkeyup="this.value = this.value.toUpperCase()"
+					placeholder="Agência" />
+				<p:commandButton icon="ui-icon-search" value="Pesquisar"
+					action="#{sistemaControllerAgencia.porAgencia()}"
+					update="tabelaAgencia" />
+
+				<p:dataTable id="tabelaAgencia" var="agencia"
+					value="#{sistemaControllerAgencia.listAgencia}"
+					emptyMessage="Lista Vazia" style="margin-top:10px" paginator="true"
+					rows="10" rowsPerPageTemplate="3,5,8" paginatorPosition="bottom"
+					resizableColumns="true">
+					<f:facet name="header">
+            		Tabela de Agências
+        		</f:facet>
+					<p:column headerText="Agência" width="20%">
+						<h:outputText value="#{agencia.agencia} " />
+					</p:column>
+					<p:column headerText="Cidade" width="18%">
+						<h:outputText value="#{ agencia.cidade}" />
+					</p:column>
+					<p:column headerText="Endereço" width="30%">
+						<h:outputText value="#{agencia.endereco }" />
+					</p:column>
+					<p:column headerText="Data do Cadastro" style="text-align:center"
+						width="15%">
+						<h:outputText value="#{agencia.data }">
+							<f:convertDateTime pattern="dd/MM/yyyy" locale="pt_BR" />
+						</h:outputText>
+					</p:column>
+					<p:column width="9%" style="text-align:center">
+						<p:commandButton icon="fa fa-edit"
+							action="#{sistemaControllerAgencia.editarAgencia(agencia) }"
+							id="edit" title="Clique para editar!">
+
+						</p:commandButton>
+
+						<p:commandButton icon="fa fa-trash"
+							action="#{sistemaControllerAgencia.PrepararExcluirAgencia(agencia)}"
+							oncomplete="PF('confirmarExclusaoCursoDialog').show()"
+							id="excluir" title="Clique para excluir!!">
+
+						</p:commandButton>
+					</p:column>
+
+				</p:dataTable>
+				<p:confirmDialog widgetVar="confirmarExclusaoCursoDialog"
+					message="Deseja excluir esta Agência">
+					<p:commandButton value="Sim"
+						action="#{sistemaControllerAgencia.ExcluirAgencia() }"
+						update="tabelaAgencia"
+						oncomplete="PF('confirmarExclusaoCursoDialog').hide()" />
+					<p:commandButton value="Não"
+						oncomplete="PF('confirmarExclusaoCursoDialog').hide()" />
+				</p:confirmDialog>
+
+
+			</p:panel>
+		</h:form>
+
+	</ui:define>
+</ui:composition>

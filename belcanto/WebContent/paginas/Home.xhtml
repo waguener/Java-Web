@@ -1,0 +1,127 @@
+<ui:composition template="/template/Layout.xhtml"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:p="http://primefaces.org/ui">
+
+	<ui:define name="titulo">Home</ui:define>
+
+	<ui:define name="conteudo">
+		<div class="ui-fluid">
+			<h:form id="form" style="width: 100%;">
+				
+				<p:panelGrid columns="4" layout="grid"
+					style="margin-top:10px;margin-left:-20px"
+					styleClass="panelgrid-noborder"
+					columnClasses="ui-grid-col-3,ui-grid-col-3,ui-grid-col-3,ui-grid-col-3">
+
+					<p:panelGrid columns="1" layout="grid"
+						styleClass="panelgrid-colorAzul" columnClasses="ui-grid-col-12">
+						<h:panelGrid columns="2" style="margin-bottom:-10px">
+
+							<h:graphicImage library="imagens" name="alunos.png" width="60"
+								style="margin-left:0px " />
+
+							<p:outputLabel value="Alunos Cadastrados"
+								style="font-size:18px;color:white;font-family: 'Archivo Black', sans-serif;text-shadow: 1px 1px 4px #000000;margin-left:15px" />
+
+						</h:panelGrid>
+
+
+						<p:outputLabel 
+							style="font-size:58px;color:white;font-family: 'Archivo Black', sans-serif;margin-left:45%;margin-right:50%;text-shadow: 2px 2px 3px #000000;" />
+
+
+					</p:panelGrid>
+
+					<p:panelGrid columns="1" layout="grid"
+						styleClass="panelgrid-colorRoxo" columnClasses="ui-grid-col-12">
+						<h:panelGrid columns="2">
+							<p:outputLabel value="Alunos " />
+
+							<h:graphicImage library="imagens" name="alunos.png" dir="rtl"
+								style="width:60px;margin-left:15px; " />
+						</h:panelGrid>
+					</p:panelGrid>
+
+					<p:panelGrid columns="1" layout="grid"
+						styleClass="panelgrid-colorLaranja" columnClasses="ui-grid-col-12">
+						<h:panelGrid columns="2">
+							<p:outputLabel value="Alunos " />
+
+
+							<h:graphicImage library="imagens" name="alunos.png" dir="rtl"
+								style="width:60px;margin-left:15px; position:relative; float:right" />
+						</h:panelGrid>
+					</p:panelGrid>
+
+					<p:panelGrid columns="1" layout="grid"
+						styleClass="panelgrid-colorVerde" columnClasses="ui-grid-col-12">
+						<h:panelGrid columns="2">
+							<p:outputLabel value="Alunos " />
+
+
+							<h:graphicImage library="imagens" name="alunos.png" dir="rtl"
+								style="width:60px;margin-left:15px; position:relative; float:right" />
+						</h:panelGrid>
+					</p:panelGrid>
+				</p:panelGrid>
+				<p:panelGrid columns="4" layout="grid"
+					style="margin-top:10px;margin-left:0px"
+					styleClass="panelgrid-noborder"
+					columnClasses="ui-grid-col-3,ui-grid-col-3,ui-grid-col-3,ui-grid-col-3">
+				</p:panelGrid>
+
+				<p:panelGrid columns="2" layout="grid"
+					style="margin-top:10px;margin-left:0px"
+					styleClass="panelgrid-noborder"
+					columnClasses="ui-grid-col-7,ui-grid-col-5">
+					<h:panelGrid columns="1">
+						
+					</h:panelGrid>
+					 <h:panelGrid columns="1">
+
+						<!--<p:dataTable id="tbl" reflow="true" resizeMode="expand"
+							emptyMessage="Lista Vazia" resizableColumns="true"
+							 scrollable="true"
+							var="cursos" style="margin-top:5px" rows="10">
+
+							<p:column headerText="Curso" width="40%">
+
+								<h:outputLabel value="#{cursos.curso}" />
+							</p:column>
+							<p:column headerText="Alunos Matriculados " width="30%"
+								style="text-align:center">
+
+								<h:outputLabel value="#{cursos.total}" />
+							</p:column>
+							<p:column headerText="Valor Total " width="30%"
+								style="text-align:center">
+
+								<h:outputLabel value="#{cursos.valor}">
+									<f:convertNumber type="currency" currencySymbol="R$"
+										locale="pt_BR" />
+								</h:outputLabel>
+							</p:column>
+							<p:columnGroup type="footer">
+								<p:row>
+									<p:column footerText="" />
+									<p:column footerText="Total:"
+										style="font-size:16px;color:black;font-weight:bold" />
+									<p:column footerText="#{homeController.valorTotal}"
+										style="font-size:16px;color:green;font-weight:bold">
+
+									</p:column>
+								</p:row>
+							</p:columnGroup>
+						</p:dataTable> -->
+					</h:panelGrid>
+				</p:panelGrid>
+				<h:outputLink value="https://www.google.com/intl/pt-BR/calendar/about/" target="_blank">Google Agenda</h:outputLink>
+				<p:commandButton value="Data" action="#{matriculaController.mensalidade()}" process="@this" style="width:150px"/>
+			</h:form>
+		</div>
+	</ui:define>
+</ui:composition>
+

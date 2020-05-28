@@ -1,0 +1,48 @@
+<ui:composition template="/Paginas/template/template.xhtml"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui">
+
+	<ui:define name="Titulo">Usuários</ui:define>
+
+	<ui:define name="Principal">
+		<p:panel header="Cadastro de Usuários">
+			<h:form id="cadastro-usuarios-form">
+				<p:growl autoUpdate="true" />
+				<h:panelGrid columns="1" cellpadding="5">
+					<h:outputLabel value="Nome:" />
+					<p:inputText value="#{cadastroUsuarioController.usuario.nome}" />
+					<h:outputLabel value="E-mail" />
+					<p:inputText value="#{cadastroUsuarioController.usuario.login}" />
+					<h:outputLabel value="Perfis" />
+					<p:selectCheckboxMenu
+						value="#{cadastroUsuarioController.usuario.perfis}"
+						converter="omnifaces.SelectItemsConverter" label="Selecione">
+						<f:selectItems value="#{cadastroUsuarioController.perfis}"
+							var="perfil" itemLabel="#{perfil.nome}" itemValue="#{perfil}" />
+					</p:selectCheckboxMenu>
+				</h:panelGrid>
+					<h:panelGrid columns="1" rendered="#{cadastroUsuarioController.usuario.id == null}" cellpadding="5">
+					
+					<h:outputLabel value="Senha" />
+					<p:password value="#{cadastroUsuarioController.usuario.senha}" redisplay="true"
+						feedback="true" strongLabel="Forte" weakLabel="Fraca"
+						promptLabel="Entre com uma Senha" goodLabel="Média" />
+					<h:outputLabel value="Confirmar Senha" />
+					<p:password value="#{cadastroUsuarioController.confirmarSenha}"
+						id="confirmar-senha-input" redisplay="true" />
+					
+					</h:panelGrid>
+
+				
+				<p:commandButton value="Salvar"
+					action="#{cadastroUsuarioController.salvar}" />
+
+			</h:form>
+		</p:panel>
+
+
+	</ui:define>
+</ui:composition>

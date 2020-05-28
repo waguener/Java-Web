@@ -1,0 +1,105 @@
+<ui:composition template="/template/Layout2.xhtml"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:p="http://primefaces.org/ui">
+
+	<ui:define name="titulo">Cadastros</ui:define>
+
+	<ui:define name="conteudo">
+
+		<div class="ui-fluid">
+			<h:form id="form"
+				style="margin-left: auto; margin-right:auto; font-weight:bold; font-size: 10px">
+				#{atualCadController.initBusca()}
+				<p:panelGrid columns="1" layout="grid" style="margin-top:10px"
+					styleClass="panelgrid-noborder" columnClasses="ui-grid-col-12">
+					<p:outputLabel value="Cadastros"
+						style="font-size: 22pt;font-family:'Cabin', sans-serif;color:#87CEEB;text-shadow: 2px 2px 3px #000000;" />
+
+				</p:panelGrid>
+				<p:panelGrid columns="4" layout="grid" style="margin-top:20px"
+					styleClass="panelgrid-noborder" id="busca"
+					columnClasses="ui-grid-col-2,ui-grid-col-4,ui-grid-col-1,ui-grid-col-5">
+					<p:outputLabel value="Busca" style="font-size: 16pt;" />
+
+					<p:inputText value="#{atualCadController.nome}"
+						style="margin-left:10px;font-size:14pt;font-weigth:bold;color:#000;"
+						onkeyup="this.value = this.value.toUpperCase()" />
+
+
+					<p:commandButton action="#{atualCadController.buscar()}"
+						id="pesquisar" update="tbl" process="busca"
+						icon="fa fa-search" />
+					<p:outputLabel/>
+				</p:panelGrid>
+
+				<p:fieldset legend="Funcionários" style="margin-top:5px">
+
+					<p:dataTable var="cad" emptyMessage="Lista Vazia" id="tbl"
+						value="#{atualCadController.listaCad }" reflow="true"
+						style="margin-top:10px" paginator="true" rows="9"
+						rowsPerPageTemplate="3,6,12" paginatorPosition="bottom"
+						resizableColumns="true">
+
+						<p:column headerText="Foto " width="5%" style="text-align:center">
+							<p:graphicImage library="imagens" name="sem_foto.png"
+								width="34px" height="42px"
+								style="text-align:center;box-shadow: 1px 1px 4px;border-radius: 10px;"
+								rendered="#{cad.funcionarioBean.foto == null}">
+								<f:param name="idCad" value="#{cad.id}" />
+							</p:graphicImage>
+							<p:graphicImage
+								value="#{atualCadController.imagemCad}" width="34px"
+								height="42px" id="content"
+								style="text-align:center;box-shadow: 1px 1px 4px;border-radius: 10px;"
+								rendered="#{atualCadController.imagemCad != null}">
+								<f:param name="idCad" value="#{cad.id}" />
+							</p:graphicImage>
+							<p:tooltip id="toolTipContent" for="content">
+								<p:graphicImage
+								value="#{atualCadController.imagemCad}" width="176px" height="208px"
+								style="text-align:center;box-shadow: 1px 1px 4px;border-radius: 10px;"
+								rendered="#{atualCadController.imagemCad != null}">
+								<f:param name="idCad" value="#{cad.id}" />
+							</p:graphicImage>
+							</p:tooltip>
+						</p:column>
+						
+						<p:column headerText="Nome" filterMatchMode="contains" width="26%"
+							sortBy="#{cad.funcionarioBean.nome }">
+							<h:outputText value="#{cad.funcionarioBean.nome }" />
+						</p:column>
+						<p:column headerText="RG" filterMatchMode="contains" width="16%">
+							<h:outputText value="#{cad.funcionarioBean.rg }" />
+						</p:column>
+						<p:column headerText="CPF" filterMatchMode="contains" width="16%">
+							<h:outputText value="#{cad.funcionarioBean.cpf }" />
+						</p:column>
+						<p:column headerText="Nasc." filterMatchMode="contains" width="16%">
+							<h:outputText value="#{cad.dtNascimento }" >
+								<f:convertDateTime pattern="dd/MM/yyyy" locale="pt_BR" />
+							</h:outputText>
+						</p:column>
+						<p:column headerText="Idade" filterMatchMode="contains" width="16%">
+							<h:outputText value="#{cad.idade}" />
+						</p:column>
+						<p:column width="4%" style="text-align:center">
+							<p:commandButton icon="fa fa-edit"
+								action="#{atualCadController.editar(cad)}"
+								title="Clique para editar!" />
+
+						</p:column>
+					</p:dataTable>
+
+				</p:fieldset>
+				 <p:blockUI block="tbl" trigger="busca" animate="true">
+						BUSCANDO FUNCIONÁRIOS...<br />
+					<p:graphicImage library="imagens" name="load.gif" />
+				</p:blockUI> 
+			</h:form>
+
+		</div>
+	</ui:define>
+</ui:composition>

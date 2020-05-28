@@ -1,0 +1,1300 @@
+<ui:composition template="/template/Layout.xhtml"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:p="http://primefaces.org/ui">
+
+	<ui:define name="titulo">Editar Carga</ui:define>
+
+	<ui:define name="conteudo">
+		<div class="ui-fluid">
+			<h:form
+				style="width: 100%; font-weight:bold;font-size: 12px; margin-top:1%">
+
+				<p:panel header="Editar Carga">
+					<div style="width: 100%; height: 600px; overflow: auto;">
+						<p:panelGrid columns="4" layout="grid"
+							styleClass="panelgrid-noborder"
+							columnClasses="ui-grid-col-2,ui-grid-col-4,ui-grid-col-2,ui-grid-col-4">
+							<p:outputLabel value="transportadora" style="font-size:16px" />
+							<p:inputText value="#{cargaController.carga.transportadora}"
+								style="font-size:16px" />
+
+							<p:outputLabel value="Placa Carreta: " style="font-size:16px" />
+							<p:inputMask value="#{cargaController.carga.placa_carreta}"
+								mask="aaa-9999" style="font-size:16px" required="true"
+								requiredMessage="Insira um Número de placa!!" />
+
+							<p:outputLabel value="Motorista: " style="font-size:16px" />
+							<p:inputText value="#{cargaController.carga.motorista}"
+								onkeyup="this.value = this.value.toUpperCase()"
+								style="font-size:16px" />
+
+							<p:outputLabel value="Número da Carga: " style="font-size:16px" />
+
+							<p:outputLabel value="#{cargaController.carga.id}"
+								style="font-size:18px" />
+							<p:outputLabel value="Tipo da Carga:" style="font-size:16px" />
+							<p:selectOneMenu value="#{cargaController.carga.tipoCarga}"
+								required="true"
+								requiredMessage="Selecione o Tipo Interno ou Externo!!"
+								style="font-size:16px;width:150px">
+								<f:selectItem itemLabel="Selecionar" itemValue="" />
+								<f:selectItem itemLabel="INTERNO" itemValue="INTERNO" />
+								<f:selectItem itemLabel="EXTERNO" itemValue="EXTERNO" />
+							</p:selectOneMenu>
+
+						</p:panelGrid>
+						<p:separator />
+
+						<p:panelGrid columns="3" layout="grid"
+							rendered="#{cargaController.carga.prodRecebido != null}"
+							style="padding:10px;font-weight:bold"
+							columnClasses="ui-grid-col-4,ui-grid-col-4,ui-grid-col-4"
+							styleClass="panelgrid-noborder">
+							<p:outputLabel />
+							<p:outputLabel value="Carga Recebida"
+								style="font-size: 18px; font-weith:bold" />
+							<p:outputLabel />
+						</p:panelGrid>
+
+
+						<p:panelGrid columns="1" layout="grid"
+							columnClasses="ui-grid-col-12" styleClass="panelgrid-noborder">
+
+							<p:panelGrid columns="4" layout="grid"
+								rendered="#{cargaController.carga.prodRecebido != null}"
+								style="padding:10px;font-weight:bold"
+								columnClasses="ui-grid-col-3,ui-grid-col-3,ui-grid-col-3,ui-grid-col-3"
+								styleClass="panelgrid-noborder">
+
+								<p:outputLabel value="Carga 1" style="font-size:24px" />
+								<p:outputLabel />
+								<p:outputLabel />
+								<p:outputLabel />
+
+								<p:panelGrid columns="1" layout="grid"
+									columnClasses="ui-grid-col-12">
+									<p:outputLabel value="Produto" />
+									<p:inputText value="#{cargaController.carga.prodRecebido}"
+										onkeyup="this.value = this.value.toUpperCase()" />
+								</p:panelGrid>
+
+								<p:panelGrid columns="1" layout="grid"
+									columnClasses="ui-grid-col-12">
+									<p:outputLabel value="NF Recebimento" />
+									<p:inputText value="#{cargaController.carga.nfRecebimento}"
+										onkeyup="this.value = this.value.toUpperCase()" />
+								</p:panelGrid>
+
+								<p:panelGrid columns="1" layout="grid"
+									columnClasses="ui-grid-col-12,">
+
+									<p:outputLabel value="Check-List" />
+									<h:selectOneRadio
+										value="#{cargaController.carga.checkRecebimento}">
+										<f:selectItem itemLabel="CONFORME" itemValue="CONFORME" />
+										<f:selectItem itemLabel="NÃO CONFORME"
+											itemValue="NÃO CONFORME" />
+
+									</h:selectOneRadio>
+									
+								</p:panelGrid>
+								<p:panelGrid columns="1" layout="grid" style="font-weight:bold"
+										columnClasses="ui-grid-col-12">
+										<p:outputLabel value="Temperatura" />
+										<p:inputMask value="#{cargaController.carga.temperatura}"
+											mask="99º" style="width:35px" placeholder="00º" />
+								</p:panelGrid>
+
+							</p:panelGrid>
+
+
+							<p:panelGrid columns="4" layout="grid"
+								rendered="#{cargaController.carga.prodRecebido2 != null}"
+								style="padding:10px;font-weight:bold"
+								columnClasses="ui-grid-col-3,ui-grid-col-3,ui-grid-col-3,ui-grid-col-3"
+								styleClass="panelgrid-noborder">
+
+								<p:outputLabel value="Carga 2" style="font-size:24px" />
+								<p:outputLabel />
+								<p:outputLabel />
+								<p:outputLabel />
+
+								<p:panelGrid columns="1" layout="grid"
+									columnClasses="ui-grid-col-12">
+									<p:outputLabel value="Produto" />
+									<p:inputText value="#{cargaController.carga.prodRecebido2}"
+										onkeyup="this.value = this.value.toUpperCase()" />
+								</p:panelGrid>
+
+								<p:panelGrid columns="1" layout="grid"
+									columnClasses="ui-grid-col-12">
+									<p:outputLabel value="NF Recebimento" />
+									<p:inputText value="#{cargaController.carga.nfRecebimento2}"
+										onkeyup="this.value = this.value.toUpperCase()" />
+								</p:panelGrid>
+
+								<p:panelGrid columns="1" layout="grid"
+									columnClasses="ui-grid-col-12">
+
+									<p:outputLabel value="Check-List" />
+									<h:selectOneRadio
+										value="#{cargaController.carga.checkRecebimento2}">
+										<f:selectItem itemLabel="CONFORME" itemValue="CONFORME" />
+										<f:selectItem itemLabel="NÃO CONFORME"
+											itemValue="NÃO CONFORME" />
+
+									</h:selectOneRadio>
+
+								</p:panelGrid>
+
+								<p:panelGrid columns="1" layout="grid" style="font-weight:bold"
+									columnClasses="ui-grid-col-12">
+									<p:outputLabel value="Temperatura" />
+									<p:inputMask value="#{cargaController.carga.temperatura2}"
+										mask="99º" style="width:35px" placeholder="00º" />
+								</p:panelGrid>
+
+							</p:panelGrid>
+
+
+
+							<p:panelGrid columns="4" layout="grid"
+								rendered="#{cargaController.carga.prodRecebido3 != null}"
+								style="padding:10px;font-weight:bold"
+								columnClasses="ui-grid-col-3,ui-grid-col-3,ui-grid-col-3,ui-grid-col-3"
+								styleClass="panelgrid-noborder">
+
+								<p:outputLabel value="Carga 3" style="font-size:24px" />
+								<p:outputLabel />
+								<p:outputLabel />
+								<p:outputLabel />
+								<p:panelGrid columns="1" layout="grid"
+									columnClasses="ui-grid-col-12">
+									<p:outputLabel value="Produto" />
+									<p:inputText value="#{cargaController.carga.prodRecebido3}"
+										onkeyup="this.value = this.value.toUpperCase()" />
+								</p:panelGrid>
+
+								<p:panelGrid columns="1" layout="grid"
+									columnClasses="ui-grid-col-12">
+									<p:outputLabel value="NF Recebimento" />
+									<p:inputText value="#{cargaController.carga.nfRecebimento3}"
+										onkeyup="this.value = this.value.toUpperCase()" />
+								</p:panelGrid>
+
+								<p:panelGrid columns="1" layout="grid"
+									columnClasses="ui-grid-col-12">
+
+									<p:outputLabel value="Check-List" />
+									<h:selectOneRadio
+										value="#{cargaController.carga.checkRecebimento3}">
+										<f:selectItem itemLabel="CONFORME" itemValue="CONFORME" />
+										<f:selectItem itemLabel="NÃO CONFORME"
+											itemValue="NÃO CONFORME" />
+
+									</h:selectOneRadio>
+
+								</p:panelGrid>
+
+								<p:panelGrid columns="1" layout="grid" style="font-weight:bold"
+									columnClasses="ui-grid-col-12">
+									<p:outputLabel value="Temperatura" />
+									<p:inputMask value="#{cargaController.carga.temperatura3}"
+										mask="99º" style="width:35px" placeholder="00º" />
+								</p:panelGrid>
+
+							</p:panelGrid>
+
+
+
+
+							<p:panelGrid columns="4" layout="grid"
+								rendered="#{cargaController.carga.prodRecebido4 != null}"
+								style="padding:10px;font-weight:bold"
+								columnClasses="ui-grid-col-3,ui-grid-col-3,ui-grid-col-3,ui-grid-col-3"
+								styleClass="panelgrid-noborder">
+
+								<p:outputLabel value="Carga 4" style="font-size:24px" />
+								<p:outputLabel />
+								<p:outputLabel />
+								<p:outputLabel />
+								<p:panelGrid columns="1" layout="grid"
+									columnClasses="ui-grid-col-12">
+									<p:outputLabel value="Produto" />
+									<p:inputText value="#{cargaController.carga.prodRecebido4}"
+										onkeyup="this.value = this.value.toUpperCase()" />
+								</p:panelGrid>
+
+								<p:panelGrid columns="1" layout="grid"
+									columnClasses="ui-grid-col-12">
+									<p:outputLabel value="NF Recebimento" />
+									<p:inputText value="#{cargaController.carga.nfRecebimento4}"
+										onkeyup="this.value = this.value.toUpperCase()" />
+								</p:panelGrid>
+
+								<p:panelGrid columns="1" layout="grid"
+									columnClasses="ui-grid-col-12">
+
+									<p:outputLabel value="Check-List" />
+									<h:selectOneRadio
+										value="#{cargaController.carga.checkRecebimento4}">
+										<f:selectItem itemLabel="CONFORME" itemValue="CONFORME" />
+										<f:selectItem itemLabel="NÃO CONFORME"
+											itemValue="NÃO CONFORME" />
+
+									</h:selectOneRadio>
+
+								</p:panelGrid>
+								<p:panelGrid columns="1" layout="grid" style="font-weight:bold"
+									columnClasses="ui-grid-col-12">
+									<p:outputLabel value="Temperatura" />
+									<p:inputMask value="#{cargaController.carga.temperatura4}"
+										mask="99º" style="width:35px" placeholder="00º" />
+								</p:panelGrid>
+
+
+							</p:panelGrid>
+
+
+
+							<p:panelGrid columns="4" layout="grid"
+								rendered="#{cargaController.carga.prodRecebido5 != null}"
+								style="padding:10px;font-weight:bold"
+								columnClasses="ui-grid-col-3,ui-grid-col-3,ui-grid-col-3,ui-grid-col-3"
+								styleClass="panelgrid-noborder">
+
+								<p:outputLabel value="Carga 5" style="font-size:24px" />
+								<p:outputLabel />
+								<p:outputLabel />
+								<p:outputLabel />
+								<p:panelGrid columns="1" layout="grid"
+									columnClasses="ui-grid-col-12">
+									<p:outputLabel value="Produto" />
+									<p:inputText value="#{cargaController.carga.prodRecebido5}"
+										onkeyup="this.value = this.value.toUpperCase()" />
+								</p:panelGrid>
+
+								<p:panelGrid columns="1" layout="grid"
+									columnClasses="ui-grid-col-12">
+									<p:outputLabel value="NF Recebimento" />
+									<p:inputText value="#{cargaController.carga.nfRecebimento5}"
+										onkeyup="this.value = this.value.toUpperCase()" />
+								</p:panelGrid>
+
+								<p:panelGrid columns="1" layout="grid"
+									columnClasses="ui-grid-col-12">
+
+									<p:outputLabel value="Check-List" />
+									<h:selectOneRadio
+										value="#{cargaController.carga.checkRecebimento5}">
+										<f:selectItem itemLabel="CONFORME" itemValue="CONFORME" />
+										<f:selectItem itemLabel="NÃO CONFORME"
+											itemValue="NÃO CONFORME" />
+
+									</h:selectOneRadio>
+
+								</p:panelGrid>
+								<p:panelGrid columns="1" layout="grid" style="font-weight:bold"
+									columnClasses="ui-grid-col-12">
+									<p:outputLabel value="Temperatura" />
+									<p:inputMask value="#{cargaController.carga.temperatura5}"
+										mask="99º" style="width:35px" placeholder="00º" />
+
+								</p:panelGrid>
+								<p:outputLabel />
+
+
+							</p:panelGrid>
+						</p:panelGrid>
+
+						<!-- Incluir Insumo -->
+
+						<p:panelGrid columns="2" layout="grid"
+							columnClasses="ui-grid-col-6,ui-grid-col-6"
+							styleClass="panelgrid-noborder">
+
+							<p:panelGrid columns="2" layout="grid"
+								rendered="#{cargaController.carga.insumoRecebido != null}"
+								style="padding:10px;font-weight:bold"
+								columnClasses="ui-grid-col-6,ui-grid-col-6"
+								styleClass="panelgrid-noborder">
+
+								<p:outputLabel value="Insumo 1" style="font-size:24px" />
+								<p:outputLabel />
+								<p:panelGrid columns="1" layout="grid"
+									columnClasses="ui-grid-col-12">
+									<p:outputLabel value="Produto" />
+									<p:inputText value="#{cargaController.carga.insumoRecebido}"
+										onkeyup="this.value = this.value.toUpperCase()" />
+								</p:panelGrid>
+
+								<p:panelGrid columns="1" layout="grid"
+									columnClasses="ui-grid-col-12">
+									<p:outputLabel value="NF Recebimento" />
+									<p:inputText value="#{cargaController.carga.nfInsumoRecebido}"
+										onkeyup="this.value = this.value.toUpperCase()" />
+								</p:panelGrid>
+
+							</p:panelGrid>
+
+
+
+							<p:panelGrid columns="2" layout="grid"
+								rendered="#{cargaController.carga.insumoRecebido2 != null}"
+								style="padding:10px;font-weight:bold"
+								columnClasses="ui-grid-col-6,ui-grid-col-6"
+								styleClass="panelgrid-noborder">
+
+								<p:outputLabel value="Insumo 2" style="font-size:24px" />
+								<p:outputLabel />
+
+								<p:panelGrid columns="1" layout="grid"
+									columnClasses="ui-grid-col-12">
+									<p:outputLabel value="Produto" />
+									<p:inputText value="#{cargaController.carga.insumoRecebido2}"
+										onkeyup="this.value = this.value.toUpperCase()" />
+								</p:panelGrid>
+
+								<p:panelGrid columns="1" layout="grid"
+									columnClasses="ui-grid-col-12">
+									<p:outputLabel value="NF Recebimento" />
+									<p:inputText value="#{cargaController.carga.nfInsumoRecebido2}"
+										onkeyup="this.value = this.value.toUpperCase()" />
+								</p:panelGrid>
+
+
+							</p:panelGrid>
+
+
+
+							<p:panelGrid columns="2" layout="grid"
+								rendered="#{cargaController.carga.insumoRecebido3 != null}"
+								style="padding:10px;font-weight:bold"
+								columnClasses="ui-grid-col-6,ui-grid-col-6"
+								styleClass="panelgrid-noborder">
+
+								<p:outputLabel value="Insumo 3" style="font-size:24px" />
+								<p:outputLabel />
+
+								<p:panelGrid columns="1" layout="grid"
+									columnClasses="ui-grid-col-12">
+									<p:outputLabel value="Produto" />
+									<p:inputText value="#{cargaController.carga.insumoRecebido3}"
+										onkeyup="this.value = this.value.toUpperCase()" />
+								</p:panelGrid>
+
+								<p:panelGrid columns="1" layout="grid"
+									columnClasses="ui-grid-col-12">
+									<p:outputLabel value="NF Recebimento" />
+									<p:inputText value="#{cargaController.carga.nfInsumoRecebido3}"
+										onkeyup="this.value = this.value.toUpperCase()" />
+								</p:panelGrid>
+
+
+							</p:panelGrid>
+
+
+
+							<p:panelGrid columns="2" layout="grid"
+								rendered="#{cargaController.carga.insumoRecebido4 != null}"
+								style="padding:10px;font-weight:bold"
+								columnClasses="ui-grid-col-6,ui-grid-col-6"
+								styleClass="panelgrid-noborder">
+
+								<p:outputLabel value="Insumo 4" style="font-size:24px" />
+								<p:outputLabel />
+
+								<p:panelGrid columns="1" layout="grid"
+									columnClasses="ui-grid-col-12">
+									<p:outputLabel value="Produto" />
+									<p:inputText value="#{cargaController.carga.insumoRecebido4}"
+										onkeyup="this.value = this.value.toUpperCase()" />
+								</p:panelGrid>
+
+								<p:panelGrid columns="1" layout="grid"
+									columnClasses="ui-grid-col-12">
+									<p:outputLabel value="NF Recebimento" />
+									<p:inputText value="#{cargaController.carga.nfInsumoRecebido4}"
+										onkeyup="this.value = this.value.toUpperCase()" />
+								</p:panelGrid>
+
+
+							</p:panelGrid>
+
+
+
+							<p:panelGrid columns="2" layout="grid"
+								rendered="#{cargaController.carga.insumoRecebido5 != null}"
+								style="padding:10px;font-weight:bold"
+								columnClasses="ui-grid-col-6,ui-grid-col-6"
+								styleClass="panelgrid-noborder">
+
+								<p:outputLabel value="Insumo 5" style="font-size:24px" />
+								<p:outputLabel />
+
+								<p:panelGrid columns="1" layout="grid"
+									columnClasses="ui-grid-col-12">
+									<p:outputLabel value="Produto" />
+									<p:inputText value="#{cargaController.carga.insumoRecebido5}"
+										onkeyup="this.value = this.value.toUpperCase()" />
+								</p:panelGrid>
+
+								<p:panelGrid columns="1" layout="grid"
+									columnClasses="ui-grid-col-12">
+									<p:outputLabel value="NF Recebimento" />
+									<p:inputText value="#{cargaController.carga.nfInsumoRecebido5}"
+										onkeyup="this.value = this.value.toUpperCase()" />
+								</p:panelGrid>
+
+
+							</p:panelGrid>
+						</p:panelGrid>
+
+						<p:panelGrid columns="3" layout="grid"
+							rendered="#{cargaController.carga.prodEnviado != null or cargaController.carga.prodInsumoEnviado != null}"
+							style="padding:10px;font-weight:bold"
+							columnClasses="ui-grid-col-4,ui-grid-col-4,ui-grid-col-4"
+							styleClass="panelgrid-noborder">
+							<p:outputLabel />
+							<p:outputLabel value="Carga Enviada"
+								style="font-size: 18px; font-weith:bold" />
+							<p:outputLabel />
+						</p:panelGrid>
+
+						<p:panelGrid columns="4" layout="grid" style="font-weight:bold"
+							rendered="#{cargaController.carga.prodEnviado != null}"
+							columnClasses="ui-grid-col-3,ui-grid-col-3,ui-grid-col-3,ui-grid-col-3"
+							styleClass="panelgrid-noborder">
+
+							<p:outputLabel value="Carga de Envio 1" style="font-size:24px" />
+							<p:outputLabel />
+							<p:outputLabel />
+							<p:outputLabel />
+
+							<p:panelGrid columns="1" layout="grid"
+								columnClasses="ui-grid-col-12">
+								<p:outputLabel value="Produto" />
+								<p:inputText value="#{cargaController.carga.prodEnviado}"
+									onkeyup="this.value = this.value.toUpperCase()" />
+							</p:panelGrid>
+
+							<p:panelGrid columns="1" layout="grid"
+								columnClasses="ui-grid-col-12">
+								<p:outputLabel value="NF Expedição" />
+								<p:inputText value="#{cargaController.carga.nfExpedicao}"
+									onkeyup="this.value = this.value.toUpperCase()" />
+							</p:panelGrid>
+
+							<p:panelGrid columns="1" layout="grid"
+								columnClasses="ui-grid-col-12">
+
+								<p:outputLabel value="Check-List" />
+								<h:selectOneRadio value="#{cargaController.carga.checkEnviado}">
+									<f:selectItem itemLabel="CONFORME" itemValue="CONFORME" />
+									<f:selectItem itemLabel="NÃO CONFORME" itemValue="NÃO CONFORME" />
+
+								</h:selectOneRadio>
+
+							</p:panelGrid>
+
+							<p:panelGrid columns="1" layout="grid"
+								columnClasses="ui-grid-col-12">
+								<p:outputLabel value="Temperatura" />
+								<p:inputMask mask="99º" style="width:35px" placeholder="00º"
+									value="#{cargaController.carga.temperaturaEnvio}" />
+							</p:panelGrid>
+
+						</p:panelGrid>
+
+						<p:panelGrid columns="3" layout="grid" style="font-weight:bold"
+							rendered="#{cargaController.carga.prodEnviado != null}"
+							columnClasses="ui-grid-col-3,ui-grid-col-3,ui-grid-col-6"
+							styleClass="panelgrid-noborder">
+
+							<p:panelGrid columns="1" layout="grid"
+								columnClasses="ui-grid-col-12">
+								<p:outputLabel value="Quantidade Total de Produtos" />
+								<p:inputText style="width:65px"
+									value="#{cargaController.carga.totalEnviado}" />
+								<p:outputLabel value="Total Pallets" />
+								<p:inputMask mask="99" style="width:35px" placeholder="0"
+									value="#{cargaController.carga.totalPallets}" />
+
+							</p:panelGrid>
+
+							<p:panelGrid columns="1" layout="grid"
+								columnClasses="ui-grid-col-12">
+								<p:outputLabel value="Tipo de Envio" />
+								<p:selectOneMenu value="#{cargaController.carga.tipo}">
+									<f:selectItem itemLabel=".:SELECIONE:." itemValue="#{null}" />
+									<f:selectItems value="#{cargaController.envioCarga}"
+										itemLabel="#{carga}" var="carga" itemValue="#{carga}" />
+
+
+								</p:selectOneMenu>
+
+							</p:panelGrid>
+
+							<p:panelGrid columns="1" layout="grid" style="padding:10px"
+								columnClasses="ui-grid-col-12" styleClass="panelgrid-noborder">
+
+
+								<p:outputLabel value="Observação:" />
+
+								<p:inputTextarea cols="50" rows="3" style="font-size:14px"
+									onkeyup="this.value = this.value.toUpperCase()"
+									value="#{cargaController.carga.obs}" maxlength="250"
+									counterTemplate="{0} Caracteres restantes" counter="display" />
+
+								<p:outputLabel id="display" style="font-size:10px" />
+
+
+							</p:panelGrid>
+
+						</p:panelGrid>
+
+
+						<p:panelGrid columns="4" layout="grid" style="font-weight:bold"
+							rendered="#{cargaController.carga.prodEnviado2 != null}"
+							columnClasses="ui-grid-col-3,ui-grid-col-3,ui-grid-col-3,ui-grid-col-3"
+							styleClass="panelgrid-noborder">
+
+							<p:outputLabel value="Carga de Envio 2" style="font-size:24px" />
+							<p:outputLabel />
+							<p:outputLabel />
+							<p:outputLabel />
+
+							<p:panelGrid columns="1" layout="grid"
+								columnClasses="ui-grid-col-12">
+								<p:outputLabel value="Produto" />
+								<p:inputText value="#{cargaController.carga.prodEnviado2}"
+									onkeyup="this.value = this.value.toUpperCase()" />
+							</p:panelGrid>
+
+							<p:panelGrid columns="1" layout="grid"
+								columnClasses="ui-grid-col-12">
+								<p:outputLabel value="NF Expedição" />
+								<p:inputText value="#{cargaController.carga.nfExpedicao2}"
+									onkeyup="this.value = this.value.toUpperCase()" />
+							</p:panelGrid>
+
+							<p:panelGrid columns="1" layout="grid"
+								columnClasses="ui-grid-col-12">
+
+								<p:outputLabel value="Check-List" />
+								<h:selectOneRadio value="#{cargaController.carga.checkEnviado2}">
+									<f:selectItem itemLabel="CONFORME" itemValue="CONFORME" />
+									<f:selectItem itemLabel="NÃO CONFORME" itemValue="NÃO CONFORME" />
+
+								</h:selectOneRadio>
+
+							</p:panelGrid>
+
+							<p:panelGrid columns="1" layout="grid"
+								columnClasses="ui-grid-col-12">
+								<p:outputLabel value="Temperatura" />
+								<p:inputMask mask="99º" style="width:35px" placeholder="00º"
+									value="#{cargaController.carga.temperaturaEnvio2}" />
+							</p:panelGrid>
+
+						</p:panelGrid>
+
+						<p:panelGrid columns="3" layout="grid"
+							rendered="#{cargaController.carga.prodEnviado2 != null}"
+							style="font-weight:bold"
+							columnClasses="ui-grid-col-3,ui-grid-col-3,ui-grid-col-6"
+							styleClass="panelgrid-noborder">
+
+							<p:panelGrid columns="1" layout="grid"
+								columnClasses="ui-grid-col-12">
+								<p:outputLabel value="Quantidade Total de Produtos" />
+								<p:inputText style="width:65px"
+									value="#{cargaController.carga.totalEnviado2}" />
+								<p:outputLabel value="Total Pallets" />
+								<p:inputMask mask="99" style="width:35px" placeholder="0"
+									value="#{cargaController.carga.totalPallets2}" />
+							</p:panelGrid>
+
+							<p:panelGrid columns="1" layout="grid"
+								columnClasses="ui-grid-col-12">
+								<p:outputLabel value="Tipo de Envio" />
+								<p:selectOneMenu value="#{cargaController.carga.tipo2}">
+									<f:selectItem itemLabel=".:SELECIONE:." itemValue="#{null}" />
+									<f:selectItems value="#{cargaController.envioCarga}"
+										itemLabel="#{carga}" var="carga" itemValue="#{carga}" />
+
+								</p:selectOneMenu>
+
+							</p:panelGrid>
+
+							<p:panelGrid columns="1" layout="grid" style="padding:10px"
+								columnClasses="ui-grid-col-12" styleClass="panelgrid-noborder">
+
+
+								<p:outputLabel value="Observação:" />
+
+								<p:inputTextarea cols="50" rows="3" style="font-size:14px"
+									onkeyup="this.value = this.value.toUpperCase()"
+									value="#{cargaController.carga.obs2}" maxlength="250"
+									counterTemplate="{0} Caracteres restantes" counter="display2" />
+
+								<p:outputLabel id="display2" style="font-size:10px" />
+
+
+							</p:panelGrid>
+
+						</p:panelGrid>
+
+
+						<p:panelGrid columns="4" layout="grid" style="font-weight:bold"
+							rendered="#{cargaController.carga.prodEnviado3 != null}"
+							columnClasses="ui-grid-col-3,ui-grid-col-3,ui-grid-col-3,ui-grid-col-3"
+							styleClass="panelgrid-noborder">
+
+							<p:outputLabel value="Carga de Envio 3" style="font-size:24px" />
+							<p:outputLabel />
+							<p:outputLabel />
+							<p:outputLabel />
+
+							<p:panelGrid columns="1" layout="grid"
+								columnClasses="ui-grid-col-12">
+								<p:outputLabel value="Produto" />
+								<p:inputText value="#{cargaController.carga.prodEnviado3}"
+									onkeyup="this.value = this.value.toUpperCase()" />
+							</p:panelGrid>
+
+							<p:panelGrid columns="1" layout="grid"
+								columnClasses="ui-grid-col-12">
+								<p:outputLabel value="NF Expedição" />
+								<p:inputText value="#{cargaController.carga.nfExpedicao3}"
+									onkeyup="this.value = this.value.toUpperCase()" />
+							</p:panelGrid>
+
+							<p:panelGrid columns="1" layout="grid"
+								columnClasses="ui-grid-col-12">
+
+								<p:outputLabel value="Check-List" />
+								<h:selectOneRadio value="#{cargaController.carga.checkEnviado3}">
+									<f:selectItem itemLabel="CONFORME" itemValue="CONFORME" />
+									<f:selectItem itemLabel="NÃO CONFORME" itemValue="NÃO CONFORME" />
+
+								</h:selectOneRadio>
+
+							</p:panelGrid>
+
+							<p:panelGrid columns="1" layout="grid"
+								columnClasses="ui-grid-col-12">
+								<p:outputLabel value="Temperatura" />
+								<p:inputMask mask="99º" style="width:35px" placeholder="00º"
+									value="#{cargaController.carga.temperaturaEnvio3}" />
+							</p:panelGrid>
+
+						</p:panelGrid>
+
+						<p:panelGrid columns="3" layout="grid" style="font-weight:bold"
+							rendered="#{cargaController.carga.prodEnviado3 != null}"
+							columnClasses="ui-grid-col-3,ui-grid-col-3,ui-grid-col-6"
+							styleClass="panelgrid-noborder">
+
+							<p:panelGrid columns="1" layout="grid"
+								columnClasses="ui-grid-col-12">
+								<p:outputLabel value="Quantidade Total de Produtos" />
+								<p:inputText style="width:65px"
+									value="#{cargaController.carga.totalEnviado3}" />
+								<p:outputLabel value="Total Pallets" />
+								<p:inputMask mask="99" style="width:35px" placeholder="0"
+									value="#{cargaController.carga.totalPallets3}" />
+							</p:panelGrid>
+
+							<p:panelGrid columns="1" layout="grid"
+								columnClasses="ui-grid-col-12">
+								<p:outputLabel value="Tipo de Envio" />
+								<p:selectOneMenu value="#{cargaController.carga.tipo3}">
+									<f:selectItem itemLabel=".:SELECIONE:." itemValue="#{null}" />
+									<f:selectItems value="#{cargaController.envioCarga}"
+										itemLabel="#{carga}" var="carga" itemValue="#{carga}" />
+
+								</p:selectOneMenu>
+
+							</p:panelGrid>
+
+							<p:panelGrid columns="1" layout="grid" style="padding:10px"
+								columnClasses="ui-grid-col-12" styleClass="panelgrid-noborder">
+
+
+								<p:outputLabel value="Observação:" />
+
+								<p:inputTextarea cols="50" rows="3" style="font-size:14px"
+									onkeyup="this.value = this.value.toUpperCase()"
+									value="#{cargaController.carga.obs3}" maxlength="250"
+									counterTemplate="{0} Caracteres restantes" counter="display3" />
+
+								<p:outputLabel id="display3" style="font-size:10px" />
+
+
+							</p:panelGrid>
+
+						</p:panelGrid>
+
+
+						<p:panelGrid columns="4" layout="grid" style="font-weight:bold"
+							rendered="#{cargaController.carga.prodEnviado4 != null}"
+							columnClasses="ui-grid-col-3,ui-grid-col-3,ui-grid-col-3,ui-grid-col-3"
+							styleClass="panelgrid-noborder">
+
+							<p:outputLabel value="Carga de Envio 4" style="font-size:24px" />
+							<p:outputLabel />
+							<p:outputLabel />
+							<p:outputLabel />
+
+							<p:panelGrid columns="1" layout="grid"
+								columnClasses="ui-grid-col-12">
+								<p:outputLabel value="Produto" />
+								<p:inputText value="#{cargaController.carga.prodEnviado4}"
+									onkeyup="this.value = this.value.toUpperCase()" />
+							</p:panelGrid>
+
+							<p:panelGrid columns="1" layout="grid"
+								columnClasses="ui-grid-col-12">
+								<p:outputLabel value="NF Expedição" />
+								<p:inputText value="#{cargaController.carga.nfExpedicao4}"
+									onkeyup="this.value = this.value.toUpperCase()" />
+							</p:panelGrid>
+
+							<p:panelGrid columns="1" layout="grid"
+								columnClasses="ui-grid-col-12">
+
+								<p:outputLabel value="Check-List" />
+								<h:selectOneRadio value="#{cargaController.carga.checkEnviado4}">
+									<f:selectItem itemLabel="CONFORME" itemValue="CONFORME" />
+									<f:selectItem itemLabel="NÃO CONFORME" itemValue="NÃO CONFORME" />
+
+								</h:selectOneRadio>
+
+							</p:panelGrid>
+
+							<p:panelGrid columns="1" layout="grid"
+								columnClasses="ui-grid-col-12">
+								<p:outputLabel value="Temperatura" />
+								<p:inputText style="width:65px"
+									value="#{cargaController.carga.totalEnviado4}" />
+								<p:outputLabel value="Total Pallets" />
+								<p:inputMask mask="99" style="width:35px" placeholder="0"
+									value="#{cargaController.carga.totalPallets4}" />
+							</p:panelGrid>
+
+						</p:panelGrid>
+
+						<p:panelGrid columns="3" layout="grid" style="font-weight:bold"
+							rendered="#{cargaController.carga.prodEnviado4 != null}"
+							columnClasses="ui-grid-col-3,ui-grid-col-3,ui-grid-col-6"
+							styleClass="panelgrid-noborder">
+
+							<p:panelGrid columns="1" layout="grid"
+								columnClasses="ui-grid-col-12">
+								<p:outputLabel value="Quantidade Total de Produtos" />
+								<p:inputMask mask="99.999" style="width:35px" placeholder="0"
+									value="#{cargaController.carga.totalEnviado4}" />
+								<p:outputLabel value="Total Pallets" />
+								<p:inputMask mask="99" style="width:35px" placeholder="0"
+									value="#{cargaController.carga.totalPallets4}" />
+							</p:panelGrid>
+
+							<p:panelGrid columns="1" layout="grid"
+								columnClasses="ui-grid-col-12">
+								<p:outputLabel value="Tipo de Envio" />
+								<p:selectOneMenu value="#{cargaController.carga.tipo4}">
+									<f:selectItem itemLabel=".:SELECIONE:." itemValue="#{null}" />
+									<f:selectItems value="#{cargaController.envioCarga}"
+										itemLabel="#{carga}" var="carga" itemValue="#{carga}" />
+
+								</p:selectOneMenu>
+
+							</p:panelGrid>
+
+							<p:panelGrid columns="1" layout="grid" style="padding:10px"
+								columnClasses="ui-grid-col-12" styleClass="panelgrid-noborder">
+
+
+								<p:outputLabel value="Observação:" />
+
+								<p:inputTextarea cols="50" rows="3" style="font-size:14px"
+									onkeyup="this.value = this.value.toUpperCase()"
+									value="#{cargaController.carga.obs4}" maxlength="250"
+									counterTemplate="{0} Caracteres restantes" counter="display4" />
+
+								<p:outputLabel id="display4" style="font-size:10px" />
+
+
+							</p:panelGrid>
+
+						</p:panelGrid>
+
+						<p:panelGrid columns="4" layout="grid" style="font-weight:bold"
+							rendered="#{cargaController.carga.prodEnviado5 != null}"
+							columnClasses="ui-grid-col-3,ui-grid-col-3,ui-grid-col-3,ui-grid-col-3"
+							styleClass="panelgrid-noborder">
+
+							<p:outputLabel value="Carga de Envio 5" style="font-size:24px" />
+							<p:outputLabel />
+							<p:outputLabel />
+							<p:outputLabel />
+
+							<p:panelGrid columns="1" layout="grid"
+								columnClasses="ui-grid-col-12">
+								<p:outputLabel value="Produto" />
+								<p:inputText value="#{cargaController.carga.prodEnviado5}" />
+							</p:panelGrid>
+
+							<p:panelGrid columns="1" layout="grid"
+								columnClasses="ui-grid-col-12">
+								<p:outputLabel value="NF Expedição" />
+								<p:inputText value="#{cargaController.carga.nfExpedicao5}" />
+							</p:panelGrid>
+
+							<p:panelGrid columns="1" layout="grid"
+								columnClasses="ui-grid-col-12">
+
+								<p:outputLabel value="Check-List" />
+								<h:selectOneRadio value="#{cargaController.carga.checkEnviado5}">
+									<f:selectItem itemLabel="CONFORME" itemValue="CONFORME" />
+									<f:selectItem itemLabel="NÃO CONFORME" itemValue="NÃO CONFORME" />
+
+								</h:selectOneRadio>
+
+							</p:panelGrid>
+
+							<p:panelGrid columns="1" layout="grid"
+								columnClasses="ui-grid-col-12">
+								<p:outputLabel value="Temperatura" />
+								<p:inputMask mask="99º" style="width:35px" placeholder="00º"
+									value="#{cargaController.carga.temperaturaEnvio5}" />
+							</p:panelGrid>
+
+						</p:panelGrid>
+
+						<p:panelGrid columns="3" layout="grid" style="font-weight:bold"
+							rendered="#{cargaController.carga.prodEnviado5 != null}"
+							columnClasses="ui-grid-col-3,ui-grid-col-3,ui-grid-col-6"
+							styleClass="panelgrid-noborder">
+
+							<p:panelGrid columns="1" layout="grid"
+								columnClasses="ui-grid-col-12">
+								<p:outputLabel value="Quantidade Total de Produtos" />
+								<p:inputText style="width:65px"
+									value="#{cargaController.carga.totalEnviado5}" />
+								<p:outputLabel value="Total Pallets" />
+								<p:inputMask mask="99" style="width:35px" placeholder="0"
+									value="#{cargaController.carga.totalPallets5}" />
+							</p:panelGrid>
+
+							<p:panelGrid columns="1" layout="grid"
+								columnClasses="ui-grid-col-12">
+								<p:outputLabel value="Tipo de Envio" />
+								<p:selectOneMenu value="#{cargaController.carga.tipo5}">
+									<f:selectItem itemLabel=".:SELECIONE:." itemValue="#{null}" />
+									<f:selectItems value="#{cargaController.envioCarga}"
+										itemLabel="#{carga}" var="carga" itemValue="#{carga}" />
+
+								</p:selectOneMenu>
+
+							</p:panelGrid>
+
+							<p:panelGrid columns="1" layout="grid" style="padding:10px"
+								columnClasses="ui-grid-col-12" styleClass="panelgrid-noborder">
+
+
+								<p:outputLabel value="Observação:" />
+
+								<p:inputTextarea cols="50" rows="3" style="font-size:14px"
+									onkeyup="this.value = this.value.toUpperCase()"
+									value="#{cargaController.carga.obs5}" maxlength="250"
+									counterTemplate="{0} Caracteres restantes" counter="display5" />
+
+								<p:outputLabel id="display5" style="font-size:10px" />
+
+
+							</p:panelGrid>
+
+						</p:panelGrid>
+
+						<p:panelGrid columns="4" layout="grid" style="font-weight:bold"
+							rendered="#{cargaController.carga.prodInsumoEnviado != null}"
+							columnClasses="ui-grid-col-3,ui-grid-col-3,ui-grid-col-3,ui-grid-col-3"
+							styleClass="panelgrid-noborder">
+
+							<p:outputLabel value="Insumo de Envio 1" style="font-size:24px" />
+							<p:outputLabel />
+							<p:outputLabel />
+							<p:outputLabel />
+
+							<p:panelGrid columns="1" layout="grid"
+								columnClasses="ui-grid-col-12">
+								<p:outputLabel value="Produto" />
+								<p:inputText value="#{cargaController.carga.prodInsumoEnviado}"
+									onkeyup="this.value = this.value.toUpperCase()" />
+							</p:panelGrid>
+
+							<p:panelGrid columns="1" layout="grid"
+								columnClasses="ui-grid-col-12">
+								<p:outputLabel value="NF Expedição" />
+								<p:inputText value="#{cargaController.carga.nfExpedicaoInsumo}"
+									onkeyup="this.value = this.value.toUpperCase()" />
+							</p:panelGrid>
+
+							<p:outputLabel />
+							<p:outputLabel />
+
+						</p:panelGrid>
+
+						<p:panelGrid columns="3" layout="grid" style="font-weight:bold"
+							rendered="#{cargaController.carga.prodInsumoEnviado != null}"
+							columnClasses="ui-grid-col-3,ui-grid-col-3,ui-grid-col-6"
+							styleClass="panelgrid-noborder">
+
+							<p:panelGrid columns="1" layout="grid"
+								columnClasses="ui-grid-col-12">
+								<p:outputLabel value="Quantidade Envio" />
+								<p:inputMask mask="99" style="width:35px" placeholder="00"
+									value="#{cargaController.carga.totalInsumoEnviado}" />
+							</p:panelGrid>
+
+							<p:panelGrid columns="1" layout="grid"
+								columnClasses="ui-grid-col-12">
+								<p:outputLabel value="Tipo de Envio" />
+								<p:selectOneMenu value="#{cargaController.carga.tipoInsumo}">
+									<f:selectItem itemLabel=".:SELECIONE:." itemValue="#{null}" />
+									<f:selectItems value="#{cargaController.envioInsumo}"
+										itemLabel="#{insumo}" var="insumo" itemValue="#{insumo}" />
+
+								</p:selectOneMenu>
+
+							</p:panelGrid>
+
+							<p:panelGrid columns="1" layout="grid" style="padding:10px"
+								columnClasses="ui-grid-col-12" styleClass="panelgrid-noborder">
+
+
+								<p:outputLabel value="Observação:" />
+
+								<p:inputTextarea cols="50" rows="3" style="font-size:14px"
+									onkeyup="this.value = this.value.toUpperCase()"
+									value="#{cargaController.carga.obsInsumo}" maxlength="250"
+									counterTemplate="{0} Caracteres restantes"
+									counter="displayInsumo" />
+
+								<p:outputLabel id="displayInsumo" style="font-size:10px" />
+
+
+							</p:panelGrid>
+
+						</p:panelGrid>
+
+
+						<p:panelGrid columns="4" layout="grid" style="font-weight:bold"
+							rendered="#{cargaController.carga.prodInsumoEnviado2 != null}"
+							columnClasses="ui-grid-col-3,ui-grid-col-3,ui-grid-col-3,ui-grid-col-3"
+							styleClass="panelgrid-noborder">
+
+							<p:outputLabel value="Insumo de Envio 2" style="font-size:24px" />
+							<p:outputLabel />
+							<p:outputLabel />
+							<p:outputLabel />
+
+							<p:panelGrid columns="1" layout="grid"
+								columnClasses="ui-grid-col-12">
+								<p:outputLabel value="Produto" />
+								<p:inputText value="#{cargaController.carga.prodInsumoEnviado2}" />
+							</p:panelGrid>
+
+							<p:panelGrid columns="1" layout="grid"
+								columnClasses="ui-grid-col-12">
+								<p:outputLabel value="NF Expedição" />
+								<p:inputText value="#{cargaController.carga.nfExpedicaoInsumo2}" />
+							</p:panelGrid>
+
+							<p:outputLabel />
+							<p:outputLabel />
+
+						</p:panelGrid>
+
+						<p:panelGrid columns="3" layout="grid" style="font-weight:bold"
+							rendered="#{cargaController.carga.prodInsumoEnviado2 != null}"
+							columnClasses="ui-grid-col-3,ui-grid-col-3,ui-grid-col-6"
+							styleClass="panelgrid-noborder">
+
+							<p:panelGrid columns="1" layout="grid"
+								columnClasses="ui-grid-col-12">
+								<p:outputLabel value="Quantidade Envio" />
+								<p:inputMask mask="99" style="width:35px" placeholder="00"
+									value="#{cargaController.carga.totalInsumoEnviado2}" />
+							</p:panelGrid>
+
+							<p:panelGrid columns="1" layout="grid"
+								columnClasses="ui-grid-col-12">
+								<p:outputLabel value="Tipo de Envio" />
+								<p:selectOneMenu value="#{cargaController.carga.tipoInsumo2}">
+									<f:selectItem itemLabel=".:SELECIONE:." itemValue="#{null}" />
+									<f:selectItems value="#{cargaController.envioInsumo}"
+										itemLabel="#{insumo}" var="insumo" itemValue="#{insumo}" />
+
+								</p:selectOneMenu>
+
+							</p:panelGrid>
+
+							<p:panelGrid columns="1" layout="grid" style="padding:10px"
+								columnClasses="ui-grid-col-12" styleClass="panelgrid-noborder">
+
+
+								<p:outputLabel value="Observação:" />
+
+								<p:inputTextarea cols="50" rows="3" style="font-size:14px"
+									onkeyup="this.value = this.value.toUpperCase()"
+									value="#{cargaController.carga.obs2}" maxlength="250"
+									counterTemplate="{0} Caracteres restantes"
+									counter="displayInsumo2" />
+
+								<p:outputLabel id="displayInsumo2" style="font-size:10px" />
+
+
+							</p:panelGrid>
+
+						</p:panelGrid>
+
+
+
+						<p:panelGrid columns="4" layout="grid" style="font-weight:bold"
+							rendered="#{cargaController.carga.prodInsumoEnviado3 != null}"
+							columnClasses="ui-grid-col-3,ui-grid-col-3,ui-grid-col-3,ui-grid-col-3"
+							styleClass="panelgrid-noborder">
+
+							<p:outputLabel value="Insumo de Envio 3" style="font-size:24px" />
+							<p:outputLabel />
+							<p:outputLabel />
+							<p:outputLabel />
+
+							<p:panelGrid columns="1" layout="grid"
+								columnClasses="ui-grid-col-12">
+								<p:outputLabel value="Produto" />
+								<p:inputText value="#{cargaController.carga.prodInsumoEnviado3}"
+									onkeyup="this.value = this.value.toUpperCase()" />
+							</p:panelGrid>
+
+							<p:panelGrid columns="1" layout="grid"
+								columnClasses="ui-grid-col-12">
+								<p:outputLabel value="NF Expedição" />
+								<p:inputText value="#{cargaController.carga.nfExpedicaoInsumo3}"
+									onkeyup="this.value = this.value.toUpperCase()" />
+							</p:panelGrid>
+
+							<p:outputLabel />
+							<p:outputLabel />
+
+						</p:panelGrid>
+
+						<p:panelGrid columns="3" layout="grid" style="font-weight:bold"
+							rendered="#{cargaController.carga.prodInsumoEnviado3 != null}"
+							columnClasses="ui-grid-col-3,ui-grid-col-3,ui-grid-col-6"
+							styleClass="panelgrid-noborder">
+
+							<p:panelGrid columns="1" layout="grid"
+								columnClasses="ui-grid-col-12">
+								<p:outputLabel value="Quantidade Envio" />
+								<p:inputMask mask="99" style="width:35px" placeholder="00"
+									value="#{cargaController.carga.totalInsumoEnviado3}" />
+							</p:panelGrid>
+
+							<p:panelGrid columns="1" layout="grid"
+								columnClasses="ui-grid-col-12">
+								<p:outputLabel value="Tipo de Envio" />
+								<p:selectOneMenu value="#{cargaController.carga.tipoInsumo3}">
+									<f:selectItem itemLabel=".:SELECIONE:." itemValue="#{null}" />
+									<f:selectItems value="#{cargaController.envioInsumo}"
+										itemLabel="#{insumo}" var="insumo" itemValue="#{insumo}" />
+
+								</p:selectOneMenu>
+
+							</p:panelGrid>
+
+							<p:panelGrid columns="1" layout="grid" style="padding:10px"
+								columnClasses="ui-grid-col-12" styleClass="panelgrid-noborder">
+
+
+								<p:outputLabel value="Observação:" />
+
+								<p:inputTextarea cols="50" rows="3" style="font-size:14px"
+									onkeyup="this.value = this.value.toUpperCase()"
+									value="#{cargaController.carga.obsInsumo3}" maxlength="250"
+									counterTemplate="{0} Caracteres restantes"
+									counter="displayInsumo3" />
+
+								<p:outputLabel id="displayInsumo3" style="font-size:10px" />
+
+
+							</p:panelGrid>
+
+						</p:panelGrid>
+
+
+						<p:panelGrid columns="4" layout="grid" style="font-weight:bold"
+							rendered="#{cargaController.carga.prodInsumoEnviado4 != null}"
+							columnClasses="ui-grid-col-3,ui-grid-col-3,ui-grid-col-3,ui-grid-col-3"
+							styleClass="panelgrid-noborder">
+
+							<p:outputLabel value="Insumo de Envio 4" style="font-size:24px" />
+							<p:outputLabel />
+							<p:outputLabel />
+							<p:outputLabel />
+
+							<p:panelGrid columns="1" layout="grid"
+								columnClasses="ui-grid-col-12">
+								<p:outputLabel value="Produto" />
+								<p:inputText value="#{cargaController.carga.prodInsumoEnviado4}" />
+							</p:panelGrid>
+
+							<p:panelGrid columns="1" layout="grid"
+								columnClasses="ui-grid-col-12">
+								<p:outputLabel value="NF Expedição" />
+								<p:inputText value="#{cargaController.carga.nfExpedicaoInsumo4}" />
+							</p:panelGrid>
+
+							<p:outputLabel />
+							<p:outputLabel />
+
+						</p:panelGrid>
+
+						<p:panelGrid columns="3" layout="grid" style="font-weight:bold"
+							rendered="#{cargaController.carga.prodInsumoEnviado4 != null}"
+							columnClasses="ui-grid-col-3,ui-grid-col-3,ui-grid-col-6"
+							styleClass="panelgrid-noborder">
+
+							<p:panelGrid columns="1" layout="grid"
+								columnClasses="ui-grid-col-12">
+								<p:outputLabel value="Quantidade Envio" />
+								<p:inputMask mask="99" style="width:35px" placeholder="00"
+									value="#{cargaController.carga.totalInsumoEnviado4}" />
+							</p:panelGrid>
+
+							<p:panelGrid columns="1" layout="grid"
+								columnClasses="ui-grid-col-12">
+								<p:outputLabel value="Tipo de Envio" />
+								<p:selectOneMenu value="#{cargaController.carga.tipoInsumo4}">
+									<f:selectItem itemLabel=".:SELECIONE:." itemValue="#{null}" />
+									<f:selectItems value="#{cargaController.envioInsumo}"
+										itemLabel="#{insumo}" var="insumo" itemValue="#{insumo}" />
+
+								</p:selectOneMenu>
+
+							</p:panelGrid>
+
+							<p:panelGrid columns="1" layout="grid" style="padding:10px"
+								columnClasses="ui-grid-col-12" styleClass="panelgrid-noborder">
+
+
+								<p:outputLabel value="Observação:" />
+
+								<p:inputTextarea cols="50" rows="3" style="font-size:14px"
+									onkeyup="this.value = this.value.toUpperCase()"
+									value="#{cargaController.carga.obsInsumo4}" maxlength="250"
+									counterTemplate="{0} Caracteres restantes"
+									counter="displayInsumo4" />
+
+								<p:outputLabel id="displayInsumo4" style="font-size:10px" />
+
+
+							</p:panelGrid>
+
+						</p:panelGrid>
+
+
+						<p:panelGrid columns="4" layout="grid" style="font-weight:bold"
+							rendered="#{cargaController.carga.prodInsumoEnviado5 != null}"
+							columnClasses="ui-grid-col-3,ui-grid-col-3,ui-grid-col-3,ui-grid-col-3"
+							styleClass="panelgrid-noborder">
+
+							<p:outputLabel value="Insumo de Envio 5" style="font-size:24px" />
+							<p:outputLabel />
+							<p:outputLabel />
+							<p:outputLabel />
+
+							<p:panelGrid columns="1" layout="grid"
+								columnClasses="ui-grid-col-12">
+								<p:outputLabel value="Produto" />
+								<p:inputText value="#{cargaController.carga.prodInsumoEnviado5}"
+									onkeyup="this.value = this.value.toUpperCase()" />
+							</p:panelGrid>
+
+							<p:panelGrid columns="1" layout="grid"
+								columnClasses="ui-grid-col-12">
+								<p:outputLabel value="NF Expedição" />
+								<p:inputText value="#{cargaController.carga.nfExpedicaoInsumo5}"
+									onkeyup="this.value = this.value.toUpperCase()" />
+							</p:panelGrid>
+
+							<p:outputLabel />
+							<p:outputLabel />
+
+						</p:panelGrid>
+
+						<p:panelGrid columns="3" layout="grid" style="font-weight:bold"
+							rendered="#{cargaController.carga.prodInsumoEnviado5 != null}"
+							columnClasses="ui-grid-col-3,ui-grid-col-3,ui-grid-col-6"
+							styleClass="panelgrid-noborder">
+
+							<p:panelGrid columns="1" layout="grid"
+								columnClasses="ui-grid-col-12">
+								<p:outputLabel value="Quantidade Envio" />
+								<p:inputMask mask="99" style="width:35px" placeholder="00"
+									value="#{cargaController.carga.totalInsumoEnviado5}" />
+							</p:panelGrid>
+
+							<p:panelGrid columns="1" layout="grid"
+								columnClasses="ui-grid-col-12">
+								<p:outputLabel value="Tipo de Envio" />
+								<p:selectOneMenu value="#{cargaController.carga.tipoInsumo5}">
+									<f:selectItem itemLabel=".:SELECIONE:." itemValue="#{null}" />
+									<f:selectItems value="#{cargaController.envioInsumo}"
+										itemLabel="#{insumo}" var="insumo" itemValue="#{insumo}" />
+
+								</p:selectOneMenu>
+
+							</p:panelGrid>
+
+							<p:panelGrid columns="1" layout="grid" style="padding:10px"
+								columnClasses="ui-grid-col-12" styleClass="panelgrid-noborder">
+
+
+								<p:outputLabel value="Observação:" />
+
+								<p:inputTextarea cols="50" rows="3" style="font-size:14px"
+									onkeyup="this.value = this.value.toUpperCase()"
+									value="#{cargaController.carga.obsInsumo5}" maxlength="250"
+									counterTemplate="{0} Caracteres restantes"
+									counter="displayInsumo5" />
+
+								<p:outputLabel id="displayInsumo5" style="font-size:10px" />
+
+
+							</p:panelGrid>
+						</p:panelGrid>
+						<p:panelGrid columns="3" layout="grid" style="padding:10px"
+							columnClasses="ui-grid-col-4,ui-grid-col-4,ui-grid-col-4"
+							styleClass="panelgrid-noborder">
+							<p:outputLabel />
+							<p:commandButton value="Salvar" id="salvar" style="width:150px" action="#{cargaController.salvarEdicao()}" />
+							<p:outputLabel />
+						</p:panelGrid>
+					</div>
+				</p:panel>
+				<p:blockUI block="@form" trigger="salvar" animate="true">
+						SALVANDO ...<br />
+					<p:graphicImage library="imagens" name="load.gif" />
+				</p:blockUI>
+			</h:form>
+		</div>
+	</ui:define>
+</ui:composition>
+

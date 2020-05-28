@@ -1,0 +1,65 @@
+<ui:composition template="/template/Layout.xhtml"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:p="http://primefaces.org/ui">
+
+	<ui:define name="titulo">Teste Bd</ui:define>
+
+	<ui:define name="conteudo">
+		<div class="ui-fluid">
+			<h:form id="form"
+				style="width: 100%; font-weight:bold;font-size: 12px; margin-top:1%">
+				#{cadastroMaterialController.zeraTabela()} 
+
+				<p:commandButton value="TesteBd" id="pesquisar"
+					action="#{cadastroMaterialController.teste}" update="tbl,total"
+					process="@this" style="width:150px" />
+					
+				<p:outputLabel value="Total de Registros no Banco - #{cadastroMaterialController.totalReg}" id="total"/>
+
+				<p:dataTable widgetVar="tabelaEstoque" emptyMessage="Lista Vazia"
+					value="#{cadastroMaterialController.listTesteBd}" var="teste"
+					id="tbl" scrollable="true" reflow="true" scrollHeight="450"
+					style="margin-top:5px;font-size:10px" paginator="true" rows="170"
+					rowsPerPageTemplate="5,15,30" paginatorPosition="bottom"
+					paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} ">
+
+
+
+					<p:column headerText="Codigo" width="10%" style="text-align:center"
+					>
+						<h:outputLabel value="#{teste.codAlt}" />
+					</p:column>
+
+					<p:column headerText="Produto" width="35%"
+						style="text-align:center">
+						<p:outputLabel value="#{teste.nomeProd}" />
+					</p:column>
+
+					<p:column headerText="Codigo Estruturado" width="7%" style="text-align:center">
+						<h:outputLabel value="#{teste.codEstr}" />
+					</p:column>
+
+					<p:column headerText="Qtd" width="12%" style="text-align:center">
+						<h:outputLabel value="#{teste.qtd}" />
+					</p:column>
+
+					<p:column headerText="Unidade" width="10%"
+						style="text-align:center">
+						<h:outputLabel value="#{teste.uniMedida}" />
+					</p:column>
+
+
+				</p:dataTable>
+				<p:blockUI block="tbl" trigger="pesquisar" animate="true">
+						PESQUISANDO ENTRADAS...<br />
+					<p:graphicImage library="imagens" name="load.gif" />
+				</p:blockUI>
+
+			</h:form>
+		</div>
+	</ui:define>
+</ui:composition>
+

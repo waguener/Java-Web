@@ -1,0 +1,585 @@
+<ui:composition template="/template/Layout.xhtml"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:p="http://primefaces.org/ui">
+
+	<ui:define name="titulo">Adicionar Novo Curso</ui:define>
+
+	<ui:define name="conteudo">
+		<div class="ui-fluid">
+			<h:form id="form"
+				style="width: 100%; font-weight:bold;font-size: 12px; margin-top:1%">
+				#{matriculaController.initAdd()}
+				<p:panelGrid columns="1" layout="grid" style="margin-top:80px"
+					styleClass="panelgrid-noborder" columnClasses="ui-grid-col-12">
+					<p:outputLabel value="Adicionar Novo Curso"
+						style="font-size: 26pt;font-family:'Cabin', sans-serif" />
+
+				</p:panelGrid>
+				<p:panelGrid columns="1" layout="grid" style="margin-top:10px"
+					styleClass="panelgrid-noborder" columnClasses="ui-grid-col-12">
+					<p:outputLabel value="#{matriculaController.agenda.aluno.nome}"
+						style="font-size: 26pt;font-family:'Cabin', sans-serif;color:#A9A9A9;text-shadow: 1px 2px 2px #000000" />
+
+				</p:panelGrid>
+				<p:fieldset legend="Adicionar Curso / Professor"
+					style="margin-top:15px">
+					<p:panelGrid columns="4" layout="grid"
+						styleClass="panelgrid-noborder"
+						columnClasses="ui-grid-col-3,ui-grid-col-3,ui-grid-col-3,ui-grid-col-3">
+						<p:panelGrid columns="1" layout="grid"
+							styleClass="panelgrid-noborder" columnClasses="ui-grid-col-12">
+							<p:outputLabel value="Curso " style="font-size: 16pt;" />
+
+							<p:selectOneMenu style="width:200px"
+								converter="omnifaces.SelectItemsConverter"
+								requiredMessage="Escolha um Curso"
+								value="#{matriculaController.agenda.curso}">
+								<f:selectItem itemValue="#{null}" itemLabel=".:Selecione:." />
+								<f:selectItems value="#{matriculaController.cursos}" var="curso"
+									itemValue="#{curso}" itemLabel="#{curso.nome}" />
+								<p:ajax event="itemSelect"
+									listener="#{matriculaController.listarModulos()}"
+									process="@this" update="mod,val,isncricao,aula" />
+							</p:selectOneMenu>
+						</p:panelGrid>
+						<p:panelGrid columns="1" layout="grid"
+							styleClass="panelgrid-noborder" columnClasses="ui-grid-col-12">
+							<p:outputLabel value="Módulo" style="font-size: 16pt;" />
+							<p:selectOneMenu style="width:200px" id="mod"
+								requiredMessage="Escolha um Módulo"
+								converter="omnifaces.SelectItemsConverter"
+								value="#{matriculaController.agenda.modulo}">
+								<f:selectItem itemValue="#{null}" itemLabel=".:Selecione:." />
+								<f:selectItems value="#{matriculaController.modulos}"
+									var="modulo" itemValue="#{modulo}" itemLabel="#{modulo.nome}" />
+
+							</p:selectOneMenu>
+						</p:panelGrid>
+						<p:panelGrid columns="1" layout="grid"
+							styleClass="panelgrid-noborder" columnClasses="ui-grid-col-12">
+							<p:outputLabel value="Aula Complementar" style="font-size: 16pt;" />
+							<p:selectOneMenu style="width:200px" id="aula"
+								converter="omnifaces.SelectItemsConverter"
+								value="#{matriculaController.agenda.aulaComp}">
+								<f:selectItem itemValue="#{null}" itemLabel=".:Selecione:." />
+
+								<f:selectItems value="#{matriculaController.listarAulas}"
+									var="aula" itemValue="#{aula}" itemLabel="#{aula.nome}" />
+								<p:ajax event="itemSelect"
+									listener="#{matriculaController.aulaComp()}" process="@this"
+									update=":form:aulaC" />
+							</p:selectOneMenu>
+						</p:panelGrid>
+						<p:panelGrid columns="1" layout="grid"
+							styleClass="panelgrid-noborder" columnClasses="ui-grid-col-12">
+							<p:outputLabel value="Professor" style="font-size: 16pt;" />
+							<p:selectOneMenu style="width:200px"
+								value="#{matriculaController.agenda.professor}"
+								requiredMessage="Escolha um Módulo"
+								converter="omnifaces.SelectItemsConverter">
+								<f:selectItem itemValue="#{null}" itemLabel=".:Selecione:." />
+								<f:selectItems value="#{matriculaController.professores}"
+									var="pro" itemValue="#{pro}" itemLabel="#{pro.nome}" />
+
+							</p:selectOneMenu>
+						</p:panelGrid>
+
+					</p:panelGrid>
+				</p:fieldset>
+				<p:panelGrid columns="3" layout="grid" style="margin-top:20px"
+					styleClass="panelgrid-noborder"
+					columnClasses="ui-grid-col-2.5,ui-grid-col-1,ui-grid-col-6.5">
+					<p:outputLabel value="Adicionar Horários" style="font-size: 16pt;" />
+					<p:commandButton icon="fa fa-plus" style="width:50px"
+						action="#{matriculaController.incluirNovoHorario()}" update="tbl" />
+
+				</p:panelGrid>
+				<p:dataTable id="tbl" reflow="true" resizeMode="expand"
+					emptyMessage="Lista Vazia" resizableColumns="true" editable="true"
+					rowIndexVar="indice" value="#{matriculaController.agenda.horarios}"
+					scrollable="true" var="hor" style="margin-top:5px;width:90%"
+					paginator="true" rows="15" rowsPerPageTemplate="5,10,15"
+					paginatorPosition="bottom"
+					paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} ">
+
+
+					<p:column headerText="Dia da Semana " width="20%">
+
+						<p:selectOneMenu value="#{hor.diasSemana}"
+							style="font-size: 14pt;">
+							<f:selectItem itemLabel=".:Selecione:." itemValue="#{null}"
+								required="true" requiredMessage="Informe o Dia da Semana" />
+							<f:selectItems value="#{matriculaController.diasSemana}"
+								itemLabel="#{diaSemana.label}" itemValue="#{diaSemana}"
+								var="diaSemana" />
+						</p:selectOneMenu>
+
+					</p:column>
+					<p:column headerText="Hora Inicio" width="15%"
+						style="text-align:center">
+						<p:calendar value="#{hor.horaInicio}" style="font-size: 14pt;"
+							required="true" requiredMessage="Informe a Hora do Início"
+							timeOnly="true" pattern="HH:mm" stepMinute="5" minHour="9"
+							showOn="false" maxHour="21" size="5" mask="99:99"
+							label="Insira um Horário">
+
+						</p:calendar>
+					</p:column>
+					<p:column headerText="Hora Término" width="15%"
+						style="text-align:center">
+						<p:calendar value="#{hor.horaFinal}" style="font-size: 14pt;"
+							id="horaF" required="true"
+							requiredMessage="Informe a Hora do Término" timeOnly="true"
+							pattern="HH:mm" stepMinute="5" minHour="9" showOn="false"
+							maxHour="21" size="5" mask="99:99">
+
+						</p:calendar>
+					</p:column>
+
+					<p:column width="10%" style="text-align:center">
+						<p:commandButton icon="fa fa-trash"
+							oncomplete="PF('confirmarExclusaoHorarioDialog').show()"
+							action="#{matriculaController.prepararExclusaoHorario(indice)}"
+							process="@this" style="width:50px;height:30px" />
+					</p:column>
+				</p:dataTable>
+
+				<p:fieldset legend="Dados Finais da Matrícula"
+					style="margin-top:15px">
+
+					<p:panelGrid columns="3" layout="grid"
+						styleClass="panelgrid-noborder"
+						columnClasses="ui-grid-col-4,ui-grid-col-4,ui-grid-col-4">
+
+						<p:panelGrid columns="2" layout="grid"
+							styleClass="panelgrid-noborder" style="font-size:16pt"
+							columnClasses="ui-grid-col-8,ui-grid-col-4">
+
+							<p:outputLabel value="Número da Matrícula" />
+							<p:outputLabel value="#{matriculaController.numMatricula}"
+								style="font-size:16pt" />
+
+						</p:panelGrid>
+
+						<p:panelGrid columns="2" layout="grid" style="font-size:16pt"
+							styleClass="panelgrid-noborder"
+							columnClasses="ui-grid-col-5,ui-grid-col-7">
+
+							<p:outputLabel value="Inicío da Aula" />
+							<p:calendar pattern="dd/MM/yyyy" mask="99/99/9999"
+								requiredMessage="Informe a Data" locale="pt" showOn="true"
+								value="#{matriculaController.matricula.dtInicioAula}" size="9"
+								style="margin-left:10px;font-size:14pt;font-weigth:bold;color:#000;" />
+
+
+						</p:panelGrid>
+						<p:panelGrid columns="2" layout="grid" style="font-size:16pt"
+							styleClass="panelgrid-noborder"
+							columnClasses="ui-grid-col-6,ui-grid-col-6">
+
+							<p:outputLabel value="Tipo Contrato" />
+							<p:selectOneMenu style="width:180px"
+								converter="omnifaces.SelectItemsConverter"
+								value="#{matriculaController.matricula.contrato}">
+								<f:selectItem itemValue="#{null}" itemLabel=".:Selecione:." />
+								<f:selectItems value="#{matriculaController.contratos}"
+									var="contrato" itemValue="#{contrato}"
+									itemLabel="#{contrato.nome}" />
+
+							</p:selectOneMenu>
+
+						</p:panelGrid>
+					</p:panelGrid>
+
+					<p:panelGrid columns="3" layout="grid"
+						styleClass="panelgrid-noborder"
+						columnClasses="ui-grid-col-3,ui-grid-col-4,ui-grid-col-5">
+
+						<p:panelGrid columns="2" layout="grid" id="val"
+							styleClass="panelgrid-noborder" style="font-size:16pt"
+							columnClasses="ui-grid-col-7,ui-grid-col-5">
+							<p:outputLabel value="Valor do Curso" />
+							<p:outputLabel value="#{matriculaController.agenda.curso.valor}"
+								rendered="#{matriculaController.valor == true}">
+								<f:convertNumber minFractionDigits="2" locale="pt_BR" />
+							</p:outputLabel>
+
+							<p:outputLabel />
+
+						</p:panelGrid>
+						<p:panelGrid columns="2" layout="grid" id="isncricao"
+							styleClass="panelgrid-noborder" style="font-size:16pt"
+							columnClasses="ui-grid-col-7,ui-grid-col-5">
+
+							<p:outputLabel value="Valor da Matrícula" />
+							<p:outputLabel
+								value="#{matriculaController.agenda.curso.valorInscricao}">
+								<f:convertNumber minFractionDigits="2" locale="pt_BR" />
+							</p:outputLabel>
+
+
+						</p:panelGrid>
+						<p:panelGrid columns="3" layout="grid" id="aulaC"
+							styleClass="panelgrid-noborder" style="font-size:16pt"
+							columnClasses="ui-grid-col-6,ui-grid-col-6">
+
+							<p:outputLabel value="Aula Complementar" />
+							<p:outputLabel value="#{matriculaController.vAulaC}">
+								<f:convertNumber minFractionDigits="2" locale="pt_BR" />
+							</p:outputLabel>
+
+
+						</p:panelGrid>
+
+
+					</p:panelGrid>
+
+					<p:panelGrid columns="3" layout="grid" style="margin-top:10px"
+						styleClass="panelgrid-noborder"
+						columnClasses="ui-grid-col-5,ui-grid-col-4,ui-grid-col-3">
+
+						<p:panelGrid columns="2" layout="grid"
+							styleClass="panelgrid-noborder" style="font-size:16pt"
+							columnClasses="ui-grid-col-7,ui-grid-col-5">
+
+							<p:outputLabel value="Pagamento Matrícula" />
+							<p:selectOneMenu style="width:150px"
+								requiredMessage="Escolha um Curso"
+								value="#{matriculaController.matricula.parcMatricula}">
+								<f:selectItem itemValue="#{null}" itemLabel="Opções" />
+								<f:selectItem itemValue="1" itemLabel="Pago" />
+								<f:selectItem itemValue="2" itemLabel="2x" />
+								<f:selectItem itemValue="3" itemLabel="3x" />
+							</p:selectOneMenu>
+
+
+						</p:panelGrid>
+
+						<p:panelGrid columns="3" layout="grid"
+							styleClass="panelgrid-noborder" style="font-size:16pt"
+							columnClasses="ui-grid-col-6,ui-grid-col-3,ui-grid-col-3">
+
+							<p:outputLabel value="Desconto %" />
+							<p:inputMask mask="99" size="2"
+								value="#{matriculaController.matricula.desconto}">
+								<p:ajax event="blur"
+									listener="#{matriculaController.calcularDesc()}"
+									process="@this" update="totalMatricula" />
+							</p:inputMask>
+							<p:outputLabel />
+
+						</p:panelGrid>
+
+						<p:panelGrid columns="2" layout="grid" id="totalMatricula"
+							styleClass="panelgrid-noborder" style="font-size:16pt"
+							columnClasses="ui-grid-col-7,ui-grid-col-5">
+
+							<p:outputLabel value="Valor Total" />
+							<p:outputLabel
+								value="#{matriculaController.matricula.valorMensalidade}"
+								dir="lft">
+								<f:convertNumber minFractionDigits="2" locale="pt_BR" />
+							</p:outputLabel>
+							<p:outputLabel />
+						</p:panelGrid>
+
+						<p:panelGrid columns="2" layout="grid"
+							styleClass="panelgrid-noborder" style="font-size:16pt"
+							columnClasses="ui-grid-col-7,ui-grid-col-5">
+
+							<p:outputLabel value="Dia Vencimento" />
+							<p:selectOneMenu style="width:150px"
+								value="#{matriculaController.matricula.vencMensalidade}">
+								<f:selectItem itemValue="#{null}" itemLabel=".:Selecione:." />
+								<f:selectItem itemValue="10" itemLabel="10" />
+								<f:selectItem itemValue="20" itemLabel="20" />
+								<f:selectItem itemValue="30" itemLabel="30" />
+							</p:selectOneMenu>
+
+
+						</p:panelGrid>
+
+						<p:panelGrid columns="2" layout="grid"
+							styleClass="panelgrid-noborder" style="font-size:16pt"
+							columnClasses="ui-grid-col-5,ui-grid-col-3,ui-grid-col-4">
+
+							<p:outputLabel value="Ativo" />
+							<p:selectBooleanCheckbox
+								value="#{matriculaController.matricula.ativo}"
+								style="margin-left:10px;font-size:14pt;font-weigth:bold;color:#000;" />
+
+						</p:panelGrid>
+					</p:panelGrid>
+				</p:fieldset>
+
+				<p:panelGrid columns="3" layout="grid" style="margin:30px"
+					styleClass="panelgrid-noborder"
+					columnClasses="ui-grid-col-4,ui-grid-col-4,ui-grid-col-4">
+					<p:outputLabel />
+					<p:commandButton value="Finalizar Matrícula" process="@form"
+						action="#{matriculaController.abrirContrato()}"
+						update=":form:cont" />
+					<p:outputLabel />
+				</p:panelGrid>
+				<p:blockUI block=":form:freze" trigger=":form:atb" animate="true">
+						SALVANDO...<br />
+					<p:graphicImage library="imagens" name="load.gif" />
+				</p:blockUI>
+				<p:dialog widgetVar="contrato" resizable="false" width="800" id="freze"
+					closable="true" position="top" showHeader="true" dynamic="true"
+					header="Contrato " style="margin-top:-650px;" modal="true" responsive="true"
+					showEffect="fade" hideEffect="fade">
+					<div style="width: 100%; height: 400px; overflow: auto">
+						<p:panelGrid columns="1" layout="grid"
+							style="margin-top:10px;width:100%"
+							styleClass="panelgrid-noborder" id="cont"
+							columnClasses="ui-grid-col-12">
+
+							<p:panelGrid columns="1" layout="grid" style="margin-top:10px"
+								styleClass="panelgrid-noborder" columnClasses="ui-grid-col-12">
+								<h:outputText
+									value="Matricula: #{matriculaController.numMatricula}" />
+								<h:outputText
+									value="#{matriculaController.matricula.contrato.cabecalho}"
+									escape="false" />
+							</p:panelGrid>
+
+							<p:panel header="Dados do Aluno">
+
+								<h:panelGrid columns="1" style="margin-left:7px">
+									<h:outputText
+										value="Nome: #{matriculaController.matricula.agenda.aluno.nome}"
+										style="font-size:10px" />
+
+								</h:panelGrid>
+								<h:panelGrid columns="2" style="margin-left:7px">
+									<h:outputText
+										value="RG: #{matriculaController.matricula.agenda.aluno.rg}"
+										style="font-size:10px" />
+									<h:outputLabel
+										value="CPF: #{matriculaController.matricula.agenda.aluno.cpf}"
+										style="margin-left:15px;font-size:10px" />
+								</h:panelGrid>
+
+								<h:panelGrid columns="4" style="margin-left:7px">
+									<h:outputText
+										value="Endereço: #{matriculaController.matricula.agenda.aluno.endereco.tipoLogradouro} #{matriculaController.matricula.agenda.aluno.endereco.logradouro}"
+										style="font-size:10px" />
+									<h:outputLabel
+										value="Nº: #{matriculaController.matricula.agenda.aluno.endereco.numero}"
+										style="margin-left:15px;font-size:10px" />
+									<h:outputLabel
+										value="CEP: #{matriculaController.matricula.agenda.aluno.endereco.cep}"
+										style="margin-left:15px;font-size:10px" />
+									<h:outputText
+										value="Cidade: #{matriculaController.matricula.agenda.aluno.endereco.cidade} - #{matriculaController.matricula.agenda.aluno.endereco.estado}"
+										style="font-size:10px;margin-left:15px" />
+
+								</h:panelGrid>
+
+								<h:panelGrid columns="4" style="margin-left:7px;width:100%">
+
+									<h:outputLabel
+										value="Curso: #{matriculaController.matricula.agenda.curso.nome}"
+										style="font-size:10px" />
+
+									<h:outputLabel
+										value="Módulo: #{matriculaController.matricula.agenda.modulo.nome}"
+										style="font-size:10px" />
+
+									<h:outputText
+										value="Aula Complementar: #{matriculaController.matricula.agenda.aulaComp.nome}"
+										rendered="#{matriculaController.matricula.agenda.aulaComp != null}"
+										style="font-size:10px" />
+
+									<h:outputText value="Aula Complementar: NÂO"
+										rendered="#{matriculaController.matricula.agenda.aulaComp == null}"
+										style="font-size:10px" />
+
+
+									<p:outputLabel
+										value="Inicio em: #{matriculaController.dtInicio}"
+										style="font-size:10px">
+										
+									</p:outputLabel>
+
+								</h:panelGrid>
+
+								<h:panelGrid columns="5" style="margin-left:7px;width:100%">
+									<h:outputText
+										value="Valor do Curso: R$ #{matriculaController.matricula.agenda.curso.valor}"
+										style="font-size:10px">
+										<f:convertNumber minFractionDigits="2" locale="pt_BR" />
+									</h:outputText>
+									<h:outputText
+										value="Valor Aula Comp.: R$ #{matriculaController.vAulaC}"
+										style="font-size:10px" />
+									<h:outputText
+										value="Desconto: #{matriculaController.matricula.desconto} %"
+										style="font-size:10px" />
+									<h:outputText
+										value="Vencimento: #{matriculaController.matricula.vencMensalidade}"
+										style="font-size:10px" />
+
+									<h:outputLabel
+										value="Valor Mensalidade: R$ #{matriculaController.matricula.valorMensalidade}"
+										style="margin-left:15px;font-size:10px">
+										
+									</h:outputLabel>
+
+
+								</h:panelGrid>
+								<h:panelGrid columns="3" style="width:100%">
+									<h:outputLabel />
+									<h:outputText value="Agenda"
+										style="font-size:12px;margin-left:300px;margin-top:20px" />
+									<h:outputLabel />
+								</h:panelGrid>
+								<h:panelGrid columns="3" style="width:100%">
+									<h:outputText value="Dia da Semana" style="font-size:12px" />
+									<h:outputText value="Hora Inicial"
+										style="font-size:12px;margin-left:50px" />
+									<h:outputText value="Hora Final"
+										style="font-size:12px;margin-left:50px" />
+
+								</h:panelGrid>
+								<p:repeat var="agenda"
+									value="#{matriculaController.matricula.agenda.horarios}">
+									<h:panelGrid columns="3">
+
+										<h:panelGrid columns="1" style="width:250px">
+											<h:outputText value="#{agenda.diasSemana}"
+												style="font-size:10px" />
+										</h:panelGrid>
+
+										<h:panelGrid columns="1" style="width:250px">
+
+											<h:outputText value="#{agenda.horaInicio}"
+												style="font-size:10px">
+												<f:convertDateTime pattern="HH:mm"
+													timeZone="America/Sao_Paulo" />
+											</h:outputText>
+										</h:panelGrid>
+
+										<h:panelGrid columns="1" style="width:150px">
+											<h:outputText value="#{agenda.horaFinal}"
+												style="font-size:10px">
+												<f:convertDateTime pattern="HH:mm"
+													timeZone="America/Sao_Paulo" />
+											</h:outputText>
+										</h:panelGrid>
+									</h:panelGrid>
+
+								</p:repeat>
+
+							</p:panel>
+							<p:panel header="Responsável Legal">
+								<h:panelGrid columns="1" style="margin-left:7px">
+									<h:outputText
+										value="Nome: #{matriculaController.matricula.agenda.aluno.responsavel.nome}"
+										style="font-size:10px" />
+
+								</h:panelGrid>
+								<h:panelGrid columns="2" style="margin-left:7px">
+									<h:outputText
+										value="Endereço: #{matriculaController.matricula.agenda.aluno.responsavel.endereco.tipoLogradouro} #{matriculaController.matricula.agenda.aluno.responsavel.endereco.logradouro}"
+										style="font-size:10px" />
+									<h:outputLabel
+										value="Nº: #{matriculaController.matricula.agenda.aluno.responsavel.endereco.numero}"
+										style="margin-left:15px;font-size:10px" />
+								</h:panelGrid>
+
+								<h:panelGrid columns="2" style="margin-left:7px">
+									<h:outputText
+										value="Cidade: #{matriculaController.matricula.agenda.aluno.responsavel.endereco.cidade} - #{matriculaController.matricula.agenda.aluno.responsavel.endereco.estado}"
+										style="font-size:10px" />
+									<h:outputLabel
+										value="CEP: #{matriculaController.matricula.agenda.aluno.responsavel.endereco.cep}"
+										style="margin-left:15px;font-size:10px" />
+								</h:panelGrid>
+							</p:panel>
+
+							<h:panelGrid columns="1" style="margin-top:10px">
+
+								<p:outputLabel value="CLÁUSULAS DE CONTRATO"
+									style="margin-left:250px" />
+
+							</h:panelGrid>
+
+							<p:repeat var="clausula"
+								value="#{matriculaController.matricula.contrato.clausulas}">
+								<h:panelGrid columns="1">
+
+									<h:outputText
+										value="#{clausula.numClausula}- #{clausula.clausula}"
+										escape="false" style="margin-top:5px" />
+								</h:panelGrid>
+
+							</p:repeat>
+
+							<h:panelGrid columns="1" style="margin-top:10px">
+
+								<p:outputLabel value="AUTORIZAÇÃO DE IMAGEM E VOZ"
+									style="margin-left:225px" />
+
+							</h:panelGrid>
+
+							<h:panelGrid columns="1" style="margin-top:10px">
+								<h:outputText
+									value="#{matriculaController.matricula.contrato.dirImagem} "
+									escape="false" />
+
+							</h:panelGrid>
+						</p:panelGrid>
+					</div>
+					<p:panelGrid columns="5" layout="grid" style="margin-top:20px"
+						styleClass="panelgrid-noborder"
+						columnClasses="ui-grid-col-2,ui-grid-col-4,ui-grid-col-1,ui-grid-col-4,ui-grid-col-1">
+						<p:outputLabel />
+						<p:commandButton value="Imprimir / PDF"
+							style="margin-left:10px;width:150px" type="button">
+							<p:printer target="cont" />
+						</p:commandButton>
+
+						<p:outputLabel />
+						<p:commandButton value="Salvar e Sair" id="atb"
+							action="#{matriculaController.fecharContrato()}"
+							style="margin-left:10px;width:150px" process="@this" />
+
+
+						<p:outputLabel />
+					</p:panelGrid>
+				</p:dialog>
+
+				<p:confirmDialog widgetVar="confirmarExclusaoHorarioDialog"
+					closable="false" header="Exclusão de Horário!" responsive="true"
+					message="Deseja excluir este Horário?">
+
+					<p:panelGrid columns="5" layout="grid"
+						styleClass="panelgrid-noborder"
+						columnClasses="ui-grid-col-1,ui-grid-col-4,ui-grid-col-2,ui-grid-col-4,ui-grid-col-1">
+						<p:outputLabel />
+						<p:commandButton value="Sim" update="tbl" process="@this"
+							action="#{matriculaController.excluirHorario()}"
+							oncomplete="PF('confirmarExclusaoHorarioDialog').hide()"
+							style="width:50px" />
+						<p:outputLabel />
+						<p:commandButton value="Não"
+							oncomplete="PF('confirmarExclusaoHorarioDialog').hide()"
+							style="width:50px" />
+						<p:outputLabel />
+					</p:panelGrid>
+
+				</p:confirmDialog>
+				
+				
+			</h:form>
+			
+		</div>
+
+	</ui:define>
+</ui:composition>
+

@@ -1,0 +1,53 @@
+<ui:composition template="/template/Layout.xhtml"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:p="http://primefaces.org/ui">
+
+	<ui:define name="titulo">Movimentações </ui:define>
+
+	<ui:define name="conteudo">
+		<div class="ui-fluid">
+			<h:form id="form"
+				style="width: 100%; font-weight:bold;font-size: 12px; margin-top:1%">
+				#{movimentacaoController.initMov()}
+				<p:panelGrid columns="1" layout="grid" style="margin-top:80px"
+					styleClass="panelgrid-noborder" columnClasses="ui-grid-col-12">
+					<p:outputLabel value="Movimentações"
+						style="font-size: 26pt;font-family:'Cabin', sans-serif" />
+
+				</p:panelGrid>
+				<p:focus context="busca" />
+				<p:panelGrid columns="3" layout="grid" id="busca"
+					styleClass="panelgrid-noborder"
+					columnClasses="ui-grid-col-1,ui-grid-col-2,ui-grid-col-9">
+					<p:outputLabel value="Data Inicial" />
+					<p:calendar value="#{movimentacaoController.dtInicial}"
+						pattern="dd/MM/yyyy" mask="99/99/9999" navigator="true"
+						showOn="button" size="15" locale="pt" effect="fold" />
+					<p:outputLabel />
+					<p:outputLabel value="Data Final" />
+					<p:calendar value="#{movimentacaoController.dtFinal}"
+						pattern="dd/MM/yyyy" mask="99/99/9999" navigator="true"
+						showOn="button" size="15" locale="pt" effect="fold" />
+
+					<p:commandButton value="Pesquisar" style="width:100px"
+						id="pesquisar" action="#{movimentacaoController.porDatas()}"
+						update="grafico" />
+				</p:panelGrid>
+
+				<p:blockUI block="grafico" trigger="pesquisar" animate="true">
+						PESQUISANDO ...<br />
+					<p:graphicImage library="imagens" name="load.gif" />
+				</p:blockUI>
+
+				<p:chart type="bar" id="grafico"
+					model="#{movimentacaoController.grafMovimentacao}"
+					style="width:1000px; height:400px"
+					rendered="#{movimentacaoController.listarMovimentacao != null}" />
+			</h:form>
+		</div>
+	</ui:define>
+</ui:composition>
+

@@ -1,0 +1,220 @@
+<ui:composition template="/template/Layout.xhtml"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:p="http://primefaces.org/ui">
+
+	<ui:define name="titulo">Ponto Diário</ui:define>
+
+	<ui:define name="conteudo">
+
+		<div class="ui-fluid">
+			<h:form id="form"
+				style="margin-left: auto; margin-right:auto; font-weight:bold; font-size: 10px">
+				#{pontoDiarioController.init()}
+				<p:panelGrid columns="1" layout="grid" style="margin-top:10px"
+					styleClass="panelgrid-noborder" columnClasses="ui-grid-col-12">
+					<p:outputLabel value="Ponto Diário"
+						style="font-size: 22pt;font-family:'Cabin', sans-serif;color:#87CEEB;text-shadow: 2px 2px 3px #000000;" />
+
+				</p:panelGrid>
+
+				<p:fieldset legend="Buscar Funcionários" style="margin-top:5px">
+					<p:panelGrid columns="6" layout="grid" id="buscar"
+						styleClass="panelgrid-noborder"
+						columnClasses="ui-grid-col-2,ui-grid-col-1,ui-grid-col-2.5,ui-grid-col-1.5,ui-grid-col-2,ui-grid-col-2.5">
+
+
+						<p:calendar pattern="dd/MM/yyyy" mask="99/99/9999" size="10"
+							style="font-size: 14pt;font-family:'Cabin', sans-serif;margin-left:10px"
+							value="#{pontoDiarioController.data}" required="true"
+							requiredMessage="Informe a Data" locale="pt" effect="fold"
+							title="Clique para abrir o calendário" />
+
+
+						<p:outputLabel value="Turno:" />
+						<p:selectOneRadio value="#{pontoDiarioController.turno}">
+							<f:selectItem itemLabel="1ºTurno" itemValue="1º Turno" />
+							<f:selectItem itemLabel="2ºTurno" itemValue="2º Turno" />
+							<f:selectItem itemLabel="3ºTurno" itemValue="3º Turno" />
+						</p:selectOneRadio>
+						<p:selectOneMenu style="width:200px" id="busca"
+							value="#{pontoDiarioController.agencia}">
+							<f:selectItem itemValue="#{null}" itemLabel=".:Selecione:." />
+							<f:selectItems value="#{pontoDiarioController.agencias}"
+								var="agencia" itemValue="#{agencia.agencia}"
+								itemLabel="#{agencia.agencia}" />
+							<p:ajax event="itemSelect"
+								listener="#{pontoDiarioController.buscarHoje()}"
+								process="buscar" update="tblTemp,total" />
+						</p:selectOneMenu>
+
+						<h:panelGrid columns="2">
+							<p:outputLabel value="Funcionários:"
+								style="font-size: 14pt;font-family:'Cabin', sans-serif;" />
+
+							<p:outputLabel value="#{pontoDiarioController.total}"
+								style="font-size: 14pt;font-family:'Cabin', sans-serif;"
+								id="total" />
+						</h:panelGrid>
+						<p:commandButton value="Feriados"
+							action="#{pontoDiarioController.abrirFeriado()}" process="@this" />
+					</p:panelGrid>
+
+					<p:dataGrid var="temp" value="#{pontoDiarioController.listaDiaria}"
+						style="margin-top:5px" columns="4" id="tblTemp" rows="24"
+						layout="grid" paginator="true"
+						paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+						rowsPerPageTemplate="8,16,24">
+
+						<p:panel header="#{temp.funcionarioBean.nome}"
+							style="width:300px;">
+
+							<h:panelGrid columns="1">
+								<h:panelGrid columns="3">
+									<h:panelGrid columns="2">
+										<p:graphicImage library="imagens" name="sem_foto.png"
+											width="64px" height="72px"
+											style="text-align:center;box-shadow: 1px 1px 4px "
+											rendered="#{temp.funcionarioBean.foto == null}">
+											<f:param name="idPonto" value="#{temp.id}" />
+										</p:graphicImage>
+										<p:graphicImage value="#{pontoDiarioController.imagemPonto}"
+											width="64px" height="72px"
+											style="text-align:center;box-shadow: 1px 1px 4px "
+											rendered="#{pontoDiarioController.imagemPonto != null}">
+											<f:param name="idPonto" value="#{temp.id}" />
+										</p:graphicImage>
+									</h:panelGrid>
+									<h:panelGrid columns="1">
+										<p:outputLabel value=" Turno: #{temp.funcionarioBean.turno}" />
+										<p:outputLabel
+											value=" Agência: #{temp.funcionarioBean.agencia}" />
+										<p:outputLabel value=" Função: #{temp.funcionarioBean.funcao}" />
+									</h:panelGrid>
+									<h:panelGrid columns="2">
+										<p:graphicImage library="imagens" name="positivo.png"
+											width="24px" height="22px"
+											rendered="#{temp.situacao == 'OK'}" />
+										<p:graphicImage library="imagens" name="negativo.png"
+											width="24px" height="22px"
+											rendered="#{temp.situacao == 'Falta'}" />
+										<p:graphicImage library="imagens" name="feriado.png"
+											width="44px" height="62px"
+											rendered="#{temp.situacao == 'Feriado'}" />
+										
+										<p:graphicImage library="imagens" name="compensar.png"
+											width="44px" height="62px"
+											rendered="#{temp.situacao == 'Compensar'}" />
+										
+										<p:graphicImage library="imagens" name="folga.png"
+											width="44px" height="42px" 
+											rendered="#{temp.situacao == 'Folga'}" />
+										
+										<p:graphicImage library="imagens" name="extra.png"
+											width="74px" height="42px" 
+											rendered="#{temp.situacao == 'Extra'}" />
+										
+									</h:panelGrid>
+								</h:panelGrid>
+								<h:panelGrid columns="1">
+									<h:panelGrid columns="4" style="margin-left:45px">
+										<p:commandButton value="OK"
+											action="#{pontoDiarioController.salvarOk(temp)}"
+											process="@this" update="tblTemp"
+											disabled="#{temp.situacao == 'OK'}" />
+
+										<p:commandButton value="Falta"
+											disabled="#{temp.situacao == 'Falta'}"
+											action="#{pontoDiarioController.prepararFalta(temp)}"
+											oncomplete="PF('confirmarFaltaCursoDialog').show()"
+											title="Clique para excluir!!" />
+											
+										<p:commandButton value="Extra"
+											action="#{pontoDiarioController.salvarExtra(temp)}"
+											process="@this" update="tblTemp"
+											disabled="#{temp.situacao == 'Extra'}" />
+										
+									</h:panelGrid>
+								</h:panelGrid>
+							</h:panelGrid>
+
+						</p:panel>
+
+
+					</p:dataGrid>
+				</p:fieldset>
+
+				<p:confirmDialog widgetVar="confirmarFaltaCursoDialog"
+					message="Deseja Cadastrar Falta para este Funcionário?">
+					<h:panelGrid columns="2" style="text-align:center">
+						<p:commandButton value="Sim"
+							style="width:70px;height:40px;font-size:14px"
+							action="#{pontoDiarioController.salvarFalta() }" update="tblTemp"
+							oncomplete="PF('confirmarFaltaCursoDialog').hide()" />
+						<p:commandButton value="Não"
+							style="width:70px;height:40px;font-size:14px"
+							oncomplete="PF('confirmarFaltaCursoDialog').hide()" />
+					</h:panelGrid>
+				</p:confirmDialog>
+
+				<p:dialog widgetVar="feriado" resizable="false" width="420px"
+					id="feriados" closable="false" position="top" showHeader="true"
+					dynamic="true" header="Adicionar Feriados/Compensar"
+					style="margin-top:50px;" modal="true" showEffect="fade"
+					hideEffect="fade">
+
+					<p:panelGrid columns="3" layout="grid"
+						styleClass="panelgrid-noborder" id="feriado"
+						columnClasses="ui-grid-col-2.5,ui-grid-col-3.5,ui-grid-col-6,">
+
+						<p:outputLabel value="Data:"
+							style="font-size: 14pt;font-family:'Cabin', sans-serif;" />
+
+						<p:calendar pattern="dd/MM/yyyy" mask="99/99/9999" size="10"
+							style="font-size: 14pt;font-family:'Cabin', sans-serif;margin-left:10px"
+							value="#{pontoDiarioController.dataFeriado}" required="true"
+							requiredMessage="Informe a Data" locale="pt" effect="fold"
+							title="Clique para abrir o calendário" />
+						<p:outputLabel />
+
+						<p:outputLabel value="Tipo:"
+							style="font-size: 14pt;font-family:'Cabin', sans-serif;" />
+						<p:selectOneRadio value="#{pontoDiarioController.tipo}">
+							<f:selectItem itemLabel="Feriado" itemValue="Feriado" />
+							<f:selectItem itemLabel="Compensar" itemValue="Compensar" />
+							<f:selectItem itemLabel="Folga" itemValue="Folga" />
+
+						</p:selectOneRadio>
+						<p:outputLabel />
+
+
+
+					</p:panelGrid>
+					<h:panelGrid columns="3">
+						<p:commandButton value="Salvar" id="salvar"
+							action="#{pontoDiarioController.salvarFeriado()}"
+							process="feriados" update=":form:tblTemp" />
+						<p:outputLabel />
+						<p:commandButton value="Fechar" process="@this"
+							action="#{pontoDiarioController.fecharFeriado()}"
+							update="feriados" />
+					</h:panelGrid>
+				</p:dialog>
+
+
+				<p:blockUI block="feriado" trigger="salvar" animate="true">
+						SALVANDO FUNCIONÁRIOS...<br />
+					<p:graphicImage library="imagens" name="load.gif" />
+				</p:blockUI>
+
+				<p:blockUI block="tblTemp" trigger="busca" animate="true">
+						BUSCANDO FUNCIONÁRIOS...<br />
+					<p:graphicImage library="imagens" name="load.gif" />
+				</p:blockUI>
+			</h:form>
+
+		</div>
+	</ui:define>
+</ui:composition>

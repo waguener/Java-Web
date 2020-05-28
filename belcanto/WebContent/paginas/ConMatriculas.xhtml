@@ -1,0 +1,143 @@
+<ui:composition template="/template/Layout.xhtml"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:p="http://primefaces.org/ui">
+
+	<ui:define name="titulo">Consulta de Alunos </ui:define>
+
+	<ui:define name="conteudo">
+		<div class="ui-fluid">
+			<h:form id="form"
+				style="width: 100%; font-weight:bold;font-size: 12px; margin-top:1%">
+				#{matriculaController.initConsulta()}
+				<p:panelGrid columns="1" layout="grid" style="margin-top:80px"
+					styleClass="panelgrid-noborder" columnClasses="ui-grid-col-12">
+					<p:outputLabel value="Consultar Matrículas"
+						style="font-size: 26pt;font-family:'Cabin', sans-serif" />
+
+				</p:panelGrid>
+				<p:panelGrid columns="6" layout="grid" style="margin-top:20px"
+					styleClass="panelgrid-noborder" id="busca"
+					columnClasses="ui-grid-col-1,ui-grid-col-3,ui-grid-col-0.5,ui-grid-col-0.5,ui-grid-col-3.5,ui-grid-col-1.5">
+					<p:outputLabel value="Buscar" style="font-size: 16pt;" />
+
+					<p:inputText value="#{matriculaController.nome}"
+						style="margin-left:10px;font-size:14pt;font-weigth:bold;color:#000;"
+						onkeyup="this.value = this.value.toUpperCase()"
+						placeholder="Nome do Aluno" />
+
+
+					<p:commandButton action="#{matriculaController.porNome()}"
+						id="pesquisar" update="tbl" process="busca" icon="fa fa-search"
+						style="height:30px">
+
+					</p:commandButton>
+					<p:outputLabel />
+
+				</p:panelGrid>
+
+
+				<p:dataTable id="tbl" reflow="true" resizeMode="expand"
+					emptyMessage="Lista Vazia" resizableColumns="true"
+					scrollable="true" value="#{matriculaController.matriculas}"
+					var="mat" style="margin-top:5px" paginator="true" rows="15"
+					rowsPerPageTemplate="5,10,15" paginatorPosition="bottom"
+					paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} ">
+
+
+
+
+					<p:column headerText="Foto" width="5%">
+						<p:graphicImage library="imagens" name="sem_foto.png" width="44px"
+							height="52px"
+							style="text-align:center;box-shadow: 1px 1px 4px;border-radius: 10px; "
+							rendered="#{mat.agenda.aluno.foto == null}">
+							<f:param name="idAluno" value="#{mat.agenda.aluno.id}" />
+						</p:graphicImage>
+						<p:graphicImage value="#{matriculaController.imagemAluno}"
+							width="44px" height="52px"
+							style="text-align:center;box-shadow: 1px 1px 4px;border-radius: 10px; "
+							rendered="#{matriculaController.imagemAluno != null}">
+							<f:param name="idAluno" value="#{mat.agenda.aluno.id}" />
+						</p:graphicImage>
+
+					</p:column>
+					<p:column headerText="Nome " width="20%">
+
+						<h:outputLabel value="#{mat.agenda.aluno.nome}" />
+					</p:column>
+					<p:column headerText="RG " width="9%" style="text-align:center">
+
+						<h:outputLabel value="#{mat.agenda.aluno.rg}" />
+					</p:column>
+					<p:column headerText="Responsável" width="20%">
+
+						<h:outputLabel value="#{mat.agenda.aluno.responsavel.nome}" />
+					</p:column>
+					<p:column headerText="Curso " width="13%" style="text-align:center">
+
+						<h:outputLabel value="#{mat.agenda.curso.nome}" />
+
+					</p:column>
+					<p:column headerText="Módulo" width="13%">
+
+						<h:outputLabel value="#{mat.agenda.modulo.nome}" />
+
+					</p:column>
+
+
+					<p:column headerText="Ativo" width="5%" style="text-align:center">
+
+						<h:outputLabel value="Sim" rendered="#{mat.ativo == true}"
+							style="color:geen" />
+						<h:outputLabel value="Não" rendered="#{mat.ativo != true}"
+							style="color:red" />
+
+					</p:column>
+
+					<p:column headerText="Opções" width="5%" style="text-align:center">
+
+						<p:commandButton icon="fa fa-gears" style="width:30px"
+							update=":form:op" process="tbl"
+							action="#{matriculaController.abrirOpcoes(mat)}" />
+
+					</p:column>
+
+
+				</p:dataTable>
+
+				<p:dialog widgetVar="opcoes" resizable="false" width="300" id="op"
+					closable="true" showHeader="true" height="300" dynamic="true"
+					header="Aluno: #{matriculaController.matSelecionada.agenda.aluno.nome}"
+					style="margin-top:50px;border:solid 4px" modal="true"
+					responsive="true" showEffect="drop" hideEffect="drop">
+
+					<p:panelGrid columns="1" layout="grid"
+						style="margin-top:10px;width:100%;font-size:16pt"
+						styleClass="panelgrid-noborder" columnClasses="ui-grid-col-12">
+
+						<p:commandLink value="Editar Aluno" style="margin-top:50px"
+							action="#{alunoController.editar(matriculaController.matSelecionada)}" process="op"/>
+
+						<p:commandLink value="Editar Matrícula" />
+
+					</p:panelGrid>
+
+
+
+				</p:dialog>
+
+				<p:blockUI block="tbl" trigger="pesquisar" animate="true">
+						PESQUISANDO ALUNOS...<br />
+					<p:graphicImage library="imagens" name="load.gif" />
+				</p:blockUI>
+
+
+
+			</h:form>
+		</div>
+	</ui:define>
+</ui:composition>
+

@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with Jaspersoft Studio version 6.12.0.final using JasperReports Library version 6.12.1-ac0eebdb29e4c0985457bab279a6db744d661530  -->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="contrato" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="8984474b-12a0-4b30-a66a-fc0fc9aec8db">
+	<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="Sample DB"/>
+	<subDataset name="ListaClausulas" uuid="f2e91a9b-2c9a-42ec-afbd-113f51895375">
+		<property name="com.jaspersoft.studio.data.defaultdataadapter" value="New Data Adapter (2)"/>
+		<queryString>
+			<![CDATA[]]>
+		</queryString>
+		<field name="clausula" class="java.lang.String">
+			<fieldDescription><![CDATA[clausula]]></fieldDescription>
+		</field>
+		<field name="numClausula" class="java.lang.Integer">
+			<fieldDescription><![CDATA[numClausula]]></fieldDescription>
+		</field>
+	</subDataset>
+	<subDataset name="Dataset1" uuid="ee9c7736-f0bb-4e8a-a8c7-d33caa916e30">
+		<property name="com.jaspersoft.studio.data.defaultdataadapter" value="belcanto"/>
+		<queryString>
+			<![CDATA[]]>
+		</queryString>
+	</subDataset>
+	<queryString language="SQL">
+		<![CDATA[]]>
+	</queryString>
+	<field name="cabecalho" class="java.lang.String">
+		<fieldDescription><![CDATA[cabecalho]]></fieldDescription>
+	</field>
+	<field name="clausulas" class="java.util.List">
+		<fieldDescription><![CDATA[clausulas]]></fieldDescription>
+	</field>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<pageHeader>
+		<band height="85" splitType="Stretch">
+			<textField>
+				<reportElement x="0" y="10" width="490" height="60" uuid="285c0a25-026a-46b6-b8ae-ec296f28249b"/>
+				<textFieldExpression><![CDATA[$F{cabecalho}]]></textFieldExpression>
+			</textField>
+		</band>
+	</pageHeader>
+	<detail>
+		<band height="40" splitType="Stretch">
+			<componentElement>
+				<reportElement x="0" y="0" width="560" height="40" uuid="79a97e1e-22d8-4903-88a1-3f08e14bd3a6"/>
+				<jr:list xmlns:jr="http://jasperreports.sourceforge.net/jasperreports/components" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports/components http://jasperreports.sourceforge.net/xsd/components.xsd">
+					<datasetRun subDataset="ListaClausulas" uuid="903417e7-002b-4b3b-bfdc-7ff6036c3cd6">
+						<dataSourceExpression><![CDATA[new net.sf.jasperreports.engine.JREmptyDataSource()]]></dataSourceExpression>
+					</datasetRun>
+					<jr:listContents height="40" width="560">
+						<textField>
+							<reportElement x="10" y="8" width="70" height="24" uuid="9a844f8b-372f-4ed0-bb22-89c8b09a8a31"/>
+							<textFieldExpression><![CDATA[$F{numClausula}]]></textFieldExpression>
+						</textField>
+						<textField>
+							<reportElement x="90" y="8" width="450" height="24" uuid="babdee1c-0d4b-458f-903a-21cf990eb647"/>
+							<textFieldExpression><![CDATA[$F{clausula}]]></textFieldExpression>
+						</textField>
+					</jr:listContents>
+				</jr:list>
+			</componentElement>
+		</band>
+	</detail>
+</jasperReport>

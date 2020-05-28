@@ -1,0 +1,67 @@
+
+<ui:composition template="/Paginas/template/template.xhtml"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui">
+	
+	<ui:define name="Principal">
+
+		<p:button value="Novo Curso" outcome="CadastroCurso" />
+
+		<h:form>
+			<p:dataTable widgetVar="tabelaCursos"
+				value="#{cursoController.listaCursos}" var="curso"
+				style="margin-top:10px;width:70%" paginator="true" rows="5"
+				rowsPerPageTemplate="3,5,10" paginatorPosition="bottom">
+				<p:column sortBy="#{curso.nome}" headerText="Nome"
+					filterBy="#{curso.nome}" filterMatchMode="contains">
+					<h:outputText value="#{curso.nome}" />
+				</p:column>
+				<p:column headerText="Descrição">
+
+					<h:outputText value="#{curso.descricao}" />
+				</p:column>
+				<p:column headerText="Tipo" filterBy="#{curso.tipo}" width="20%"
+					style="text-align:center">
+					<f:facet name="filter">
+						<p:selectOneMenu onchange="PF('tabelaCursos').filter()">
+							<f:selectItem itemValue="#{null}" itemLabel="::Selecione::" />
+							<f:selectItems value="#{cursoController.tiposCurso}" var="tipo"
+								itemValue="#{tipo}" itemLabel="#{tipo.label}" />
+						</p:selectOneMenu>
+					</f:facet>
+					<h:outputText value="#{curso.tipo.label}" />
+				</p:column>
+				<p:column headerText="Duração" width="10%" style="text-align:center">
+					<h:outputText value="#{curso.duracao}" />
+				</p:column>
+				<p:column sortBy="#{curso.dataCriacao}" headerText="Data"
+					width="15%">
+					<h:outputText value="#{curso.dataCriacao}">
+						<f:convertDateTime pattern="dd/MM/yyyy" locale="pt_BR" />
+					</h:outputText>
+				</p:column>
+				<p:column style="text-align:center" width="15%">
+					<p:commandButton icon="fa fa-pencil-square-o"
+						action="#{cursoController.editar(curso)}" />
+
+					<p:commandButton icon="fa fa-trash"
+						action="#{cursoController.prepararExclusao(curso)}"
+						oncomplete="PF('confirmarExclusaoCursoDialog').show()" />
+				</p:column>
+			</p:dataTable>
+
+			<p:confirmDialog widgetVar="confirmarExclusaoCursoDialog"
+				message="Deseja excluir este curso">
+				<p:commandButton value="Sim" action="#{cursoController.excluir()}"
+					update="@form"
+					oncomplete="PF('confirmarExclusaoCursoDialog').hide()" />
+				<p:commandButton value="Não"
+					oncomplete="PF('confirmarExclusaoCursoDialog').hide()" />
+
+			</p:confirmDialog>
+		</h:form>
+	</ui:define>
+</ui:composition>

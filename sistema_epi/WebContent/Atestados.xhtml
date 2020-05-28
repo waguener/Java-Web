@@ -1,0 +1,117 @@
+<ui:composition template="/template/Layout.xhtml"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:p="http://primefaces.org/ui">
+
+	<ui:define name="titulo">Atestados</ui:define>
+
+	<ui:define name="conteudo">
+
+		<div class="ui-fluid">
+			<h:form id="form"
+				style="margin-left: auto; margin-right:auto; font-weight:bold; font-size: 10px">
+				#{pontoDiarioController.initAtestado()}
+				<p:panelGrid columns="1" layout="grid" style="margin-top:10px"
+					styleClass="panelgrid-noborder" columnClasses="ui-grid-col-12">
+					<p:outputLabel value="Atestados"
+						style="font-size: 22pt;font-family:'Cabin', sans-serif;color:#87CEEB;text-shadow: 2px 2px 3px #000000;" />
+
+				</p:panelGrid>
+
+				<p:fieldset legend="Atestados " style="margin-top:5px">
+
+					<p:dataTable var="ates" emptyMessage="Lista Vazia" id="tbl"
+						value="#{pontoDiarioController.listaAtestados}" reflow="true"
+						style="margin-top:10px" paginator="true" rows="9"
+						rowsPerPageTemplate="3,6,12" paginatorPosition="bottom"
+						resizableColumns="true">
+
+						<p:column headerText="Foto " width="5%" style="text-align:center">
+							<p:graphicImage library="imagens" name="sem_foto.png"
+								width="34px" height="42px"
+								style="text-align:center;box-shadow: 1px 1px 4px;border-radius: 10px;"
+								rendered="#{ates.pontoDiario.funcionarioBean.foto == null}">
+								<f:param name="idAtestado" value="#{ates.id}" />
+							</p:graphicImage>
+							<p:graphicImage value="#{pontoDiarioController.imagemAtestado}"
+								width="34px" height="42px" id="content"
+								style="text-align:center;box-shadow: 1px 1px 4px;border-radius: 10px;"
+								rendered="#{pontoDiarioController.imagemAtestado != null}">
+								<f:param name="idAtestado" value="#{ates.id}" />
+							</p:graphicImage>
+							<p:tooltip id="toolTipContent" for="content">
+								<p:graphicImage value="#{pontoDiarioController.imagemAtestado}"
+									width="176px" height="208px"
+									style="text-align:center;box-shadow: 1px 1px 4px;border-radius: 10px;"
+									rendered="#{pontoDiarioController.imagemAtestado != null}">
+									<f:param name="idAtestado" value="#{ates.id}" />
+								</p:graphicImage>
+							</p:tooltip>
+						</p:column>
+						<p:column headerText="Nome" filterMatchMode="contains" width="16%"
+							filterBy="#{ates.pontoDiario.funcionarioBean.nome }">
+							<h:outputText value="#{ates.pontoDiario.funcionarioBean.nome }" />
+						</p:column>
+						<p:column headerText="Dia Inicio" width="9%"
+							style="text-align:center">
+							<h:outputText value="#{ates.atestadoDiaInicio}">
+								<f:convertDateTime pattern="dd/MM/yyyy" locale="pt_BR" />
+							</h:outputText>
+						</p:column>
+						<p:column headerText="Dia Fim" width="12%"
+							style="text-align:center">
+							<h:outputText value="#{ates.atestadoDiaFim}">
+								<f:convertDateTime pattern="dd/MM/yyyy" locale="pt_BR" />
+							</h:outputText>
+						</p:column>
+						<p:column headerText="Hora Inicio" width="10%"
+							style="text-align:center">
+							<h:outputText value="#{ates.atestadoHoraInicio}" />
+						</p:column>
+						<p:column headerText="Hora Fim" width="10%"
+							style="text-align:center">
+							<h:outputText value="#{ates.atestadoHoraFim}" />
+						</p:column>
+
+						<p:column headerText="CID" style="text-align:center" width="7%">
+							<h:outputText value="#{ates.cid}" />
+						</p:column>
+
+						<p:column width="9%" style="text-align:center">
+							<p:commandButton icon="fa fa-download" ajax="false"
+								rendered="#{ates.arquivo != null}" style="width:50px"
+								title="Clique para Baixar Atestado!">
+								<p:fileDownload
+									value="#{pontoDiarioController.baixarArquivo(ates)}" />
+
+							</p:commandButton>
+							<p:commandButton icon="fa fa-trash" style="width:50px"
+								action="#{pontoDiarioController.preparaExclusaoAtestado(ates)}"
+								oncomplete="PF('confirmarExclusaoAtestadoDialog').show()" />
+
+						</p:column>
+
+					</p:dataTable>
+
+				</p:fieldset>
+
+				<p:confirmDialog widgetVar="confirmarExclusaoAtestadoDialog"
+					closable="false" header="Atenção"
+					message="Deseja excluir está avaliação?">
+					<p:commandButton value="Sim"
+						oncomplete="PF('confirmarExclusaoAtestadoDialog').hide()"
+						action="#{pontoDiarioController.excluirAtestado()}" update=":form:tbl" />
+					<p:commandButton value="Não"
+						oncomplete="PF('confirmarExclusaoAtestadoDialog').hide()" />
+				</p:confirmDialog>
+				<!-- <p:blockUI block="tblTemp" trigger="busca" animate="true">
+						BUSCANDO FUNCIONÁRIOS...<br />
+					<p:graphicImage library="imagens" name="load.gif" />
+				</p:blockUI> -->
+			</h:form>
+
+		</div>
+	</ui:define>
+</ui:composition>

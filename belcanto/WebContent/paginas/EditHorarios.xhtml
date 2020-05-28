@@ -1,0 +1,135 @@
+<ui:composition template="/template/Layout.xhtml"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:p="http://primefaces.org/ui">
+
+	<ui:define name="titulo">Editar Horários</ui:define>
+
+	<ui:define name="conteudo">
+		<div class="ui-fluid">
+			<h:form id="form"
+				style="width: 100%; font-weight:bold;font-size: 12px; margin-top:1%">
+				#{turmaController.initEdit()}
+				<p:panelGrid columns="1" layout="grid" style="margin-top:80px"
+					styleClass="panelgrid-noborder" columnClasses="ui-grid-col-12">
+					<p:outputLabel value="Cadastro de Horários"
+						style="font-size: 26pt;font-family:'Cabin', sans-serif" />
+
+				</p:panelGrid>
+				<p:panelGrid columns="5" layout="grid" style="margin-top:20px"
+					styleClass="panelgrid-noborder"
+					columnClasses="ui-grid-col-1,ui-grid-col-4,ui-grid-col-0.5,ui-grid-col-1.5,ui-grid-col-3.5">
+
+					<p:outputLabel value="Turma" style="font-size: 16pt;" />
+
+					<p:inputText value="#{turmaController.turma.nome}"
+						style="margin-left:10px;font-size:14pt;font-weigth:bold;color:#000;"
+						onkeyup="this.value = this.value.toUpperCase()" />
+
+					<p:outputLabel />
+					<p:outputLabel value="Curso" style="font-size: 16pt;" />
+
+					<p:selectOneMenu style="width:200px"
+						converter="omnifaces.SelectItemsConverter"
+						value="#{turmaController.turma.curso}">
+						<f:selectItem itemValue="#{null}" itemLabel=".:Selecione:." />
+						<f:selectItems value="#{turmaController.cursos}" var="curso"
+							itemValue="#{curso}" itemLabel="#{curso.nome}" />
+					</p:selectOneMenu>
+
+				</p:panelGrid>
+				<p:panelGrid columns="5" layout="grid" style="margin-top:20px"
+					styleClass="panelgrid-noborder"
+					columnClasses="ui-grid-col-1.5,ui-grid-col-3,ui-grid-col-1,ui-grid-col-1.5,ui-grid-col-3,ui-grid-col-2">
+
+					<p:outputLabel value="Ativo" style="font-size: 16pt;" />
+
+					<p:selectBooleanCheckbox value="#{turmaController.turma.ativo}"
+						required="true" requiredMessage="Informe se está Ativo"
+						style="margin-left:10px;font-size:14pt;font-weigth:bold;color:#000;" />
+
+
+					<p:outputLabel />
+
+
+				</p:panelGrid>
+
+				<p:panelGrid columns="3" layout="grid" style="margin-top:20px"
+					styleClass="panelgrid-noborder"
+					columnClasses="ui-grid-col-2.5,ui-grid-col-1,ui-grid-col-6.5">
+					<p:outputLabel value="Adicionar Horários" style="font-size: 16pt;" />
+					<p:commandButton icon="fa fa-plus" style="width:50px"
+						action="#{turmaController.incluirNovoHorario()}" update="tbl" />
+					
+				</p:panelGrid>
+
+
+				<p:dataTable id="tbl" reflow="true" resizeMode="expand"
+					emptyMessage="Lista Vazia" resizableColumns="true" editable="true"
+					rowIndexVar="indice" value="#{turmaController.turma.horarios}"
+					scrollable="true" var="hor" style="margin-top:5px;width:80%"
+					paginator="true" rows="15" rowsPerPageTemplate="5,10,15"
+					paginatorPosition="bottom"
+					paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} ">
+
+
+					<p:column headerText="Dia da Semana " width="40%">
+
+						<p:selectOneMenu value="#{hor.diasSemana}"
+							style="font-size: 14pt;">
+							<f:selectItem itemLabel=".:Selecione:." itemValue="#{null}" />
+							<f:selectItems value="#{turmaController.diasSemana}"
+								itemLabel="#{diaSemana.label}" itemValue="#{diaSemana}"
+								var="diaSemana" />
+						</p:selectOneMenu>
+
+					</p:column>
+					<p:column headerText="Hora Inicio " width="25%"
+						style="text-align:center">
+						<p:calendar value="#{hor.horaInicio}" style="font-size: 14pt;"
+							timeOnly="true" pattern="HH:mm" stepMinute="5" minHour="9"
+							showOn="false" maxHour="21" size="5" mask="99:99"
+							label="Insira um Horário" />
+					</p:column>
+					<p:column headerText="Hora Término " width="25%"
+						style="text-align:center">
+						<p:calendar value="#{hor.horaFinal}" style="font-size: 14pt;"
+							timeOnly="true" pattern="HH:mm" stepMinute="5" minHour="9"
+							showOn="false" maxHour="21" size="5" mask="99:99" />
+					</p:column>
+					<p:column width="10%" style="text-align:center">
+						<p:commandButton icon="fa fa-trash"
+							oncomplete="PF('confirmarExclusaoHorarioDialog').show()"
+							action="#{turmaController.prepararExclusaoHorario(indice)}"
+							process="@this" style="width:50px;height:30px" />
+					</p:column>
+				</p:dataTable>
+				<h:panelGrid columns="1" style="margin:20px"> 
+				<p:commandButton value="Salvar" style="width:120px;" 
+						action="#{turmaController.salvarEdit}" update="@form" />
+				</h:panelGrid>
+				<p:confirmDialog widgetVar="confirmarExclusaoHorarioDialog"
+					closable="false" header="Exclusão de Horário!" responsive="true"
+					message="Deseja excluir este Horário?">
+					<p:panelGrid columns="5" layout="grid" 
+						styleClass="panelgrid-noborder"
+						columnClasses="ui-grid-col-1,ui-grid-col-4,ui-grid-col-2,ui-grid-col-4,ui-grid-col-1">
+						<p:outputLabel />
+						<p:commandButton value="Sim" update="tbl" process="@this"
+							action="#{turmaController.excluirHorario()}"
+							oncomplete="PF('confirmarExclusaoHorarioDialog').hide()"
+							style="width:50px" />
+						<p:outputLabel />
+						<p:commandButton value="Não"
+							oncomplete="PF('confirmarExclusaoHorarioDialog').hide()"
+							style="width:50px" />
+						<p:outputLabel />
+					</p:panelGrid>
+				</p:confirmDialog>
+			</h:form>
+		</div>
+	</ui:define>
+</ui:composition>
+

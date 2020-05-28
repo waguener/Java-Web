@@ -1,0 +1,126 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:p="http://primefaces.org/ui">
+
+<h:head>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1" />
+	<title><ui:insert name="titulo">Ponto Olgber</ui:insert></title>
+	<h:outputScript library="js" name="app.js" />
+	<h:outputScript library="js" name="locale-primefaces.js" />
+	<h:outputScript library="js" name="mascara.js" />
+	<h:outputStylesheet library="css" name="custom.css" />
+	<h:outputStylesheet library="css" name="layout.css" />
+	<h:outputStylesheet library="css" name="components.css" />
+	<style>
+.ui-growl {
+	position: fixed;
+	top: 70px;
+}
+
+.ui-panelmenu {
+	background-color: DodgerBlue !important;
+}
+</style>
+	<style type="text/css">
+.ui-datalist {
+	width: 400px;
+	margin-bottom: 20px;
+}
+
+.ui-datalist-item {
+	padding: 3px;
+}
+
+.paginated .ui-datalist-data {
+	padding-left: 20px;
+}
+</style>
+	<style type="text/css">
+.horizontal {
+	display: inline;
+	float: left;
+	padding: 0px 0px;
+}
+</style>
+<script>
+		function growlColour() {
+			$(".ui-growl-image-info").parent().parent().addClass("g-info");
+			$(".ui-growl-image-warn").parent().parent().addClass("g-warn");
+			$(".ui-growl-image-error").parent().parent().addClass("g-error");
+			$(".ui-growl-image-fatal").parent().parent().addClass("g-fatal");
+		}
+		function mascara(o, f) {
+			v_obj = o
+			v_fun = f
+			setTimeout("execmascara()", 1)
+		}
+
+		function execmascara() {
+			v_obj.value = v_fun(v_obj.value)
+		}
+
+		function moeda(v) {
+			v = v.replace(/\D/g, ""); // permite digitar apenas numero 
+			v = v.replace(/(\d{1})(\d{15})$/, "$1.$2") // coloca ponto antes dos ultimos digitos 
+			v = v.replace(/(\d{1})(\d{11})$/, "$1.$2") // coloca ponto antes dos ultimos 11 digitos 
+			v = v.replace(/(\d{1})(\d{8})$/, "$1.$2") // coloca ponto antes dos ultimos 8 digitos 
+			v = v.replace(/(\d{1})(\d{5})$/, "$1.$2") // coloca ponto antes dos ultimos 5 digitos 
+			v = v.replace(/(\d{1})(\d{1,2})$/, "$1,$2") // coloca virgula antes dos ultimos 2 digitos 
+			return v;
+		}
+	</script>
+	<script type="text/javascript">
+		function onlyNumbers(data) {
+			data.value = data.value.replace(/[^0-9]/g, '');
+
+		};
+
+		
+	</script>
+
+</h:head>
+<h:body>
+
+	<p:growl autoUpdate="true" life="3000" />
+
+
+
+
+
+	<header class="aw-topbar">
+	<div>
+		<ui:insert name="cabecalho">
+			<a href="#" class="aw-toggle  js-toggle"><i class="fa fa-bars"
+				style="font-size: 32px; padding: 15px 15px"></i></a>
+
+			<h:graphicImage library="imagens" name="logoSite.png"
+				style="padding:3px;" />
+
+
+		</ui:insert>
+	</div>
+	</header>
+	<ui:insert name="lateral">
+		<aside class="aw-sidebar  js-sidebar"> <ui:include
+			src="Menu2.xhtml" /> </aside>
+	</ui:insert>
+	<div class="aw-content  js-content">
+		<ui:insert name="conteudo">
+
+		</ui:insert>
+	</div>
+	<div id="rodape">
+		<ui:insert name="rodape">
+
+		</ui:insert>
+
+	</div>
+</h:body>
+</html>
+

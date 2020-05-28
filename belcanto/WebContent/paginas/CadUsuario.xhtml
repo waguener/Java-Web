@@ -1,0 +1,219 @@
+<ui:composition template="/template/Layout.xhtml"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:p="http://primefaces.org/ui">
+
+	<ui:define name="titulo">Cadastro de Usuário</ui:define>
+
+	<ui:define name="conteudo">
+		<div class="ui-fluid">
+			<h:form id="form"
+				style="width: 100%; font-weight:bold;font-size: 12px; margin-top:1%">
+				#{usuarioController.init()}
+				<p:panelGrid columns="1" layout="grid" style="margin-top:80px"
+					styleClass="panelgrid-noborder" columnClasses="ui-grid-col-12">
+					<p:outputLabel value="Cadastro de Usuários"
+						style="font-size: 26pt;font-family:'Cabin', sans-serif" />
+
+				</p:panelGrid>
+				<p:fieldset style="margin-top:15px">
+
+					<p:panelGrid columns="3" layout="grid" style="margin-top:10px"
+						styleClass="panelgrid-noborder"
+						columnClasses="ui-grid-col-8,ui-grid-col-1,ui-grid-col-3">
+
+						<p:panelGrid columns="1" layout="grid" style="margin-top:10px"
+							styleClass="panelgrid-noborder" columnClasses="ui-grid-col-12">
+
+							<p:panelGrid columns="5" layout="grid" style="margin-top:10px"
+								styleClass="panelgrid-noborder"
+								columnClasses="ui-grid-col-1,ui-grid-col-6,ui-grid-col-0.5,ui-grid-col-1.5,ui-grid-col-3.5">
+
+								<p:outputLabel value="Nome" style="font-size: 16pt;" />
+								<p:inputText value="#{usuarioController.usuario.nome}"
+									required="true" requiredMessage="Informe o Nome"
+									style="margin-left:10px;font-size:14pt;font-weigth:bold;color:#000;"
+									onkeyup="this.value = this.value.toUpperCase()" />
+								<p:outputLabel />
+								<p:outputLabel value="Tipo" style="font-size: 16pt;" />
+								<p:selectOneMenu style="width:200px" required="true"
+									requiredMessage="Informe o Tipo"
+									value="#{usuarioController.usuario.tipo}">
+									<f:selectItem itemValue="#{null}" itemLabel="Tipo" />
+									<f:selectItem itemLabel="USUÁRIO" itemValue="USUARIO" />
+									<f:selectItem itemLabel="PROFESSOR" itemValue="PROFESSOR" />
+									<f:selectItem itemLabel="ADMINISTRADOR" itemValue="ADMIN" />
+
+								</p:selectOneMenu>
+							</p:panelGrid>
+							<p:panelGrid columns="8" layout="grid" style="margin-top:10px"
+								styleClass="panelgrid-noborder"
+								columnClasses="ui-grid-col-1,ui-grid-col-4,ui-grid-col-0.5,ui-grid-col-1.5,ui-grid-col-3.5">
+								<p:outputLabel value="Login" style="font-size: 16pt;" />
+								<p:inputText value="#{usuarioController.usuario.login}"
+									size="15" required="true" requiredMessage="Informe o RG"
+									style="margin-left:10px;font-size:14pt;font-weigth:bold;color:#000;" />
+								<p:outputLabel />
+								<p:outputLabel value="Ativo" style="font-size: 16pt;" />
+								<p:selectBooleanCheckbox
+									value="#{usuarioController.usuario.ativo}" required="true"
+									requiredMessage="Informe se está Ativo"
+									style="margin-left:10px;font-size:14pt;font-weigth:bold;color:#000;" />
+								<p:outputLabel />
+
+							</p:panelGrid>
+							<p:panelGrid columns="4" layout="grid" style="margin-top:10px"
+								styleClass="panelgrid-noborder"
+								columnClasses="ui-grid-col-3,ui-grid-col-3,ui-grid-col-1,ui-grid-col-5">
+
+								<p:outputLabel value="Senha" style="font-size: 16pt;" />
+
+								<p:password value="#{usuarioController.usuario.senha}"
+									required="true" requiredMessage="Informe a Senha"
+									style="font-size: 16pt;" redisplay="true" feedback="true"
+									strongLabel="Forte" weakLabel="Fraca"
+									promptLabel="Entre com uma Senha" goodLabel="Média" />
+
+								<p:outputLabel />
+								<p:outputLabel />
+								<p:outputLabel value="Confirmar Senha" style="font-size: 16pt;" />
+								<p:password value="#{usuarioController.confirmaSenha}"
+									id="check" style="font-size: 16pt;" required="true"
+									requiredMessage="Confirmar Senha">
+									<p:ajax event="blur"
+										listener="#{usuarioController.validaSenha()}" process="@this"
+										update="check,icon" />
+								</p:password>
+								<h:graphicImage library="imagens" name="check.png" rendered="#{usuarioController.check != false}"
+									style="width:20px" id="icon"/>
+								<p:outputLabel />
+							</p:panelGrid>
+						</p:panelGrid>
+						<p:outputLabel />
+						<p:panelGrid columns="1" id="grid-update"
+							styleClass="panelgrid-noborder" columnClasses="ui-grid-col-12">
+
+							<h:outputLabel value="Foto" />
+
+							<h:panelGrid columns="3" id="imagem-usuario"
+								styleClass="panelgrid-noborder">
+								<f:facet name="header">
+									<p:graphicImage library="imagens" name="sem_foto.png"
+										width="110px" height="140px"
+										rendered="#{usuarioController.usuario.foto == null}" />
+
+									<p:graphicImage value="#{usuarioController.usuario.imagem}"
+										rendered="#{usuarioController.usuario.foto != null}"
+										width="120px" height="140px" id="foto" cache="false"
+										style="margin-left:10px; box-shadow: 1px 1px 4px;border-radius: 70px; " />
+
+								</f:facet>
+
+								<p:commandButton value="Incluir Imagem"
+									rendered="#{usuarioController.usuario.foto == null}"
+									action="#{usuarioController.abrirTela}"
+									icon="fa fa-file-image-o" process="@this" />
+
+								<p:commandButton value="Alterar Imagem"
+									rendered="#{usuarioController.usuario.foto != null}"
+									icon="fa fa-exchange" process="@this"
+									action="#{usuarioController.abrirTela}" />
+
+								<p:commandButton value="Excluir" icon="fa fa-trash-o"
+									style="width: 80px; font-size: 12px;font-weight: bold"
+									process="@this" update="imagem-usuario"
+									action="#{usuarioController.apagarFoto}"
+									rendered="#{usuarioController.usuario.foto != null}" />
+
+							</h:panelGrid>
+						</p:panelGrid>
+					</p:panelGrid>
+					<p:commandButton value="Salvar" style="width:150px;margin-top:15px;margin-left:30px;font-size:14pt"
+					action="#{usuarioController.salvar()}" process="@form" />
+				</p:fieldset>
+
+				
+				<!-- Painel -->
+				<p:dialog widgetVar="painelCamera" resizable="false" width="620"
+					closable="false" position="top" showHeader="true" dynamic="true"
+					header="Adicionar Imagem" style="margin-top:50px;" modal="true"
+					showEffect="fade" hideEffect="fade" id="principal">
+
+					<p:panelGrid columns="1" layout="grid"
+						columnClasses="ui-grid-col-12" styleClass="panelgrid-noborder">
+
+						<p:fileUpload auto="true" label="Abrir Pasta" skinSimple="true"
+							allowTypes="/(\.|\/)(gif|jpe?g|png)$/" sizeLimit="7120000"
+							invalidSizeMessage="Tamanho máximo da imagem 2000kb"
+							invalidFileMessage="Formato de arquivo inválido"
+							fileUploadListener="#{usuarioController.abrirPasta}"
+							update="cropped_com_foto,botao" />
+
+					</p:panelGrid>
+
+					<p:panelGrid columns="2" layout="grid" id="painel"
+						columnClasses="ui-grid-col-8,ui-grid-col-4"
+						styleClass="panelgrid-noborder" style="width:100%">
+
+						<p:panelGrid columns="1" layout="grid" id="cropped_com_foto"
+							columnClasses="ui-grid-col-12" styleClass="panelgrid-noborder">
+
+							<p:panel header="Foto" style="width: 340px; height: 320px;">
+
+								<p:imageCropper boxHeight="250" boxWidth="300" 
+									initialCoords="225,75,280,125" id="imageCropperFotoId"
+									rendered="#{usuarioController.exibirImagem != false}"
+									image="#{pageContext.servletContext.contextPath}/resources/imagens/#{usuarioController.fotoCapturada}"
+									value="#{usuarioController.imagemCortada}" />
+								<center>
+
+									<p:commandButton value="Cortar" process="cropped_com_foto"
+										action="#{usuarioController.cortarImagem()}" icon="fa fa-cut"
+										style="margin-top:15px; width:100px"
+										update="panelFotoRecortadaId"
+										rendered="#{usuarioController.exibeBotao == true}" />
+								</center>
+							</p:panel>
+
+						</p:panelGrid>
+
+						<p:panelGrid columns="1" layout="grid" style="margin:0px"
+							columnClasses="ui-grid-col-12" styleClass="panelgrid-noborder">
+
+							<p:panel id="panelFotoRecortadaId" header="Foto Recortada"
+								style="width: 180px; height: 260px;">
+
+								<p:graphicImage width="160px" cache="false" style="border-radius: 70px;box-shadow: 2px 2px 4px"
+									rendered="#{usuarioController.exibirImagemCortada != false}"
+									value="#{usuarioController.imagemEnviada}" />
+								<center>
+									<p:commandButton value="Salvar" update="imagem-usuario"
+										icon="fa fa-check-square-o" process="panelFotoRecortadaId"
+										rendered="#{usuarioController.exibeBotaoSalvar == true}"
+										style="width:100px;margin-top:5px" action="#{usuarioController.salvarImagem}" />
+								</center>
+							</p:panel>
+
+						</p:panelGrid>
+
+					</p:panelGrid>
+
+					<!-- Footer do Painel -->
+					<p:panelGrid columns="3" layout="grid" id="botao"
+						style="margin-left:50px"
+						columnClasses="ui-grid-col-4,ui-grid-col-4,ui-grid-col-4"
+						styleClass="panelgrid-noborder">
+						<p:outputLabel/>
+						<p:commandButton value="Fechar" icon="fa fa-close" process="@this"
+							action="#{usuarioController.fecharTela}" />
+						<p:outputLabel/>
+					</p:panelGrid>
+
+				</p:dialog>
+			</h:form>
+		</div>
+	</ui:define>
+</ui:composition>
+

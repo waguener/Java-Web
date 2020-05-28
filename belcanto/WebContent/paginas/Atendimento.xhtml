@@ -1,0 +1,76 @@
+<ui:composition template="/template/Layout.xhtml"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:p="http://primefaces.org/ui">
+
+	<ui:define name="titulo">Atendimento</ui:define>
+
+	<ui:define name="conteudo">
+		<div class="ui-fluid">
+			<h:form id="form"
+				style="width: 100%; font-weight:bold;font-size: 12px; margin-top:1%">
+				<p:panelGrid columns="1" layout="grid" style="margin-top:80px"
+					styleClass="panelgrid-noborder" columnClasses="ui-grid-col-12">
+					<p:outputLabel value="Atendimento"
+						style="font-size: 26pt;font-family:'Cabin', sans-serif" />
+
+				</p:panelGrid>
+				<p:panelGrid columns="5" layout="grid" style="margin-top:20px"
+					styleClass="panelgrid-noborder"
+					columnClasses="ui-grid-col-1,ui-grid-col-4,ui-grid-col-0.5,ui-grid-col-1.5,ui-grid-col-3.5">
+					
+					<p:outputLabel value="Nome" style="font-size: 16pt;" />
+
+					<p:inputText value=""
+						style="margin-left:10px;font-size:14pt;font-weigth:bold;color:#000;"
+						onkeyup="this.value = this.value.toUpperCase()" />
+
+					<p:outputLabel />
+					<p:outputLabel value="Interesse" style="font-size: 16pt;" />
+
+					<p:inputText value=""
+						style="margin-left:10px;font-size:14pt;font-weigth:bold;color:#000;"
+						onkeyup="this.value = this.value.toUpperCase()" />
+
+				</p:panelGrid>
+				<p:panelGrid columns="5" layout="grid" style="margin-top:20px"
+					styleClass="panelgrid-noborder"
+					columnClasses="ui-grid-col-1.5,ui-grid-col-3,ui-grid-col-1,ui-grid-col-1.5,ui-grid-col-3,ui-grid-col-2">
+
+					<p:outputLabel value="Contato" style="font-size: 16pt;" />
+
+					<p:inputMask value="" mask="(99) 9999 - 9999"
+						style="font-size:14pt;font-weigth:bold;color:#000;" size="13" />
+
+					<p:outputLabel />
+
+					<p:outputLabel value="Horário" style="font-size: 16pt;" />
+
+					<p:inputMask value="" onkeyup="time(this.value)" mask="99:99"
+						style="font-size:14pt;font-weigth:bold;color:#000;margin-left:10px"
+						size="13" />
+
+					<p:outputLabel />
+				</p:panelGrid>
+				<p:panelGrid columns="1" layout="grid"
+					styleClass="panelgrid-noborder"
+					columnClasses="ui-grid-col-4,ui-grid-col-6">
+					<p:outputLabel value="Por que quer estudar musica?"
+						style="font-size: 16pt;" />
+
+					<p:inputTextarea cols="100" rows="6" style="font-size:16pt"
+						onkeyup="this.value = this.value.toUpperCase()" value=""
+						maxlength="250" counterTemplate="{0} Caracteres restantes"
+						counter="display" />
+
+					<p:outputLabel id="display" style="font-size:10pt" />
+
+				</p:panelGrid>
+				<p:commandButton value="Salvar" style="width:150px" />
+			</h:form>
+		</div>
+	</ui:define>
+</ui:composition>
+

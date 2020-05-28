@@ -1,0 +1,66 @@
+<ui:composition template="/template/Layout.xhtml"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:p="http://primefaces.org/ui">
+
+	<ui:define name="titulo">PesquisaAgência</ui:define>
+
+	<ui:define name="conteudo">
+
+		<div class="ui-fluid">
+			<h:form
+				style="margin-left: auto; margin-right:auto; font-weight:bold; font-size: 10px">
+				#{usuarioController.porUsuario()}
+				<p:panel header="Pesquisar Usuários">
+					
+					<p:dataTable id="tbl" reflow="true" resizeMode="expand" 
+						emptyMessage="Lista Vazia" resizableColumns="true"
+						value="#{usuarioController.usuarios}" scrollable="true"
+						var="usuario" style="margin-top:5px" paginator="true" rows="15"
+						rowsPerPageTemplate="5,10,15" paginatorPosition="bottom"
+						paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} ">
+
+						<p:column headerText="Nome " width="15%">
+							<h:outputLabel value="#{usuario.nome}" />
+						</p:column>
+
+						<p:column headerText="Login" width="10%">
+							<h:outputLabel value="#{usuario.login}" />
+						</p:column>
+						<p:column headerText="Senha" width="10%" style="text-align:center">
+							<h:outputLabel value="#{usuario.senha}" />
+						</p:column>
+						<p:column headerText="Agencia" width="10%" style="text-align:center">
+							<h:outputLabel value="#{usuario.agencia.nome}" />
+						</p:column>
+						<p:column width="10%" style="text-align:center">
+												
+							<p:commandButton icon="fa fa-edit" style="width:25px"
+								action="#{usuarioController.editarUsuario(usuario)}"
+								title="Clique para Editar"/>
+
+							<p:commandButton icon="fa fa-trash" style="width:25px"
+								action="#{usuarioController.prepararExcluirUsuario(usuario)}"
+								oncomplete="PF('confirmarExclusaoCursoDialog').show()"
+								id="excluir" title="Clique para Excluir" />
+						</p:column>
+					</p:dataTable>
+				
+				
+				
+				</p:panel>
+				<p:confirmDialog widgetVar="confirmarExclusaoCursoDialog" 
+					responsive="true" message="Deseja excluir esta Agência?">
+					<p:commandButton value="Sim" update="tbl" action="#{usuarioController.excluirUsuario()}" 
+						oncomplete="PF('confirmarExclusaoCursoDialog').hide()" style="width:50px"/>
+					<p:commandButton value="Não"
+						oncomplete="PF('confirmarExclusaoCursoDialog').hide()" style="width:50px"/>
+				</p:confirmDialog>
+			</h:form>
+			
+
+		</div>
+	</ui:define>
+</ui:composition>

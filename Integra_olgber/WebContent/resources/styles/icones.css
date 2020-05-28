@@ -1,0 +1,6 @@
+.cadastro-icon{
+	 width: 16px; 
+	 height: 16px; 
+	 background-image:url("#{resources['icones/cadastro.png']}") !important;
+	 background-repeat: no-repeat;
+}

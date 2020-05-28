@@ -1,0 +1,28 @@
+
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui">
+
+
+	<p:panel header="Cadastro de Perfis"
+		rendered="#{perfilController.perfil != null}" style="width:60%">
+		<p:commandButton value="Cancelar" process="@this" update="@form">
+			<f:setPropertyActionListener value="#{null}"
+				target="#{perfilController.perfil}" />
+		</p:commandButton>
+		<h:panelGrid columns="2" cellpadding="5">
+			<h:outputLabel value="Nome" />
+			<p:inputText value="#{perfilController.perfil.nome}" />
+			<h:outputLabel value="Permissões" />
+			<p:pickList id="picklist-permissoes"
+				value="#{perfilController.permissoes}" var="permissao"
+				itemLabel="#{permissao.nome}" itemValue="#{permissao}" converter="permissaoConverter">
+					
+			</p:pickList>
+		</h:panelGrid>
+		<p:commandButton value="Salvar" action="#{perfilController.salvar}" update="@form"/>
+	</p:panel>
+
+</ui:composition>

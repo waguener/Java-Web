@@ -1,0 +1,534 @@
+<ui:composition template="/template/Layout.xhtml"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:p="http://primefaces.org/ui">
+
+	<ui:define name="titulo">Movimentações</ui:define>
+
+	<ui:define name="conteudo">
+		<div class="ui-fluid">
+			<h:form id="form"
+				style="width: 100%; font-weight:bold;font-size: 12px; margin-top:1%">
+				#{movimentacaoController.initMov()}
+				<p:fieldset legend="Movimentações">
+
+					<p:panelGrid columns="3" layout="grid"
+						styleClass="panelgrid-noborder"
+						columnClasses="ui-grid-col-1,ui-grid-col-2,ui-grid-col-9">
+						<p:outputLabel value="Data Inicial" />
+						<p:calendar value="#{movimentacaoController.data1}"
+							pattern="dd/MM/yyyy" mask="99/99/9999" navigator="true"
+							showOn="button" size="15" locale="pt" effect="fold" />
+						<p:outputLabel />
+						<p:outputLabel value="Data Final" />
+						<p:calendar value="#{movimentacaoController.data2}"
+							pattern="dd/MM/yyyy" mask="99/99/9999" navigator="true"
+							showOn="button" size="15" locale="pt" effect="fold" />
+
+						<p:commandButton value="Pesquisar" style="width:100px"
+							id="pesquisar" action="#{movimentacaoController.porData()}"
+							update="tbl" />
+					</p:panelGrid>
+
+					<p:blockUI block="tbl" trigger="pesquisar" animate="true">
+						PESQUISANDO ...<br />
+						<p:graphicImage library="imagens" name="load.gif" />
+					</p:blockUI>
+
+					<p:dataTable widgetVar="verMov" emptyMessage="Lista Vazia"
+						value="#{movimentacaoController.movimentacoes}" var="mov" id="tbl"
+						selection="#{movimentacaoController.selecionados}"
+						rowKey="#{mov.id}" style="margin-top:5px;font-size:10px"
+						paginator="true" rows="16" scrollable="true" scrollWidth="1000"
+						reflow="true" scrollHeight="390" paginatorPosition="bottom"
+						paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} ">
+
+						<p:column selectionMode="multiple"
+							style="width:16px;text-align:center" />
+						
+						<p:column headerText="Codigo" width="70" style="text-align:center"
+							filterBy="#{mov.recebimento.codigo}">
+							<h:outputLabel value="#{mov.recebimento.codigo}" />
+						</p:column>
+
+						<p:column headerText="Produto" width="240"
+							style="text-align:center"
+							filterBy="#{mov.recebimento.produto}">
+							<p:outputLabel
+								value="#{mov.recebimento.produto}" />
+						</p:column>
+
+						<p:column headerText="Lote" width="70" style="text-align:center"
+							filterBy="#{mov.recebimento.lote}">
+							<h:outputLabel value="#{mov.recebimento.lote}" />
+						</p:column>
+
+						<!-- Recebimento -->
+						<p:column headerText="Data Entrada" width="70"
+							style="text-align:center" sortBy="#{mov.recebimento.dataEntrada}">
+							<h:outputLabel value="#{mov.recebimento.dataEntrada}">
+								<f:convertDateTime pattern="dd/MM/yyyy" locale="pt_BR" />
+							</h:outputLabel>
+						</p:column>
+						<p:column headerText="Hora Entrada" width="70"
+							style="text-align:center">
+							<h:outputLabel value="#{mov.recebimento.horaEntrada}" />
+						</p:column>
+						<p:column headerText="U.D. Entrada" width="70"
+							style="text-align:center">
+							<h:outputLabel value="#{mov.recebimento.numeroRack}" />
+						</p:column>
+						<p:column headerText="Qtd Entrada" width="70"
+							style="text-align:center">
+							<h:outputLabel
+								value="#{mov.recebimento.pesoFicha} - #{mov.recebimento.uniMedida}" />
+						</p:column>
+						<p:column headerText="Resp. Entrada" width="70"
+							style="text-align:center">
+							<h:outputLabel value="#{mov.recebimento.responsavel}" />
+						</p:column>
+
+						<!-- Retirado -->
+
+						<p:column headerText="Data Retirada" width="70"
+							style="text-align:center" sortBy="#{mov.dataRetirada}">
+							<h:outputLabel value="#{mov.dataRetirada}">
+								<f:convertDateTime pattern="dd/MM/yyyy" locale="pt_BR" />
+							</h:outputLabel>
+						</p:column>
+						<p:column headerText="Hora Retirada" width="70"
+							style="text-align:center">
+							<h:outputLabel value="#{mov.horaSaida}" />
+						</p:column>
+						<p:column headerText="Qtd Retirada" width="70"
+							style="text-align:center">
+							<h:outputLabel rendered="#{mov.qtdRetirada > 0}"
+								value="#{mov.qtdRetirada} - #{mov.recebimento.uniMedida}" />
+						</p:column>
+						<p:column headerText="Resp. Retirar" width="70"
+							style="text-align:center">
+							<h:outputLabel value="#{mov.resp}" />
+						</p:column>
+
+						<!-- Devolução -->
+
+						<p:column headerText="Data Devolução" width="70"
+							style="text-align:center" sortBy="#{mov.dataRetorno}">
+							<h:outputLabel value="#{mov.dataRetorno}">
+								<f:convertDateTime pattern="dd/MM/yyyy" locale="pt_BR" />
+							</h:outputLabel>
+						</p:column>
+						<p:column headerText="Hora Devolução" width="70"
+							style="text-align:center">
+							<h:outputLabel value="#{mov.horaRetorno}" />
+						</p:column>
+						<p:column headerText="Qtd Devolução" width="70"
+							style="text-align:center">
+							<h:outputLabel rendered="#{mov.qtdRetorno > 0}"
+								value="#{mov.qtdRetorno} - #{mov.recebimento.uniMedida}" />
+						</p:column>
+						<p:column headerText="Resp. Devolução" width="70"
+							style="text-align:center">
+							<h:outputLabel value="#{mov.respRetorno}" />
+						</p:column>
+
+						<!-- Devolução Cliente -->
+						<p:column headerText="Data Dev.Cliente" width="70"
+							style="text-align:center" sortBy="#{mov.dataDevCliente}">
+							<h:outputLabel value="#{mov.dataDevCliente}">
+								<f:convertDateTime pattern="dd/MM/yyyy" locale="pt_BR" />
+							</h:outputLabel>
+						</p:column>
+						<p:column headerText="Qtd Dev.Cliente" width="70"
+							style="text-align:center">
+							<h:outputLabel
+								value="#{mov.qtdDevCliente} - #{mov.recebimento.uniMedida}"
+								rendered="#{mov.qtdDevCliente > 0}" />
+						</p:column>
+						<p:column headerText="N.F. DEv.Cliente" width="70"
+							style="text-align:center" filterBy="#{mov.nfDevCliente}">
+							<h:outputLabel value="#{mov.nfDevCliente} " />
+						</p:column>
+
+						<p:column width="70" style="text-align:center">
+
+							<p:commandButton icon="fa fa-fw fa-edit"
+								title="Clique para editar" style="width:25px;margin-left:5px"
+								action="#{movimentacaoController.abrirSenha(mov)}" 
+								rendered="#{mov.dataDevCliente == null and mov.qtdRetirada != null}"/>
+							<p:commandButton icon="fa fa-barcode"
+								style="width:25px;margin-left:5px"
+								title="Clique para imprimir o Código de Barras"
+								action="#{movimentacaoController.codbar(mov)}"
+								update=":form:codbar" />
+						</p:column>
+						<p:rowExpansion>
+							<p:outputLabel value="Teste" />
+						</p:rowExpansion>
+					</p:dataTable>
+					<p:commandButton value="Obter Relatório"
+						style="width:150px;margin-top:5px"
+						action="#{movimentacaoController.relatorio()}"
+						update=":form:totais" />
+				
+				</p:fieldset>
+
+				<p:dialog header="Movimentações " resizable="false" position="top"
+					widgetVar="verMovimentacao" width="70%" height="100%"
+					closable="false" modal="true" showEffect="blind" hideEffect="size"
+					style="margin-top: 70px">
+
+					<div style="width: 100%; height: 400px; overflow: auto">
+						<p:outputPanel id="imprimir" autoUpdate="true">
+							<p:panelGrid columns="3" layout="grid"
+								styleClass="panelgrid-noborder"
+								columnClasses="ui-grid-col-3,ui-grid-col-7,ui-grid-col-2">
+								<p:outputLabel value="" />
+								<p:outputLabel value="Olgber Especialidades"
+									style="margin-left:44%;font-weight:bold;font-size:16px" />
+								<p:outputLabel />
+								<p:outputLabel value="" />
+								<p:outputLabel value="Relatório de Movimentações"
+									style="margin-left:42%;margin-top:-10px;font-weight:bold;font-size:16px" />
+								<p:outputLabel />
+							</p:panelGrid>
+							<div style="border: solid 1px; width: 117%">
+								<h:panelGrid columns="5">
+									<h:panelGrid columns="1" style="width:370px">
+										<p:outputLabel value="Descrição"
+											style="font-size:10px;font-weight:bold" />
+									</h:panelGrid>
+									<h:panelGrid columns="1" style="width:260px">
+										<p:outputLabel value="Recebimento"
+											style="font-size:10px;font-weight:bold" />
+									</h:panelGrid>
+									<h:panelGrid columns="1" style="width:166px">
+										<p:outputLabel value="Saída"
+											style="font-size:10px;font-weight:bold" />
+									</h:panelGrid>
+									<h:panelGrid columns="1" style="width:200px">
+										<p:outputLabel value="Devolução"
+											style="font-size:10px;font-weight:bold" />
+									</h:panelGrid>
+									<h:panelGrid columns="1" style="width:160px">
+										<p:outputLabel value="Devolução Cliente"
+											style="font-size:10px;font-weight:bold" />
+									</h:panelGrid>
+
+								</h:panelGrid>
+								<h:panelGrid columns="19" style="font-size:10px">
+
+
+									<h:panelGrid columns="1" style="width:60px">
+										<p:outputLabel value="Codigo"
+											style="font-size:10px;font-weight:bold" />
+									</h:panelGrid>
+
+									<h:panelGrid columns="1" style="width:205px">
+										<p:outputLabel value="Produto"
+											style="font-size:10px;font-weight:bold" />
+									</h:panelGrid>
+
+									<h:panelGrid columns="1" style="width:50px">
+										<p:outputLabel value="Lote"
+											style="font-size:10px;font-weight:bold" />
+									</h:panelGrid>
+
+									<h:panelGrid columns="1" style="width:45px">
+										<p:outputLabel value="Data "
+											style="font-size:10px;font-weight:bold" />
+									</h:panelGrid>
+									<h:panelGrid columns="1" style="width:30px">
+										<p:outputLabel value="Hora "
+											style="font-size:10px;font-weight:bold" />
+									</h:panelGrid>
+									<h:panelGrid columns="1" style="width:40px">
+										<p:outputLabel value="U.D"
+											style="font-size:10px;font-weight:bold" />
+									</h:panelGrid>
+									<h:panelGrid columns="1" style="width:50px">
+										<p:outputLabel value="Qtd"
+											style="font-size:10px;font-weight:bold" />
+									</h:panelGrid>
+									<h:panelGrid columns="1" style="width:70px">
+										<p:outputLabel value="Resp."
+											style="font-size:10px;font-weight:bold" />
+									</h:panelGrid>
+
+									<h:panelGrid columns="1" style="width:46px">
+										<p:outputLabel value="Data "
+											style="font-size:10px;font-weight:bold" />
+									</h:panelGrid>
+									<h:panelGrid columns="1" style="width:30px">
+										<p:outputLabel value="Hora "
+											style="font-size:10px;font-weight:bold" />
+									</h:panelGrid>
+									<h:panelGrid columns="1" style="width:50px">
+										<p:outputLabel value="Qtd"
+											style="font-size:10px;font-weight:bold" />
+									</h:panelGrid>
+									<h:panelGrid columns="1" style="width:70px">
+										<p:outputLabel value="Resp."
+											style="font-size:10px;font-weight:bold" />
+									</h:panelGrid>
+
+									<h:panelGrid columns="1" style="width:50px">
+										<p:outputLabel value="Data "
+											style="font-size:10px;font-weight:bold" />
+									</h:panelGrid>
+									<h:panelGrid columns="1" style="width:30px">
+										<p:outputLabel value="Hora "
+											style="font-size:10px;font-weight:bold" />
+									</h:panelGrid>
+									<h:panelGrid columns="1" style="width:50px">
+										<p:outputLabel value="Qtd"
+											style="font-size:10px;font-weight:bold" />
+									</h:panelGrid>
+									<h:panelGrid columns="1" style="width:70px">
+										<p:outputLabel value="Resp."
+											style="font-size:10px;font-weight:bold" />
+									</h:panelGrid>
+
+									<h:panelGrid columns="1" style="width:50px">
+										<p:outputLabel value="Data Dev.Cliente "
+											style="font-size:10px;font-weight:bold" />
+									</h:panelGrid>
+									<h:panelGrid columns="1" style="width:30px">
+										<p:outputLabel value="Qtd Dev.Cliente "
+											style="font-size:10px;font-weight:bold" />
+									</h:panelGrid>
+									<h:panelGrid columns="1" style="width:50px">
+										<p:outputLabel value="N.F. DEv.Cliente"
+											style="font-size:10px;font-weight:bold" />
+									</h:panelGrid>
+								</h:panelGrid>
+
+								<p:dataGrid columns="1" var="mov" id="impressao"
+									styleClass="data-grid" layout="grid" 
+									value="#{movimentacaoController.selecionados}">
+
+
+									<h:panelGrid columns="19" style="font-size:9px">
+
+
+										<h:panelGrid columns="1" style="width:60px">
+											<p:outputLabel
+												value="#{mov.recebimento.codigo}"
+												style="font-size:8px;font-weight:bold" />
+										</h:panelGrid>
+										<h:panelGrid columns="1" style="width:205px">
+											<p:outputLabel
+												value="#{mov.recebimento.produto}"
+												style="font-size:8px;font-weight:bold" />
+										</h:panelGrid>
+										<h:panelGrid columns="1" style="width:40px">
+											<p:outputLabel value="#{mov.recebimento.lote}"
+												style="font-size:8px;font-weight:bold" />
+										</h:panelGrid>
+
+										<h:panelGrid columns="1" style="width:50px">
+											<h:outputLabel value="#{mov.recebimento.dataEntrada}"
+												style="font-size:8px;font-weight:bold">
+												<f:convertDateTime pattern="dd/MM/yy" locale="pt_BR" />
+											</h:outputLabel>
+										</h:panelGrid>
+										<h:panelGrid columns="1" style="width:30px">
+											<p:outputLabel value="#{mov.recebimento.horaEntrada}"
+												style="font-size:8px;font-weight:bold" />
+										</h:panelGrid>
+										<h:panelGrid columns="1" style="width:40px">
+											<p:outputLabel value="#{mov.recebimento.numeroRack}"
+												style="font-size:8px;font-weight:bold" />
+										</h:panelGrid>
+										<h:panelGrid columns="1" style="width:50px">
+											<h:outputLabel
+												value="#{mov.recebimento.pesoFicha} - #{mov.recebimento.uniMedida}"
+												style="font-size:8px;font-weight:bold" />
+										</h:panelGrid>
+										<h:panelGrid columns="1" style="width:70px">
+											<p:outputLabel value="#{mov.recebimento.responsavel}"
+												style="font-size:8px;font-weight:bold" />
+										</h:panelGrid>
+										<h:panelGrid columns="1" style="width:50px">
+											<h:outputLabel value="#{mov.dataRetirada}"
+												style="font-size:8px;font-weight:bold">
+												<f:convertDateTime pattern="dd/MM/yy" locale="pt_BR" />
+												<p:outputLabel value=""
+													rendered="#{mov.dataRetirada == null}" />
+											</h:outputLabel>
+										</h:panelGrid>
+										<h:panelGrid columns="1" style="width:30px">
+											<p:outputLabel value="#{mov.horaSaida}"
+												style="font-size:8px;font-weight:bold" />
+											<p:outputLabel value="" rendered="#{mov.horaSaida == null}" />
+										</h:panelGrid>
+										<h:panelGrid columns="1" style="width:50px">
+											<h:outputLabel rendered="#{mov.qtdRetirada > 0}"
+												value="#{mov.qtdRetirada} - #{mov.recebimento.uniMedida} "
+												style="font-size:8px;font-weight:bold" />
+										</h:panelGrid>
+										<h:panelGrid columns="1" style="width:70px">
+											<p:outputLabel value="#{mov.resp}"
+												style="font-size:8px;font-weight:bold" />
+											<p:outputLabel value="" rendered="#{mov.resp == null}" />
+										</h:panelGrid>
+
+										<h:panelGrid columns="1" style="width:48px">
+											<h:outputLabel value="#{mov.dataRetorno}"
+												style="font-size:8px;font-weight:bold">
+												<f:convertDateTime pattern="dd/MM/yy" locale="pt_BR" />
+												<p:outputLabel value=""
+													rendered="#{mov.dataRetorno == null}" />
+											</h:outputLabel>
+										</h:panelGrid>
+										<h:panelGrid columns="1" style="width:30px">
+											<p:outputLabel value="#{mov.horaRetorno}"
+												style="font-size:8px;font-weight:bold" />
+											<p:outputLabel value="" rendered="#{mov.horaRetorno == null}" />
+										</h:panelGrid>
+										<h:panelGrid columns="1" style="width:50px">
+											<p:outputLabel rendered="#{mov.qtdRetorno > 0}"
+												value="#{mov.qtdRetorno} - #{mov.recebimento.uniMedida}"
+												style=" font-size:8px;font-weight:bold" />
+										</h:panelGrid>
+										<h:panelGrid columns="1" style="width:75px">
+											<p:outputLabel value="#{mov.respRetorno}"
+												style="font-size:8px;font-weight:bold" />
+											<p:outputLabel value="" rendered="#{mov.respRetorno == null}" />
+										</h:panelGrid>
+
+										<h:panelGrid columns="1" style="width:70px">
+											<h:outputLabel value="#{mov.dataDevCliente}"
+												style="font-size:8px;font-weight:bold">
+												<f:convertDateTime pattern="dd/MM/yy" locale="pt_BR" />
+												<p:outputLabel value=""
+													rendered="#{mov.dataDevCliente == null}" />
+											</h:outputLabel>
+										</h:panelGrid>
+
+										<h:panelGrid columns="1" style="width:70px">
+											<p:outputLabel rendered="#{mov.qtdDevCliente > 0}"
+												value="#{mov.qtdDevCliente} - #{mov.recebimento.uniMedida}"
+												style=" font-size:8px;font-weight:bold" />
+										</h:panelGrid>
+										<h:panelGrid columns="1" style="width:50px">
+											<p:outputLabel value="#{mov.nfDevCliente}"
+												style="font-size:8px;font-weight:bold" />
+											<p:outputLabel value=""
+												rendered="#{mov.nfDevCliente == null}" />
+										</h:panelGrid>
+									</h:panelGrid>
+
+
+								</p:dataGrid>
+								<h:panelGrid columns="7" id="totais">
+									<h:panelGrid columns="1" style="width:340px">
+										<p:outputLabel value=""
+											style="font-size:12px;font-weight:bold" />
+									</h:panelGrid>
+									<h:panelGrid columns="1" style="width:105px">
+										<p:outputLabel value="Total Recebido:"
+											style="font-size:12px;font-weight:bold" />
+									</h:panelGrid>
+									<h:panelGrid columns="1" style="width:108px">
+										<p:outputLabel value="#{movimentacaoController.totRecebido}"
+											style="font-size:12px;font-weight:bold" />
+									</h:panelGrid>
+									<h:panelGrid columns="1" style="width:98px">
+										<p:outputLabel value="Total Retirado:"
+											style="font-size:12px;font-weight:bold" />
+									</h:panelGrid>
+									<h:panelGrid columns="1" style="width:102px">
+										<p:outputLabel value="#{movimentacaoController.totRetirado}"
+											style="font-size:12px;font-weight:bold" />
+									</h:panelGrid>
+									<h:panelGrid columns="1" style="width:107px">
+										<p:outputLabel value="Total Devolvido:"
+											style="font-size:12px;font-weight:bold" />
+									</h:panelGrid>
+									<h:panelGrid columns="1" style="width:160px">
+										<p:outputLabel value="#{movimentacaoController.totDevolvido}"
+											style="font-size:12px;font-weight:bold" />
+									</h:panelGrid>
+								</h:panelGrid>
+							</div>
+						</p:outputPanel>
+
+					</div>
+					<p:commandButton value="Imprimir / PDF"
+						style="margin-left:10px;width:150px" type="button">
+						<p:printer target="imprimir" />
+					</p:commandButton>
+					<p:commandButton value="Fechar"
+						action="#{movimentacaoController.fecharRelatorio()}"
+						style="width:100px;margin-top:10px;margin-left:10px" />
+				</p:dialog>
+
+				<p:dialog header="Editar " resizable="false" position="top"
+					widgetVar="verSenha" width="24%" height="100%" closable="true"
+					modal="true" showEffect="blind" hideEffect="size"
+					style="margin-top: 70px">
+
+					<p:panelGrid columns="1" layout="grid"
+						styleClass="panelgrid-noborder" columnClasses="ui-grid-col-12" style="text-align:center">
+						<p:outputLabel value="Insira a Senha para Editar"
+							style="margin-top:20px;margin-left:10px" />
+						<p:password value="#{movimentacaoController.senha}"
+							style="width:150px;font-weight:bold;margin-left:20px;margin-top:20px;text-align:center" />
+
+						<p:commandButton value="Entrar"
+							style="width:100px;margin-top:20px;margin-left:45px"
+							action="#{movimentacaoController.editar()}" />
+					</p:panelGrid>
+
+				</p:dialog>
+				<p:dialog header="Código de Barras " resizable="false"
+					position="top" widgetVar="verCodBar" width="30%" height="50%"
+					closable="true" modal="true" showEffect="blind" hideEffect="size"
+					style="margin-top: 70px">
+					<h:panelGrid columns="1" id="codbar" style="margin-top:7px">
+						<p:outputLabel
+							value="#{movimentacaoController.movimentacao.recebimento.produto}"
+							style="font-size:7px;margin:0px;margin-left:36px" />
+
+						<h:panelGrid columns="3" style="margin:0px">
+
+							<h:panelGrid columns="2" style="margin-top:-10px">
+								<p:outputLabel value="Cod:"
+									style="font-size:9px;margin:0px;margin-left:30px;font-weight:bold" />
+								<p:outputLabel
+									value="#{movimentacaoController.movimentacao.recebimento.codigo}"
+									style="font-size:9px;margin:0px;font-weight:bold" />
+							</h:panelGrid>
+							<h:panelGrid columns="2" style="margin-top:-10px">
+								<p:outputLabel value="Lt:"
+									style="font-size:9px;margin:0px;font-weight:bold" />
+								<p:outputLabel
+									value="#{movimentacaoController.movimentacao.recebimento.lote}"
+									style="font-size:9px;margin:0px;font-weight:bold" />
+							</h:panelGrid>
+							<h:panelGrid columns="2" style="margin-top:-10px">
+								<p:outputLabel value="UD:"
+									style="font-size:9px;margin:0px;font-weight:bold" />
+								<p:outputLabel
+									value="#{movimentacaoController.movimentacao.recebimento.numeroRack}"
+									style="font-size:9px;margin:0px;font-weight:bold" />
+							</h:panelGrid>
+						</h:panelGrid>
+
+						<p:barcode value="#{movimentacaoController.movimentacao.codbar}"
+							type="code128" height="155" width="250"
+							style="margin-left:10px;margin-top:-9px" />
+					</h:panelGrid>
+					<p:commandButton value="Imprimir"
+						style="margin-left:10px;width:150px" type="button">
+						<p:printer target="codbar" />
+					</p:commandButton>
+				</p:dialog>
+			</h:form>
+		</div>
+	</ui:define>
+</ui:composition>
+

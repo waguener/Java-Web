@@ -1,0 +1,137 @@
+<ui:composition template="/template/Layout.xhtml"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:p="http://primefaces.org/ui">
+
+	<ui:define name="titulo">Contagem Produção</ui:define>
+
+	<ui:define name="conteudo">
+		<div class="ui-fluid">
+			<h:form
+				style="width: 100%; font-weight:bold;font-size: 12px; margin-top:1%">
+				#{contagemOlgberController.init()}
+				
+				<p:fieldset legend="Contagem da Produção" toggleable="false">
+					<h:panelGrid columns="3" id="busca">
+						<p:outputLabel value="Código" />	
+						<p:inputText value="#{contagemOlgberController.codigo}" required="true" requiredMessage="Digite um Código!!"
+							onkeyup="this.value = this.value.toUpperCase()" size="11"
+							style="margin-left:20px" dir="rtl" />
+						
+						<p:outputLabel/>
+						<p:outputLabel value="Lote" />
+						<p:inputText value="#{contagemOlgberController.lote}" required="true" requiredMessage="Digite um Lote!!"
+							onkeyup="this.value = this.value.toUpperCase()" size="11"
+							style="margin-left:20px" dir="rtl" />
+						
+						<p:commandButton icon="fa fa-search"
+							style="margin-left:30px;width:50px"
+							action="#{contagemOlgberController.codigo()}" process="busca"
+							update="result" />
+						
+
+					</h:panelGrid>
+					
+					<p:panelGrid columns="3" layout="grid" style="height:50px"
+						styleClass="panelgrid-noborder" id="result"
+						columnClasses="ui-grid-col-3,ui-grid-col-7,ui-grid-col-2">
+
+						<p:outputLabel />
+						<p:outputLabel 
+							value="#{contagemOlgberController.contagemOlgber.estoque.cadastroMaterial.produto}"
+							id="produto" style="font-size:18px;font-weight:bold" />
+						<p:outputLabel />
+					</p:panelGrid>
+
+					<p:panelGrid columns="4" layout="grid"
+						styleClass="panelgrid-noborder"
+						columnClasses="ui-grid-col-1,ui-grid-col-1,ui-grid-col-1,ui-grid-col-7">
+						
+						<p:outputLabel />
+						<p:outputLabel />
+						<p:outputLabel />
+						<p:outputLabel />
+
+						<p:outputLabel value="Quantidade:" />
+						<p:inputText value="#{contagemOlgberController.contagemOlgber.qtd}"
+							required="true" requiredMessage="Preencha a Quantidade!"
+							onkeyup="$(this).val($(this).val().replace(/[^0-9]/g, ''));" />
+
+						<p:commandButton value="Salvar" id="salvar"
+							action="#{contagemOlgberController.salvar()}" process="@form"
+							 update="@form"/>
+						<p:outputLabel />
+
+					</p:panelGrid>
+
+				</p:fieldset>
+				<p:blockUI block="tbl" trigger="salvar" animate="true">
+						SALVANDO ...<br />
+						<p:graphicImage library="imagens" name="load.gif" />
+					</p:blockUI>
+				<!-- Tabela Produtos -->
+				<p:panel header="Produtos Retirados" style="margin-top:5px">
+
+					<p:dataTable widgetVar="tabelaProducao" emptyMessage="Lista Vazia"
+						value="#{contagemOlgberController.listaContagem}"
+						var="prod"
+						id="tbl" resizeMode="expand" reflow="true"
+						style="margin-top:5px;font-size:12px" paginator="true" rows="10"
+						rowsPerPageTemplate="3,5,8" paginatorPosition="bottom"
+						paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} ">
+
+						<p:column headerText="Codigo" width="15%"
+							style="text-align:center">
+							<h:outputLabel value="#{prod.estoque.cadastroMaterial.codigo}" />
+						</p:column>
+
+						<p:column headerText="Produto" width="40%"
+							style="text-align:center">
+							<h:outputLabel value="#{prod.estoque.cadastroMaterial.produto}" />
+						</p:column>
+
+						<p:column headerText="Lote" width="12%" style="text-align:center">
+							<h:outputLabel value="#{prod.estoque.lote}" />
+						</p:column>
+
+						<p:column headerText="Quantidade" width="15%"
+							style="text-align:center">
+							<h:outputLabel value="#{prod.qtd} - #{prod.estoque.uniMedida}" />
+						</p:column>
+
+						<p:column headerText="Data" width="15%" style="text-align:center">
+							<h:outputLabel value="#{prod.data}">
+								<f:convertDateTime pattern="dd/MM/yyyy" locale="pt_BR" />
+							</h:outputLabel>
+						</p:column>
+						<p:column width="12%" style="text-align:center">
+
+							<p:commandButton icon="fa fa-trash"
+								title="Clique pra Excluir"  process="@this"
+								action="#{contagemOlgberController.prepararExclusao(prod)}"
+								oncomplete="PF('confirmarExclusaoCursoDialog').show()"
+								style="width:25px;margin-left:5px" />
+
+						</p:column>
+						
+					</p:dataTable>
+
+				</p:panel>
+				<p:confirmDialog widgetVar="confirmarExclusaoCursoDialog"
+					message="Deseja Excluir este Produto">
+					<h:panelGrid columns="2">
+						<p:commandButton value="Sim" process="@this" style="widht:50px"
+							action="#{contagemOlgberController.excluir()}"
+							update="tbl"
+							oncomplete="PF('confirmarExclusaoCursoDialog').hide()" />
+						<p:commandButton value="Não" style="widht:50px"
+							oncomplete="PF('confirmarExclusaoCursoDialog').hide()" />
+					</h:panelGrid>
+				</p:confirmDialog>
+			</h:form>
+		</div>
+	</ui:define>
+</ui:composition>
+

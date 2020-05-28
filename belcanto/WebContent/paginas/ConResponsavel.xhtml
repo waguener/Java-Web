@@ -1,0 +1,123 @@
+<ui:composition template="/template/Layout.xhtml"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:p="http://primefaces.org/ui">
+
+	<ui:define name="titulo">Consultar Responsáveis </ui:define>
+
+	<ui:define name="conteudo">
+		<div class="ui-fluid">
+			<h:form id="form"
+				style="width: 100%; font-weight:bold;font-size: 12px; margin-top:1%">
+				#{responsavelController.initConsulta()}
+				<p:panelGrid columns="1" layout="grid" style="margin-top:80px"
+					styleClass="panelgrid-noborder" columnClasses="ui-grid-col-12">
+					<p:outputLabel value="Consultar Responsáveis pelos Aulnos"
+						style="font-size: 26pt;font-family:'Cabin', sans-serif" />
+
+				</p:panelGrid>
+				<p:panelGrid columns="6" layout="grid" style="margin-top:20px"
+					styleClass="panelgrid-noborder" id="busca"
+					columnClasses="ui-grid-col-1,ui-grid-col-3,ui-grid-col-0.5,ui-grid-col-0.5,ui-grid-col-3.5,ui-grid-col-1.5">
+					<p:outputLabel value="Busca" style="font-size: 16pt;" />
+
+					<p:inputText value="#{responsavelController.nome}"
+						style="margin-left:10px;font-size:14pt;font-weigth:bold;color:#000;"
+						onkeyup="this.value = this.value.toUpperCase()" />
+
+
+					<p:commandButton action="#{responsavelController.porNome()}"
+						id="pesquisar" update="tbl" process="busca"
+						icon="fa fa-search" />
+					<p:outputLabel />
+					
+				</p:panelGrid>
+
+
+				<p:dataTable id="tbl" reflow="true" resizeMode="expand"
+					emptyMessage="Lista Vazia" resizableColumns="true"
+					value="#{responsavelController.listarNomes}" scrollable="true"
+					var="resp" style="margin-top:5px" paginator="true" rows="15"
+					rowsPerPageTemplate="5,10,15" paginatorPosition="bottom"
+					paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} ">
+
+					<p:column headerText="Foto " width="7%" style="text-align:center">
+						<p:graphicImage library="imagens" name="sem_foto.png" width="44px"
+							height="52px" style="text-align:center;box-shadow: 1px 1px 4px;border-radius: 10px;"
+							rendered="#{resp.foto == null}">
+							<f:param name="idResp" value="#{resp.id}" />
+						</p:graphicImage>
+						<p:graphicImage value="#{responsavelController.imagemResponsavel}"
+							width="44px" height="52px"
+							style="text-align:center;box-shadow: 1px 1px 4px;border-radius: 10px;"
+							rendered="#{responsavelController.imagemResponsavel != null}">
+							<f:param name="idResp" value="#{resp.id}" />
+						</p:graphicImage>
+					</p:column>
+					<p:column headerText="Nome " width="25%" filterBy="#{resp.nome}">
+
+						<h:outputLabel value="#{resp.nome}">
+
+						</h:outputLabel>
+					</p:column>
+					<p:column headerText="RG " width="15%">
+
+						<h:outputLabel value="#{resp.rg}" />
+					</p:column>
+					<p:column headerText="CPF " width="15%">
+
+						<h:outputLabel value="#{resp.cpf}" />
+					</p:column>
+					<p:column headerText="Ativo " width="8%" sortBy="#{resp.ativo}"
+						style="text-align:center">
+
+						<h:outputLabel value="SIM" rendered="#{resp.ativo == true}"
+							style="color:green" />
+						<h:outputLabel value="NÃO" rendered="#{resp.ativo != true}"
+							style="color:red" />
+					</p:column>
+					<p:column headerText="Profissão" width="20%">
+
+						<h:outputLabel value="#{resp.profissao}" />
+
+					</p:column>
+
+					<p:column width="10%" style="text-align:center">
+
+						<p:commandButton icon="fa fa-edit" style="width:25px"
+							action="#{responsavelController.editar(resp)}" ajax="false"
+							title="Clique para Editar" process="tbl" />
+
+						<p:commandButton icon="fa fa-search" style="width:25px"
+							action="#{responsavelController.alunos(resp)}" 
+							title="Clique para Editar" process="@this"  />
+
+
+					</p:column>
+				</p:dataTable>
+
+
+				<p:blockUI block="tbl" trigger="pesquisar" animate="true">
+						PESQUISANDO RESPONSÁVEIS...<br />
+					<p:graphicImage library="imagens" name="load.gif" />
+				</p:blockUI>
+
+				<p:dialog widgetVar="painelAlunos" resizable="false" width="250px"
+					closable="true" position="top" showHeader="true" dynamic="true"
+					header="Alunos" style="margin-top:50px;" modal="true" id="alu"
+					showEffect="fade" hideEffect="fade">
+					<p:dataGrid var="alunos" value="#{responsavelController.alunos}"
+						columns="1" >
+						
+							<p:outputLabel value="#{alunos.nome}" />
+						
+						
+					</p:dataGrid>
+				</p:dialog>
+			</h:form>
+		</div>
+	</ui:define>
+</ui:composition>
+

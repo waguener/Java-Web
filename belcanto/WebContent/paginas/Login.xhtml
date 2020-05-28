@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>  
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"  
+                      "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:p="http://primefaces.org/ui">
+
+<h:head>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1" />
+	<h:outputStylesheet library="styles" name="login.css" />
+	<title>Login</title>
+
+	
+
+	<script type="text/javascript">
+		function validacao() {
+
+			var formulario = document.register;
+			var username = formulario.username;
+			var password = formulario.password;
+
+			if (username.value == "") {
+				alert("Insira um nome válido.");
+				return false;
+			}
+
+			if (password.value == "") {
+				alert("Insira a Senha");
+				return false;
+			}
+
+			return true;
+		}
+		
+	</script>
+	<script>
+		$('#username').focus();
+	</script>
+
+</h:head>
+<h:body 
+	style="background-image:url(#{request.contextPath}/resources/imagens/fundoLogin.jpg);background-size:content; background-repeat:no-repeat">
+	
+	<div class="box" id="panel">
+		<h:graphicImage library="imagens" name="belcantoLogin.png"
+			style="position: center; top:50%; left:50%; width:100%;margin-bottom:20px " />
+		
+
+		<form action="#{request.contextPath}/login" method="post" 
+			name="register" onsubmit="return validacao();">
+			<p:focus for="username"/>
+			<div class="inputBox">
+				<h:inputText required="true" id="username" />
+				<label for="username">Usuário</label>
+			</div>
+			<div class="inputBox">
+				<h:inputSecret required="true" id="password" />
+				<label for="password">Senha</label> 
+				
+			</div>
+			<input type="submit" value="Entrar" id="entrar"/>
+			
+			
+		</form>
+		
+	</div>
+
+</h:body>
+
+</html>
+

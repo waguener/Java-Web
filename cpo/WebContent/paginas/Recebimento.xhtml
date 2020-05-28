@@ -1,0 +1,378 @@
+<ui:composition template="/template/Layout.xhtml"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:p="http://primefaces.org/ui">
+
+	<ui:define name="titulo">Recebimento</ui:define>
+
+	<ui:define name="conteudo">
+		<div class="ui-fluid">
+			<h:form
+				style="width: 100%; font-weight:bold;font-size: 12px; margin-top:1%">
+				#{recebimentoController.init()}
+				
+				<p:fieldset legend="Recebimento">
+					<p:panelGrid columns="3" layout="grid"
+						styleClass="panelgrid-noborder"
+						columnClasses="ui-grid-col-3,ui-grid-col-4,ui-grid-col-5">
+
+						<p:panelGrid columns="1" layout="grid"
+							styleClass="panelgrid-noborder" columnClasses="ui-grid-col-12">
+							<p:commandButton value="Novo Recebimento" 
+								action="#{recebimentoController.recebimento()}"
+								style="width:180px;margin-left:-10px" />
+						</p:panelGrid>
+						<p:panelGrid columns="2" layout="grid"
+							styleClass="panelgrid-noborder"
+							columnClasses="ui-grid-col-5,ui-grid-col-7">
+							<p:outputLabel value="Data Inicial" />
+							<p:calendar value="#{recebimentoController.data1}"
+								pattern="dd/MM/yyyy" mask="99/99/9999" navigator="true"
+								showOn="button" size="15" locale="pt" effect="fold" />
+							<p:outputLabel value="Data Final" />
+							<p:calendar value="#{recebimentoController.data2}"
+								pattern="dd/MM/yyyy" mask="99/99/9999" navigator="true"
+								showOn="button" size="10" locale="pt" effect="fold" />
+						</p:panelGrid>
+						<p:commandButton value="Pesquisar" style="width:100px"
+							id="pesquisar" action="#{recebimentoController.porData}"
+							update="tbl" />
+					</p:panelGrid>
+
+					<p:dataTable widgetVar="tabelaRecebimento"
+						emptyMessage="Nenhum Recebimento Cadastrado"
+						value="#{recebimentoController.listaRecebimento}"
+						selection="#{recebimentoController.selecionados}"
+						rowKey="#{recebimento.id}" var="recebimento" id="tbl"
+						scrollable="true" scrollWidth="1000" reflow="true"
+						scrollHeight="300" style="margin-top:5px;font-size:10px"
+						paginator="true" rows="30" rowsPerPageTemplate="3,6,12"
+						paginatorPosition="bottom"
+						paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} ">
+
+
+						<p:column selectionMode="multiple"
+							style="width:16px;text-align:center" />
+
+						<p:column headerText="Data Entrada" width="70"
+							style="text-align:center">
+							<h:outputLabel value="#{recebimento.recebimento.dataEntrada}">
+								<f:convertDateTime pattern="dd/MM/yyyy" locale="pt_BR" />
+							</h:outputLabel>
+						</p:column>
+
+						<p:column headerText="Hora" width="30" style="text-align:center">
+							<h:outputLabel value="#{recebimento.recebimento.horaEntrada}" />
+						</p:column>
+
+						<p:column headerText="Código" width="60"
+							filterBy="#{recebimento.recebimento.codigo}"
+							style="text-align:center">
+							<h:outputLabel
+								value="#{recebimento.recebimento.codigo}" />
+						</p:column>
+
+						<p:column headerText="Delivery" width="75"
+							style="text-align:center">
+							<h:outputLabel value="#{recebimento.recebimento.delivery}" />
+						</p:column>
+
+						<p:column headerText="Produto" width="240"
+							filterBy="#{recebimento.recebimento.produto}"
+							style="text-align:center">
+							<h:outputLabel
+								value="#{recebimento.recebimento.produto}" />
+						</p:column>
+
+						<p:column headerText="Tipo" width="70" style="text-align:center"
+							sortBy="#{recebimento.recebimento.tipo}">
+							<h:outputLabel value="#{recebimento.recebimento.tipo}" />
+						</p:column>
+
+						<p:column headerText="Lote" width="50" style="text-align:center"
+							filterBy="#{recebimento.recebimento.lote}">
+							<h:outputLabel value="#{recebimento.recebimento.lote}" />
+						</p:column>
+
+						<p:column headerText="Validade" width="60"
+							style="text-align:center">
+							<h:outputLabel value="#{recebimento.recebimento.dataValidade}">
+								<f:convertDateTime pattern="dd/MM/yyyy" locale="pt_BR" />
+							</h:outputLabel>
+						</p:column>
+						<p:column headerText="N.Fiscal" width="50"
+							filterBy="#{recebimento.recebimento.notaFiscal}"
+							style="text-align:center">
+							<h:outputLabel value="#{recebimento.recebimento.notaFiscal}" />
+						</p:column>
+
+						<p:column headerText="Físico" width="60" style="text-align:center">
+							<h:outputLabel
+								value="#{recebimento.recebimento.pesoFisico} - #{recebimento.recebimento.uniMedida}" />
+						</p:column>
+
+						<p:column headerText="Ficha" width="60" style="text-align:center">
+							<h:outputLabel
+								value="#{recebimento.recebimento.pesoFicha} - #{recebimento.recebimento.uniMedida}" />
+						</p:column>
+
+						<p:column headerText="Diferença" width="60"
+							style="text-align:center">
+							<h:outputLabel
+								value="#{recebimento.recebimento.diferenca} - #{recebimento.recebimento.uniMedida}" />
+						</p:column>
+
+						<p:column headerText="U.D" width="60"
+							style="text-align:center" filterBy="#{recebimento.recebimento.numeroRack}">
+							<h:outputLabel value="#{recebimento.recebimento.numeroRack}" />
+						</p:column>
+						<p:column headerText="Responsável" width="100"
+							style="text-align:center">
+							<h:outputLabel value="#{recebimento.recebimento.responsavel}" />
+						</p:column>
+						<p:column width="40" style="text-align:center">
+							<p:commandButton icon="fa fa-trash"
+								rendered="#{recebimento.qtdRetirada == null}"
+								oncomplete="PF('confirmarExclusaoCursoDialog').show()"
+								action="#{recebimentoController.prepararExclusao(recebimento)}"
+								process="@this" title="Clique para Excluir!!" />
+						</p:column>
+
+
+
+					</p:dataTable>
+					<p:commandButton value="Obter Relatório"
+						style="width:150px;margin-top:10px"
+						action="#{recebimentoController.relatorio()}" update="impressao" />
+
+				</p:fieldset>
+
+				<p:blockUI block="tbl" trigger="pesquisar" animate="true">
+						PESQUISANDO ENTRADAS...<br />
+					<p:graphicImage library="imagens" name="load.gif" />
+				</p:blockUI>
+
+				<p:dialog header="Recebimento" resizable="false" position="top"
+					widgetVar="verRecebimento" width="70%" height="100%"
+					closable="false" modal="true" showEffect="blind" hideEffect="size"
+					style="margin-top: 70px">
+					<div style="width: 100%; height: 400px; overflow: auto">
+						<p:outputPanel id="imprimir" autoUpdate="true">
+
+							<p:panelGrid columns="3" layout="grid"
+								styleClass="panelgrid-noborder"
+								columnClasses="ui-grid-col-3,ui-grid-col-7,ui-grid-col-2">
+
+								<p:outputLabel value="" />
+								<p:outputLabel value="Olgber Especialidades"
+									style="margin-left:30%" />
+								<p:outputLabel />
+								<p:outputLabel value="" />
+								<p:outputLabel value="Relatório de Recebimento"
+									style="margin-left:28%;margin-top:0px" />
+								<p:outputLabel />
+							</p:panelGrid>
+							<div style="border: solid 1px">
+								<h:panelGrid columns="13" style="font-size:11px">
+									<h:panelGrid columns="1" style="font-size:11px;width:70px">
+										<p:outputLabel value="Data Entrada" />
+									</h:panelGrid>
+									<h:panelGrid columns="1"
+										style="margin-left:5px;font-size:11px;width:30px">
+										<p:outputLabel value="Hora" />
+									</h:panelGrid>
+									<h:panelGrid columns="1"
+										style="margin-left:5px;font-size:11px;width:55px">
+										<p:outputLabel value="Código" />
+									</h:panelGrid>
+									<h:panelGrid columns="1"
+										style="margin-left:5px;font-size:11px;width:90px">
+										<p:outputLabel value="Delivery" />
+									</h:panelGrid>
+									<h:panelGrid columns="1" style="font-size:11px;width:210px">
+										<p:outputLabel value="Produto" />
+									</h:panelGrid>
+									<h:panelGrid columns="1"
+										style="font-size:11px;width:60px;margin-left:10px">
+										<p:outputLabel value="Lote" />
+									</h:panelGrid>
+									<h:panelGrid columns="1"
+										style="margin-left:2px;font-size:11px;width:65px">
+										<p:outputLabel value="Validade" />
+									</h:panelGrid>
+									<h:panelGrid columns="1"
+										style="margin-left:5px;font-size:11px;width:50px">
+										<p:outputLabel value="N.Fiscal" />
+									</h:panelGrid>
+									<h:panelGrid columns="1"
+										style="margin-left:5px;font-size:11px;width:40px">
+										<p:outputLabel value="Fisíco" />
+									</h:panelGrid>
+									<h:panelGrid columns="1"
+										style="margin-left:5px;font-size:11px;width:40px">
+										<p:outputLabel value="Ficha" />
+									</h:panelGrid>
+									<h:panelGrid columns="1" style="margin-left:5px;font-size:11px">
+										<p:outputLabel value="Diferença" />
+									</h:panelGrid>
+									<h:panelGrid columns="1" style="margin-left:5px;font-size:11px">
+										<p:outputLabel value="Nº da U.D" />
+									</h:panelGrid>
+									<h:panelGrid columns="1" style="margin-left:5px;font-size:11px">
+										<p:outputLabel value="Responsável" />
+									</h:panelGrid>
+								</h:panelGrid>
+
+								<p:dataGrid columns="1" var="recebido" id="impressao"
+									styleClass="data-grid" layout="grid" style="font-size:12px"
+									value="#{recebimentoController.selecionados}">
+
+
+									<h:panelGrid columns="13" style="font-size:9px">
+										<h:panelGrid columns="1" style="width:70px">
+											<p:outputLabel value="#{recebido.recebimento.dataEntrada}"
+												style="font-size:9px">
+												<f:convertDateTime pattern="dd/MM/yyyy" locale="pt_BR" />
+											</p:outputLabel>
+										</h:panelGrid>
+
+										<h:panelGrid columns="1"
+											style="width:30px;margin-left:5px;font-size:9px">
+											<p:outputLabel value="#{recebido.recebimento.horaEntrada}" />
+										</h:panelGrid>
+
+										<h:panelGrid columns="1"
+											style="width:60px;margin-left:6px;font-size:9px">
+											<p:outputLabel
+												value="#{recebido.recebimento.codigo}" />
+										</h:panelGrid>
+
+										<h:panelGrid columns="1" style="width:90px;font-size:10px">
+											<p:outputLabel value="#{recebido.recebimento.delivery}" />
+										</h:panelGrid>
+
+										<h:panelGrid columns="1" style="font-size:9px;width:218px">
+											<p:outputLabel
+												value="#{recebido.recebimento.produto}" />
+										</h:panelGrid>
+
+										<h:panelGrid columns="1" style="font-size:9px;width:60px">
+											<p:outputLabel value="#{recebido.recebimento.lote}" />
+										</h:panelGrid>
+
+										<h:panelGrid columns="1" style="width:60px">
+											<p:outputLabel value="#{recebido.recebimento.dataValidade}"
+												style="font-size:9px">
+												<f:convertDateTime pattern="dd/MM/yyyy" locale="pt_BR" />
+											</p:outputLabel>
+										</h:panelGrid>
+
+										<h:panelGrid columns="1"
+											style="font-size:9px;width:55px;margin-left:10px">
+											<p:outputLabel value="#{recebido.recebimento.notaFiscal}" />
+										</h:panelGrid>
+
+										<h:panelGrid columns="1"
+											style="font-size:9px;width:45px;margin-left:5px">
+											<p:outputLabel value="#{recebido.recebimento.pesoFisico}" />
+										</h:panelGrid>
+
+										<h:panelGrid columns="1" style="font-size:9px;width:50px">
+											<p:outputLabel value="#{recebido.recebimento.pesoFicha}" />
+										</h:panelGrid>
+
+										<h:panelGrid columns="1"
+											style="font-size:9px;width:40px;margin-left:5px">
+											<p:outputLabel value="#{recebido.recebimento.diferenca}" />
+										</h:panelGrid>
+
+										<h:panelGrid columns="1"
+											style="font-size:9px;width:60px;margin-left:15px">
+											<p:outputLabel value="#{recebido.recebimento.numeroRack}" />
+										</h:panelGrid>
+
+										<h:panelGrid columns="1"
+											style="font-size:9px;width:60px;margin-left:10px">
+											<p:outputLabel value="#{recebido.recebimento.responsavel}" />
+										</h:panelGrid>
+									</h:panelGrid>
+
+								</p:dataGrid>
+								<h:panelGrid columns="13" style="font-size:11px">
+									<h:panelGrid columns="1" style="font-size:11px;width:70px">
+										<p:outputLabel value="" />
+									</h:panelGrid>
+									<h:panelGrid columns="1"
+										style="margin-left:5px;font-size:11px;width:30px">
+										<p:outputLabel value="" />
+									</h:panelGrid>
+									<h:panelGrid columns="1"
+										style="margin-left:5px;font-size:11px;width:55px">
+										<p:outputLabel value="" />
+									</h:panelGrid>
+									<h:panelGrid columns="1"
+										style="margin-left:5px;font-size:11px;width:80px">
+										<p:outputLabel value="" />
+									</h:panelGrid>
+									<h:panelGrid columns="1" style="font-size:11px;width:218px">
+										<p:outputLabel value="" />
+									</h:panelGrid>
+									<h:panelGrid columns="1"
+										style="font-size:11px;width:30px;margin-left:5px">
+										<p:outputLabel value="" />
+									</h:panelGrid>
+									<h:panelGrid columns="1"
+										style="margin-left:6px;font-size:11px;width:80px">
+										<p:outputLabel value="" />
+									</h:panelGrid>
+									<h:panelGrid columns="1"
+										style="margin-left:18px;font-size:11px;width:60px">
+										<p:outputLabel value="Totais:" />
+									</h:panelGrid>
+									<h:panelGrid columns="1"
+										style="font-size:11px;width:40px">
+										<p:outputLabel value="#{recebimentoController.totPesoFisico}" style="text-align:center" />
+									</h:panelGrid>
+									<h:panelGrid columns="1"
+										style="margin-left:5px;font-size:11px;width:40px">
+										<p:outputLabel value="#{recebimentoController.totPesoFicha}" />
+									</h:panelGrid>
+									<h:panelGrid columns="1"
+										style="margin-left:18px;font-size:11px">
+										<p:outputLabel value="#{recebimentoController.totDiferenca}" />
+									</h:panelGrid>
+									<h:panelGrid columns="1" style="margin-left:5px;font-size:11px">
+										<p:outputLabel value="" />
+									</h:panelGrid>
+									<h:panelGrid columns="1" style="margin-left:5px;font-size:11px">
+										<p:outputLabel value="" />
+									</h:panelGrid>
+								</h:panelGrid>
+							</div>
+						</p:outputPanel>
+					</div>
+					<p:commandButton value="Imprimir / PDF"
+						style="margin-left:10px;width:150px" type="button">
+						<p:printer target="imprimir" />
+					</p:commandButton>
+					<p:commandButton value="Fechar"
+						action="#{recebimentoController.fechar}"
+						style="width:100px;margin-top:10px;margin-left:10px" />
+				</p:dialog>
+
+				<p:confirmDialog widgetVar="confirmarExclusaoCursoDialog"
+					message="Deseja excluir este Produto Recebido? ">
+					<p:commandButton value="Sim" process="@this"
+						action="#{recebimentoController.excluirRecebimento()}"
+						update="tbl"
+						oncomplete="PF('confirmarExclusaoCursoDialog').hide()" />
+					<p:commandButton value="Não"
+						oncomplete="PF('confirmarExclusaoCursoDialog').hide()" />
+				</p:confirmDialog>
+			</h:form>
+		</div>
+	</ui:define>
+</ui:composition>
+

@@ -1,0 +1,79 @@
+<ui:composition template="/template/Layout.xhtml"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:p="http://primefaces.org/ui">
+
+	<ui:define name="titulo">Cadastro de material</ui:define>
+
+	<ui:define name="conteudo">
+		<div class="ui-fluid">
+			<h:form
+				style="width: 100%; font-weight:bold;font-size: 12px; margin-top:1%">
+				#{cadFuncionarioController.init()}
+					<p:fieldset legend="Cadastrar Funcionários">
+					<h:panelGrid columns="4">
+						<p:outputLabel value="Nome:" />
+						<p:inputText
+							value="#{cadFuncionarioController.cadFuncionario.nome}"
+							required="true" requiredMessage="Insira o Nome do Funcionario" size="60"
+							onkeyup="this.value = this.value.toUpperCase()" />
+						<p:outputLabel />
+						
+						<p:commandButton value="Salvar" id="salvar"
+							action="#{cadFuncionarioController.salvar()}" process="@form"
+							update="@form" style="margin-top:10px" />
+					
+					</h:panelGrid>
+				</p:fieldset>
+				
+				<p:blockUI block="@form" trigger="salvar" animate="true">
+						SALVANDO ...<br />
+					<p:graphicImage library="imagens" name="load.gif" />
+				</p:blockUI>
+				<!-- Tabela Funcionarios -->
+				<p:panel header="Funcionários Cadastrados">
+
+					<p:dataTable widgetVar="tabelaFuncionario" emptyMessage="Lista Vazia"
+						value="#{cadFuncionarioController.listaFuncionarios}" var="func"
+						id="tbl" resizeMode="expand" reflow="true"
+						style="margin-top:5px;font-size:10px" paginator="true" rows="15"
+						rowsPerPageTemplate="5,10,15" paginatorPosition="bottom"
+						paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} ">
+
+						<p:column headerText="Funcionário" width="50%"
+							style="text-align:center" filterBy="#{func.nome}">
+							<h:outputLabel value="#{func.nome}" />
+						</p:column>
+
+						<p:column width="12%" style="text-align:center">
+
+							<p:commandButton icon="fa fa-trash"
+								title="Clique para Excluir"  process="@this"
+								action="#{cadFuncionarioController.prepararExclusao(func)}"
+								oncomplete="PF('confirmarExclusaoCursoDialog').show()"
+								style="width:25px;margin-left:5px" />
+
+
+						</p:column>
+					</p:dataTable>
+				
+				</p:panel>
+				
+				<p:confirmDialog widgetVar="confirmarExclusaoCursoDialog"
+					message="Deseja excluir este Funcionário?">
+					<h:panelGrid columns="2">
+						<p:commandButton value="Sim" process="@this" style="widht:50px"
+							action="#{cadFuncionarioController.excluir()}"
+							update="tbl"
+							oncomplete="PF('confirmarExclusaoCursoDialog').hide()" />
+						<p:commandButton value="Não" style="widht:50px"
+							oncomplete="PF('confirmarExclusaoCursoDialog').hide()" />
+					</h:panelGrid>
+				</p:confirmDialog>
+			</h:form>
+		</div>
+	</ui:define>
+</ui:composition>
+

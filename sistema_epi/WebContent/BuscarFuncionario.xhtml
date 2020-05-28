@@ -1,0 +1,70 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:p="http://primefaces.org/ui">
+<h:head>
+	#{sistemaControllerEntrega.novaBusca()}
+	<h:form style="width: 95%; margin-left: auto; margin-right:auto; font-size: 10px">
+	
+			
+			<div style="margin-top: 5px; margin-bottom: 10px">
+				<p:inputText value="#{sistemaControllerEntrega.nome}"
+					placeholder="Nome do funcionário"
+					onkeyup="this.value = this.value.toUpperCase()" />
+
+				<p:spacer width="10px" />
+
+				<p:commandButton value="Pesquisar" process="@form"
+					action="#{sistemaControllerEntrega.pesquisar()}" update="tbl" />
+
+			</div>
+
+			<p:dataTable id="tbl"
+				value="#{sistemaControllerEntrega.funcionariosFiltrados }"
+				widgetVar="tabelaFuncinarioBusca" var="funcionario"
+				style="margin-top:10px" emptyMessage="Nenhum funcionário encontrado"
+				paginator="true" rows="9" rowsPerPageTemplate="3,6,9"
+				paginatorPosition="bottom" resizableColumns="true">
+				
+				<p:column headerText="Foto " width="5%" style="text-align:center">
+						<p:graphicImage library="imagens" name="sem_foto.png" width="34px"
+							height="42px" style="text-align:center;box-shadow: 1px 1px 4px;border-radius: 10px;"
+							rendered="#{funcionario.foto == null}">
+							<f:param name="idFunc" value="#{funcionario.id}" />
+						</p:graphicImage>
+						<p:graphicImage value="#{sistemaControllerFuncionario.imagemFunc}"
+							width="34px" height="42px"
+							style="text-align:center;box-shadow: 1px 1px 4px;border-radius: 10px;"
+							rendered="#{sistemaControllerFuncionario.imagemFunc != null}">
+							<f:param name="idFunc" value="#{funcionario.id}" />
+						</p:graphicImage>
+				</p:column>
+				
+				<p:column headerText="Nome" width="20%">
+					<h:outputText value="#{funcionario.nome}" />
+				</p:column>
+				<p:column headerText="cpf" width="11%" style="text-align:center">
+					<h:outputText value="#{funcionario.cpf}" />
+				</p:column>
+				<p:column headerText="RG" width="11%" style="text-align:center">
+					<h:outputText value="#{funcionario.rg}" />
+				</p:column>
+				<p:column style="width:30px; text-align:center" width="7%">
+					<p:commandButton icon="fa fa-check-square"
+						style="text-decoration: none"
+						title="Clique para selecionar este funciario!!"
+						action="#{sistemaControllerEntrega.selecionar(funcionario)}"
+						process="@this" id="selecionar">
+
+					</p:commandButton>
+				</p:column>
+			</p:dataTable>
+		
+	</h:form>
+</h:head>
+</html>
+

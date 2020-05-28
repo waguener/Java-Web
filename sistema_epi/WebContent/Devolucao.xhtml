@@ -1,0 +1,72 @@
+<ui:composition template="/template/LayoutPadrao.xhtml"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:p="http://primefaces.org/ui">
+
+	<ui:define name="titulo">Devolução do Epi</ui:define>
+
+	<ui:define name="conteudo">
+		<p:panel header="Devolução de EPI" >
+			<h:form id="tabela" style="font-size: 9px;">
+				#{sistemaControllerEntrega.novaDevolucao()}
+				<p:inputText value="#{sistemaControllerEntrega.devNome}"
+					onkeyup="this.value = this.value.toUpperCase()"
+					placeholder="Funcionário" />
+				<p:commandButton icon="ui-icon-search" value="Pesquisar"
+					action="#{sistemaControllerEntrega.devolucaoNome()}" process="@form" update="tbl" />
+
+
+				<p:dataTable id="tbl"
+					value="#{sistemaControllerEntrega.funcFiltrados }"
+					widgetVar="tabelaEpiBusca" var="funcionario"
+					style="margin-top:10px" paginator="true" rows="12"
+					rowsPerPageTemplate="3,6,12" paginatorPosition="bottom"
+					emptyMessage="Lista vazia" resizableColumns="true"
+					scrollable="true">
+
+					<p:column headerText="Nome" width="20%" style="margin:auto">
+						<h:outputText value="#{funcionario.funcionario.nome} " />
+					</p:column>
+					<p:column headerText="CPF" width="16%" style="text-align:center">
+						<h:outputText value="#{funcionario.funcionario.cpf} " />
+					</p:column>
+					<p:column headerText="EPI" width="13%" style="margin:auto">
+						<h:outputText value="#{funcionario.epi.descricao} " />
+					</p:column>
+					<p:column headerText="C.A" width="10%" style="text-align:center">
+						<h:outputText value="#{funcionario.epi.ca} " />
+					</p:column>
+					<p:column headerText="QTD" width="7%" style="text-align:center" >
+						<h:outputText value="#{funcionario.quantidade} " />
+					</p:column>
+					<p:column headerText="Data" width="12%" style="text-align:center">
+						<h:outputText value="#{funcionario.data} ">
+							<f:convertDateTime pattern="dd/MM/yyyy" locale="pt_BR" />
+						</h:outputText>
+					</p:column>
+					<p:column headerText="Hr.Retirada" width="12%"
+						style="text-align:center">
+						<h:outputText value="#{funcionario.hora} " />
+					</p:column>
+					<p:column headerText="Protocolo" width="17%"
+						style="text-align:center">
+						<h:outputText value="#{funcionario.protocolo} " />
+					</p:column>
+					<p:column width="14%" style="text-align:center">
+						<p:commandButton value="Devolução"
+							action="#{sistemaControllerEntrega.atualizar(funcionario)}" />
+					</p:column>
+				</p:dataTable>
+
+
+
+
+
+			</h:form>
+		</p:panel>
+
+
+	</ui:define>
+</ui:composition>

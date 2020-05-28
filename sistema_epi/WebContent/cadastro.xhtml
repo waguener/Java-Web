@@ -1,0 +1,240 @@
+<ui:composition template="/template/LayoutPadrao.xhtml"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:p="http://primefaces.org/ui">
+
+	<ui:define name="titulo">Cadastro de Funcionários</ui:define>
+
+	<ui:define name="conteudo">
+		<div class="ui-fluid">
+			<h:form id="form">
+			#{sistemaControllerFuncionario.novoFuncionario()}
+				<p:panelGrid columns="2" style="width:100%"
+					styleClass="panelgrid-noborder"
+					columnClasses="ui-grid-col-8,ui-grid-col-4">
+					<p:panel header="Cadastro de Funcionários">
+						<h:panelGrid columns="2" style="margin:15pz">
+							<p:outputLabel value="Nome:" />
+							<p:inputText
+								value="#{sistemaControllerFuncionario.funcionario.nome}"
+								onkeyup="this.value = this.value.toUpperCase()" required="true"
+								requiredMessage="Informe o nome"
+								style="font-size:14px;width:350px" />
+						</h:panelGrid>
+						<h:panelGrid columns="4" style="margin:15pz">
+							<p:outputLabel value="RG:" />
+							<p:inputText
+								value="#{sistemaControllerFuncionario.funcionario.rg}"
+								onkeyup="this.value = this.value.toUpperCase()" required="true"
+								requiredMessage="Informe o rg" style="font-size:14px" />
+							<p:outputLabel value="CPF:" />
+							<p:inputMask
+								value="#{sistemaControllerFuncionario.funcionario.cpf}"
+								mask="999.999.999-99"
+								onkeyup="this.value = this.value.toUpperCase()" required="true"
+								requiredMessage="Informe o cpf" style="font-size:14px;" />
+						</h:panelGrid>
+						<h:panelGrid columns="4" style="margin:15pz">
+							<p:outputLabel value="Agência" />
+							<p:selectOneMenu
+								value="#{sistemaControllerFuncionario.funcionario.agencia}"
+								required="true" requiredMessage="Selecione a Agência">
+								<f:selectItem itemValue="#{null}" itemLabel="::Selecione::" />
+								<f:selectItems value="#{sistemaControllerFuncionario.agencias}"
+									var="agencia" itemValue="#{agencia.agencia}"
+									itemLabel="#{agencia.agencia}" />
+
+							</p:selectOneMenu>
+							<p:outputLabel value="Função:" />
+							<p:inputText
+								value="#{sistemaControllerFuncionario.funcionario.funcao}"
+								onkeyup="this.value = this.value.toUpperCase()" required="true"
+								requiredMessage="Informe o campo Função"
+								style="text-transform: uppercase" size="25" />
+						</h:panelGrid>
+						<h:panelGrid columns="2">
+
+							<h:panelGrid columns="1" style="margin:15pz">
+								<p:outputLabel value="Turno do Funcionário"
+									style="font-size:14px;font-weight:bold" />
+							</h:panelGrid>
+							<h:panelGrid columns="1" style="margin:15pz">
+								<p:outputLabel value="Data de Admissão"
+									style="font-size:14px;font-weight:bold" />
+							</h:panelGrid>
+							<h:panelGrid columns="1">
+								<h:selectOneRadio id="turno"
+									value="#{sistemaControllerFuncionario.funcionario.turno}"
+									required="true" requiredMessage="Selecione o Turno">
+									<f:selectItem itemLabel="1º Turno" itemValue="1º Turno" />
+									<f:selectItem itemLabel="2º Turno" itemValue="2º Turno" />
+									<f:selectItem itemLabel="3º Turno" itemValue="3º Turno" />
+									<f:selectItem itemLabel="ADM" itemValue="ADM" />
+								</h:selectOneRadio>
+							</h:panelGrid>
+							<h:panelGrid columns="1" style="margin:15pz">
+								<p:calendar pattern="dd/MM/yyyy" mask="99/99/9999" id="data"
+									navigator="true" showOn="button" size="10"
+									value="#{sistemaControllerFuncionario.funcionario.dataAdmissao}"
+									required="true" requiredMessage="Informe a Data" locale="pt"
+									effect="fold" title="Clique para abrir o calendário" />
+							</h:panelGrid>
+							<h:panelGrid columns="1" style="margin:15pz">
+								<p:outputLabel value="Situação do Funcionário" style="font-size:14px;font-weight:bold"/>
+							</h:panelGrid>
+							<h:panelGrid columns="1" style="margin:15pz">
+								<p:outputLabel />
+							</h:panelGrid>
+							<h:panelGrid columns="4">
+								<h:selectOneRadio id="situacao" required="true"
+									requiredMessage="Informe a situação do funcionário"
+									value="#{sistemaControllerFuncionario.funcionario.status}">
+									<f:selectItem itemLabel="Admitido" itemValue="Admitido" />
+									<f:selectItem itemLabel="Demitido" itemValue="Demitido" />
+								</h:selectOneRadio>
+							</h:panelGrid>
+							<h:panelGrid columns="1" style="margin:15pz">
+								<p:outputLabel />
+							</h:panelGrid>
+							<h:panelGrid columns="4">
+								<h:selectOneRadio required="true"
+									requiredMessage="Informe a situação do funcionário"
+									value="#{sistemaControllerFuncionario.funcionario.situacao}">
+									<f:selectItem itemLabel="Efetivo" itemValue="Efetivo" />
+									<f:selectItem itemLabel="Temporário" itemValue="Temporario" />
+								</h:selectOneRadio>
+							</h:panelGrid>
+						</h:panelGrid>
+					</p:panel>
+
+					<p:panelGrid columns="1" id="grid-update"
+						styleClass="panelgrid-noborder" columnClasses="ui-grid-col-12">
+
+						<h:outputLabel value="Foto" />
+
+						<h:panelGrid columns="3" id="imagem-func"
+							styleClass="panelgrid-noborder">
+							<f:facet name="header">
+								<p:graphicImage library="imagens" name="sem_foto.png"
+									width="80px" height="100px"
+									rendered="#{sistemaControllerFuncionario.funcionario.foto == null}" />
+
+								<p:graphicImage
+									value="#{sistemaControllerFuncionario.funcionario.imagem}"
+									rendered="#{sistemaControllerFuncionario.funcionario.foto != null}"
+									width="80px" height="100px" id="foto" cache="false"
+									style="margin-left:10px; box-shadow: 1px 1px 4px;border-radius: 10px; " />
+
+							</f:facet>
+
+							<p:commandButton value="Incluir Imagem"
+								rendered="#{sistemaControllerFuncionario.funcionario.foto == null}"
+								action="#{sistemaControllerFuncionario.abrirTela}"
+								icon="fa fa-file-image-o" process="@this" />
+
+							<p:commandButton value="Alterar Imagem"
+								rendered="#{sistemaControllerFuncionario.funcionario.foto != null}"
+								icon="fa fa-exchange" process="@this"
+								action="#{sistemaControllerFuncionario.abrirTela}" />
+
+							<p:commandButton value="Excluir" icon="fa fa-trash-o"
+								style="width: 80px; font-size: 12px;font-weight: bold"
+								process="@this" update="imagem-func"
+								action="#{sistemaControllerFuncionario.apagarFoto}"
+								rendered="#{sistemaControllerFuncionario.funcionario.foto != null}" />
+
+						</h:panelGrid>
+
+					</p:panelGrid>
+
+
+					<p:commandButton value="Salvar"
+						action="#{sistemaControllerFuncionario.cadastraFunc}"
+						style="margin:15px; margin-left: 50px;width:150px" update="form" />
+
+				</p:panelGrid>
+				<!-- Painel -->
+				<p:dialog widgetVar="painelCamera" resizable="false" width="620"
+					closable="false" position="top" showHeader="true" dynamic="true"
+					header="Adicionar Imagem" style="margin-top:50px;" modal="true"
+					showEffect="fade" hideEffect="fade" id="principal">
+
+					<p:panelGrid columns="1" layout="grid"
+						columnClasses="ui-grid-col-12" styleClass="panelgrid-noborder">
+
+						<p:fileUpload auto="true" label="Abrir Pasta" skinSimple="true"
+							allowTypes="/(\.|\/)(gif|jpe?g|png)$/" sizeLimit="7120000"
+							invalidSizeMessage="Tamanho máximo da imagem 2000kb"
+							invalidFileMessage="Formato de arquivo inválido"
+							fileUploadListener="#{sistemaControllerFuncionario.abrirPasta}"
+							update="cropped_com_foto,botao" />
+
+					</p:panelGrid>
+
+					<p:panelGrid columns="2" layout="grid" id="painel"
+						columnClasses="ui-grid-col-8,ui-grid-col-4"
+						styleClass="panelgrid-noborder" style="width:100%">
+
+						<p:panelGrid columns="1" layout="grid" id="cropped_com_foto"
+							columnClasses="ui-grid-col-12" styleClass="panelgrid-noborder">
+
+							<p:panel header="Foto" style="width: 340px; height: 320px;">
+
+								<p:imageCropper boxHeight="250" boxWidth="300"
+									initialCoords="225,75,280,125" id="imageCropperFotoId"
+									rendered="#{sistemaControllerFuncionario.exibirImagem != false}"
+									image="#{pageContext.servletContext.contextPath}/resources/imagens/#{sistemaControllerFuncionario.fotoCapturada}"
+									value="#{sistemaControllerFuncionario.imagemCortada}" />
+								<center>
+
+									<p:commandButton value="Cortar" process="cropped_com_foto"
+										action="#{sistemaControllerFuncionario.cortarImagem()}"
+										icon="fa fa-cut" style="margin-top:15px; width:100px"
+										update="panelFotoRecortadaId"
+										rendered="#{sistemaControllerFuncionario.exibeBotao == true}" />
+								</center>
+							</p:panel>
+
+						</p:panelGrid>
+
+						<p:panelGrid columns="1" layout="grid" style="margin:0px"
+							columnClasses="ui-grid-col-12" styleClass="panelgrid-noborder">
+
+							<p:panel id="panelFotoRecortadaId" header="Foto Recortada"
+								style="width: 180px; height: 260px;">
+
+								<p:graphicImage width="160px" cache="false"
+									rendered="#{sistemaControllerFuncionario.exibirImagemCortada != false}"
+									value="#{sistemaControllerFuncionario.imagemEnviada}" />
+								<center>
+									<p:commandButton value="Salvar" update="imagem-func"
+										icon="fa fa-check-square-o" process="panelFotoRecortadaId"
+										rendered="#{sistemaControllerFuncionario.exibeBotaoSalvar == true}"
+										style="width:100px"
+										action="#{sistemaControllerFuncionario.salvarImagem}" />
+								</center>
+							</p:panel>
+
+						</p:panelGrid>
+
+					</p:panelGrid>
+
+					<!-- Footer do Painel -->
+					<p:panelGrid columns="3" layout="grid" id="botao"
+						style="margin-left:50px"
+						columnClasses="ui-grid-col-4,ui-grid-col-4,ui-grid-col-4"
+						styleClass="panelgrid-noborder">
+						<p:outputLabel />
+						<p:commandButton value="Fechar" icon="fa fa-close" process="@this"
+							action="#{sistemaControllerFuncionario.fecharTela}" />
+						<p:outputLabel />
+					</p:panelGrid>
+
+
+				</p:dialog>
+			</h:form>
+		</div>
+	</ui:define>
+</ui:composition>

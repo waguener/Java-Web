@@ -1,0 +1,72 @@
+<ui:composition template="/template/LayoutPadrao.xhtml"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:p="http://primefaces.org/ui">
+
+	<ui:define name="titulo">Lista de EPIs</ui:define>
+
+	<ui:define name="conteudo">
+	
+		#{sistemaControllerEpi.porData()}
+		<h:form style="font-size:9px">
+			<p:panel header="Epis Cadastrados" >
+			<p:inputText id="descricao" onkeyup="this.value = this.value.toUpperCase()"
+				value="#{sistemaControllerEpi.desc}"
+				placeholder="Descrição do EPI" />
+
+			<p:commandButton icon="ui-icon-search" value="Pesquisar"
+				action="#{sistemaControllerEpi.porDesc}" update="@form" />
+			<p:dataTable widgetVar="tabelaEpi" id="tbl" emptyMessage="Lista Vazia"
+				resizableColumns="true" rowStyleClass="#{epi.quantidadeTotal le 1 ? 'cores' :null}"
+				value="#{sistemaControllerEpi.buscaEpi}" var="epi"
+				style="margin-top:5px" paginator="true" rows="12"
+				rowsPerPageTemplate="3,6,12" paginatorPosition="bottom">
+				
+				<p:column headerText="Descrição" width="20%">
+					<h:outputText value="#{epi.descricao }" />
+				</p:column>
+				<p:column headerText="C.A." width="8%" style="text-align:center">
+					<h:outputText value="#{epi.ca }" />
+				</p:column>
+				<p:column headerText="Lote" width="5%" style="text-align:center">
+					<h:outputText value="#{epi.lote }" />
+				</p:column>
+				<p:column headerText="Total" width="5%" style="text-align:center" sortBy="#{epi.quantidadeTotal }">
+					<h:outputText value="#{epi.quantidadeTotal }" />
+				</p:column>
+				<p:column headerText="Valor Unitário" width="9%" style="text-align:center">
+					<h:outputText value="#{epi.valorUnitario }">
+						<f:convertNumber type="currency" currencySymbol="R$"
+							locale="pt_BR" />
+					</h:outputText>
+				</p:column>
+				<p:column headerText="Valor Total" width="9%" style="text-align:center">
+					<h:outputText value="#{epi.valorTotal }">
+						<f:convertNumber type="currency" currencySymbol="R$"
+							locale="pt_BR" />
+					</h:outputText>
+				</p:column>
+				<p:column headerText="Aquisição" width="8%"
+					style="text-align:center" sortBy="#{epi.data}">
+					<h:outputText value="#{epi.data }">
+						<f:convertDateTime pattern="dd/MM/yyyy" locale="pt" />
+					</h:outputText>
+				</p:column>
+				<p:column headerText="Status" width="6%" style="text-align:center" sortBy="#{epi.status}">
+					<h:outputText  value="#{epi.status}"/>
+				</p:column>
+				
+				<p:column width="4%" style="text-align:center">
+					<p:commandButton icon="fa fa-edit"
+						action="#{sistemaControllerEpi.busca(epi)}" id="edit"
+						title="Clique para editar!" />
+				</p:column>
+
+			</p:dataTable>
+			</p:panel>
+		</h:form>
+
+	</ui:define>
+</ui:composition>

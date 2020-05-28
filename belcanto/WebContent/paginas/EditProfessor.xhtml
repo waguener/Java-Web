@@ -1,0 +1,362 @@
+<ui:composition template="/template/Layout.xhtml"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:p="http://primefaces.org/ui">
+
+	<ui:define name="titulo">Cadastrar Professores</ui:define>
+
+	<ui:define name="conteudo">
+		<div class="ui-fluid">
+			<h:form id="form"
+				style="width: 100%; font-weight:bold;font-size: 12px; margin-top:1%">
+				#{professorController.inicioEdit()}
+				<p:panelGrid columns="1" layout="grid" style="margin-top:80px"
+					styleClass="panelgrid-noborder" columnClasses="ui-grid-col-12">
+					<p:outputLabel value="Editar Cadastro do Professor"
+						style="font-size: 26pt;font-family:'Cabin', sans-serif" />
+				</p:panelGrid>
+
+				<p:fieldset legend="Dados do Professor" >
+
+					<p:panelGrid columns="3" layout="grid" style="margin-top:10px"
+						styleClass="panelgrid-noborder"
+						columnClasses="ui-grid-col-8,ui-grid-col-1,ui-grid-col-3">
+
+						<p:panelGrid columns="1" layout="grid" style="margin-top:10px"
+							styleClass="panelgrid-noborder" columnClasses="ui-grid-col-12">
+
+							<p:panelGrid columns="5" layout="grid" style="margin-top:10px"
+								styleClass="panelgrid-noborder"
+								columnClasses="ui-grid-col-1,ui-grid-col-6,ui-grid-col-0.5,ui-grid-col-1.5,ui-grid-col-3.5">
+
+								<p:outputLabel value="Nome" style="font-size: 16pt;" />
+								<p:inputText value="#{professorController.professor.nome}" required="true" requiredMessage="Informe o Nome"
+									style="margin-left:10px;font-size:14pt;font-weigth:bold;color:#000;"
+									onkeyup="this.value = this.value.toUpperCase()" />
+								<p:outputLabel />
+								<p:outputLabel value="CPF" style="font-size: 16pt;" />
+								<p:inputMask value="#{professorController.professor.cpf}" required="true" requiredMessage="Informe o CPF"
+									style="margin-left:10px;font-size:14pt;font-weigth:bold;color:#000;"
+									mask="999.999.999-99" size="15" />
+							</p:panelGrid>
+							<p:panelGrid columns="8" layout="grid" style="margin-top:10px"
+								styleClass="panelgrid-noborder"
+								columnClasses="ui-grid-col-1,ui-grid-col-4,ui-grid-col-0.5,ui-grid-col-1.5,ui-grid-col-3.5">
+								<p:outputLabel value="RG" style="font-size: 16pt;" />
+								<p:inputText value="#{professorController.professor.rg}"
+									size="15" required="true" requiredMessage="Informe o RG"
+									style="margin-left:10px;font-size:14pt;font-weigth:bold;color:#000;" />
+								<p:outputLabel />
+								<p:outputLabel value="Ativo" style="font-size: 16pt;" />
+								<p:selectBooleanCheckbox
+									value="#{professorController.professor.ativo}" required="true"
+									requiredMessage="Informe se está Ativo"
+									style="margin-left:10px;font-size:14pt;font-weigth:bold;color:#000;" />
+								<p:outputLabel />
+								<p:outputLabel value="CNPJ" style="font-size: 16pt;" />
+								<p:inputMask value="#{professorController.professor.cnpj}"
+									size="17" mask="99.999.999/9999-99" required="true" requiredMessage="Informe o CNPJ"
+									style="font-size:14pt;font-weigth:bold;color:#000;" />
+							</p:panelGrid>
+							<p:panelGrid columns="5" layout="grid" style="margin-top:10px"
+								styleClass="panelgrid-noborder"
+								columnClasses="ui-grid-col-1,ui-grid-col-6,ui-grid-col-0.5,ui-grid-col-1.5,ui-grid-col-3.5">
+								<p:outputLabel value="Nasc." style="font-size: 16pt;" />
+								<p:calendar pattern="dd/MM/yyyy" mask="99/99/9999"
+									required="true" requiredMessage="Informe a Data" locale="pt"
+									showOn="true" 
+									value="#{professorController.professor.dtnascimento}" size="10"
+									style="margin-left:10px;font-size:14pt;font-weigth:bold;color:#000;" />
+							</p:panelGrid>
+						</p:panelGrid>
+						<p:outputLabel />
+						<p:panelGrid columns="1" id="grid-update"
+							styleClass="panelgrid-noborder" columnClasses="ui-grid-col-12">
+
+							<h:outputLabel value="Foto" />
+
+							<h:panelGrid columns="3" id="imagem-professor"
+								styleClass="panelgrid-noborder">
+								<f:facet name="header">
+									<p:graphicImage library="imagens" name="sem_foto.png"
+										width="110px" height="140px"
+										rendered="#{professorController.professor.foto == null}" />
+
+									<p:graphicImage value="#{professorController.professor.imagem}"
+										rendered="#{professorController.professor.foto != null}"
+										width="120px" height="140px" id="foto" cache="false"
+										style="margin-left:10px; box-shadow: 1px 1px 4px;border-radius: 10px; " />
+
+								</f:facet>
+
+								<p:commandButton value="Incluir Imagem"
+									rendered="#{professorController.professor.foto == null}"
+									action="#{professorController.abrirTela}"
+									icon="fa fa-file-image-o" process="@this" />
+
+								<p:commandButton value="Alterar Imagem"
+									rendered="#{professorController.professor.foto != null}"
+									icon="fa fa-exchange" process="@this"
+									action="#{professorController.abrirTela}" />
+
+								<p:commandButton value="Excluir" icon="fa fa-trash-o"
+									style="width: 80px; font-size: 12px;font-weight: bold"
+									process="@this" update="imagem-professor"
+									action="#{professorController.apagarFoto}"
+									rendered="#{professorController.professor.foto != null}" />
+
+							</h:panelGrid>
+						</p:panelGrid>
+					</p:panelGrid>
+				</p:fieldset>
+				<p:panelGrid columns="2" layout="grid" style="margin-top:10px"
+					styleClass="panelgrid-noborder"
+					columnClasses="ui-grid-col-9,ui-grid-col-3">
+
+				</p:panelGrid>
+				
+				<p:fieldset legend="Dados Bancários" >
+					<p:panelGrid columns="8" layout="grid" style="margin-top:10px"
+						styleClass="panelgrid-noborder"
+						columnClasses="ui-grid-col-1,ui-grid-col-3,ui-grid-col-0.5,ui-grid-col-1.5,ui-grid-col-5.5">
+						<p:outputLabel value="Banco" style="font-size: 16pt;" />
+						<p:selectOneMenu style="width:200px" required="true" requiredMessage="Informe o Banco"
+							value="#{professorController.bd}">
+							<f:selectItem itemValue="#{null}" itemLabel=".:Selecione:." />
+							<f:selectItems value="#{professorController.listarBancos}"
+								var="banco" itemValue="#{banco.banco}"
+								itemLabel="#{banco.banco}" />
+							<p:ajax event="itemSelect" listener="#{professorController.cod()}"
+								process="@this" update="cod" />
+						</p:selectOneMenu>
+						<p:outputLabel />
+						<p:outputLabel value="Cod. -" style="font-size: 16pt;" />
+						<p:outputLabel
+							value="#{professorController.professor.banco.codBanco}" id="cod"
+							style="margin-left:10px;font-size:14pt;font-weigth:bold;color:#0000FF;" />
+						<p:outputLabel />
+						<p:outputLabel value="Tipo" style="font-size: 16pt;" />
+						<p:selectOneMenu style="width:200px" required="true" requiredMessage="Informe o Tipo da Conta"
+							value="#{professorController.professor.tipoConta}">
+							<f:selectItem itemValue="#{null}" itemLabel="Tipo Conta" />
+							<f:selectItem itemLabel="CORRENTE" itemValue="CORRENTE" />
+							<f:selectItem itemLabel="POUPANÇA" itemValue="POUPANÇA" />
+
+						</p:selectOneMenu>
+					</p:panelGrid>
+					<p:panelGrid columns="5" layout="grid" style="margin-top:10px"
+						styleClass="panelgrid-noborder"
+						columnClasses="ui-grid-col-1.4,ui-grid-col-3,ui-grid-col-0.5,ui-grid-col-1.5,ui-grid-col-5.5">
+
+						<p:outputLabel value="Nº Conta" style="font-size: 16pt;" />
+						<p:inputText value="#{professorController.professor.numConta}"
+							size="14" required="true" requiredMessage="Informe o Nº da Conta"
+							style="margin-left:10px;font-size:14pt;font-weigth:bold;color:#000;" />
+						<p:outputLabel />
+						<p:outputLabel value="Agência" style="font-size: 16pt;" />
+						<p:inputText value="#{professorController.professor.agencia}"
+							size="14" required="true" requiredMessage="Informe o Nº da Agência"
+							style="margin-left:10px;font-size:14pt;font-weigth:bold;color:#000;"
+							onkeyup="this.value = this.value.toUpperCase()" />
+					</p:panelGrid>
+				</p:fieldset>
+
+				<p:fieldset legend="Contato" style="margin-top:15px">
+					<p:panelGrid columns="5" layout="grid" style="margin-top:10px"
+						styleClass="panelgrid-noborder"
+						columnClasses="ui-grid-col-1.5,ui-grid-col-3,ui-grid-col-2,ui-grid-col-1.5,ui-grid-col-3">
+						<p:outputLabel value="E-Mail" style="font-size: 16pt;" />
+						<p:inputText
+							value="#{professorController.professor.contato.email}" size="32"
+							style="margin-left:10px;font-size:14pt;font-weigth:bold;color:#000;" />
+						<p:outputLabel />
+						<p:outputLabel value="Tel.Fixo" style="font-size: 16pt;" />
+						<p:inputMask
+							value="#{professorController.professor.contato.telFixo}"
+							style="margin-left:10px;font-size:14pt;font-weigth:bold;color:#000;"
+							mask="(99) 9999 - 9999" size="15" />
+					</p:panelGrid>
+					<p:panelGrid columns="8" layout="grid" style="margin-top:10px"
+						styleClass="panelgrid-noborder"
+						columnClasses="ui-grid-col-0.9,ui-grid-col-3,ui-grid-col-0.5,ui-grid-col-0.9,ui-grid-col-3,ui-grid-col-0.5,ui-grid-col-0.9,ui-grid-col-3.3">
+						<p:outputLabel value="Cel.1" style="font-size: 16pt;" dir="rtl" />
+						<p:inputMask value="#{professorController.professor.contato.cel1}"
+							style="margin-left:10px;font-size:14pt;font-weigth:bold;color:#000;"
+							mask="(99) 9 9999 - 9999" size="15" />
+						<p:outputLabel />
+						<p:outputLabel value="Cel.2" style="font-size: 16pt;" />
+						<p:inputMask value="#{professorController.professor.contato.cel2}"
+							style="margin-left:10px;font-size:14pt;font-weigth:bold;color:#000;"
+							mask="(99) 9 9999 - 9999" size="15" />
+						<p:outputLabel />
+						<p:outputLabel value="Cel.3" style="font-size: 16pt;" />
+						<p:inputMask value="#{professorController.professor.contato.cel3}"
+							style="margin-left:10px;font-size:14pt;font-weigth:bold;color:#000;"
+							mask="(99) 9 9999 - 9999" size="15" />
+
+					</p:panelGrid>
+				</p:fieldset>
+				<p:fieldset legend="Endereço" style="margin-top:15px">
+
+					<p:panelGrid columns="5" layout="grid" style="margin-top:10px"
+						styleClass="panelgrid-noborder"
+						columnClasses="ui-grid-col-1.5,ui-grid-col-3,ui-grid-col-0.5,ui-grid-col-1.5,ui-grid-col-3">
+						<p:outputLabel value="CEP" style="font-size: 16pt;" />
+						<p:inputMask value="#{professorController.cep}" required="true" requiredMessage="Informe o CEP"
+							style="margin-left:10px;font-size:14pt;font-weigth:bold;color:#000;"
+							mask="99999-999" size="10">
+							<p:ajax event="blur"
+								listener="#{professorController.buscarCep()}" process="@this"
+								update="end,log" />
+						</p:inputMask>
+						<p:outputLabel />
+						<p:outputLabel value="Nº Casa" style="font-size: 16pt;" />
+						<p:inputText
+							value="#{professorController.professor.endereco.numero}" size="5"
+							style="margin-left:10px;font-size:14pt;font-weigth:bold;color:#000;"
+							onkeyup="$(this).val($(this).val().replace(/[^0-9]/g, ''));" />
+					</p:panelGrid>
+					<p:panelGrid columns="8" layout="grid" style="margin-top:10px"
+						styleClass="panelgrid-noborder" id="end"
+						columnClasses="ui-grid-col-1.5,ui-grid-col-1,ui-grid-col-1,ui-grid-col-1.5,ui-grid-col-3">
+
+						<p:outputLabel value="U.F. -" style="font-size: 16pt;" />
+						<p:outputLabel value="#{professorController.estado}"
+							style="margin-left:10px;font-size:14pt;font-weigth:bold;color:#0000FF;" />
+						<p:outputLabel />
+
+						<p:outputLabel value="Cidade -" style="font-size: 16pt;" />
+						<p:outputLabel value="#{professorController.cidade} "
+							style="margin-left:10px;font-size:14pt;font-weigth:bold;color:#0000FF;" />
+
+						<p:outputLabel />
+						<p:outputLabel value="Bairro -" style="font-size: 16pt;" />
+						<p:outputLabel value="#{professorController.bairro} "
+							style="margin-left:10px;font-size:14pt;font-weigth:bold;color:#0000FF;" />
+
+					</p:panelGrid>
+					<p:panelGrid columns="2" layout="grid" style="margin-top:10px"
+						styleClass="panelgrid-noborder" id="log"
+						columnClasses="ui-grid-col-1.5,ui-grid-col-10.5">
+
+						<p:outputLabel value="Logradouro -" style="font-size: 16pt;" />
+						<p:outputLabel
+							value="#{professorController.tipoLogradouro} #{professorController.logradouro}"
+							style="margin-left:10px;font-size:14pt;font-weigth:bold;color:#0000FF;" />
+
+					</p:panelGrid>
+					
+				</p:fieldset>
+				
+				<p:fieldset legend="Disciplinas" style="margin-top:15px" id="disc">
+					<p:panelGrid columns="8" layout="grid" style="margin-top:10px"
+						styleClass="panelgrid-noborder"
+						columnClasses="ui-grid-col-1,ui-grid-col-3,ui-grid-col-0.5,ui-grid-col-1.5,ui-grid-col-5.5">
+						<p:outputLabel value="Nome" style="font-size: 16pt;" />
+						
+						<p:inputText value="#{professorController.professor.disciplina}"
+							size="54" required="true" requiredMessage="Informe a(s) disciplina(s)"
+							style="margin-left:10px;font-size:14pt;font-weigth:bold;color:#000;"
+							onkeyup="this.value = this.value.toUpperCase()" />
+							
+						<p:outputLabel/>
+					</p:panelGrid>
+					
+				</p:fieldset>
+				
+				<p:panelGrid columns="3" layout="grid" style="margin-top:10px"
+					styleClass="panelgrid-noborder"
+					columnClasses="ui-grid-col-4,ui-grid-col-4,ui-grid-col-4">
+					<p:outputLabel />
+					<p:commandButton value="Salvar" style="font-size:16px;width:150px" 
+						action="#{professorController.salvarEdit()}" process="form" />
+					<p:outputLabel />
+				</p:panelGrid>
+
+
+				<!-- Painel -->
+				<p:dialog widgetVar="painelCamera" resizable="false" width="620" 
+					closable="false" position="top" showHeader="true" dynamic="true"
+					header="Adicionar Imagem" style="margin-top:50px;" modal="true"
+					showEffect="fade" hideEffect="fade" id="principal">
+					
+						<p:panelGrid columns="1" layout="grid"
+							columnClasses="ui-grid-col-12" styleClass="panelgrid-noborder">
+
+							<p:fileUpload auto="true" label="Abrir Pasta" skinSimple="true"
+								allowTypes="/(\.|\/)(gif|jpe?g|png)$/" sizeLimit="7120000"
+								invalidSizeMessage="Tamanho máximo da imagem 2000kb"
+								invalidFileMessage="Formato de arquivo inválido"
+								fileUploadListener="#{professorController.abrirPasta}"
+								update="cropped_com_foto,botao" />
+
+						</p:panelGrid>
+
+						<p:panelGrid columns="2" layout="grid" id="painel"
+							columnClasses="ui-grid-col-8,ui-grid-col-4"
+							styleClass="panelgrid-noborder" style="width:100%">
+
+							<p:panelGrid columns="1" layout="grid" id="cropped_com_foto"
+								columnClasses="ui-grid-col-12" styleClass="panelgrid-noborder">
+
+								<p:panel header="Foto" style="width: 340px; height: 320px;">
+
+									<p:imageCropper boxHeight="250" boxWidth="300"
+										initialCoords="225,75,280,125" id="imageCropperFotoId"
+										rendered="#{professorController.exibirImagem != false}"
+										image="#{pageContext.servletContext.contextPath}/resources/imagens/#{professorController.fotoCapturada}"
+										value="#{professorController.imagemCortada}" />
+									<center>
+
+										<p:commandButton value="Cortar" process="cropped_com_foto"
+											action="#{professorController.cortarImagem()}"
+											icon="fa fa-cut" style="margin-top:15px; width:100px"
+											update="panelFotoRecortadaId"
+											rendered="#{professorController.exibeBotao == true}" />
+									</center>
+								</p:panel>
+
+							</p:panelGrid>
+
+							<p:panelGrid columns="1" layout="grid" style="margin:0px"
+								columnClasses="ui-grid-col-12" styleClass="panelgrid-noborder">
+
+								<p:panel id="panelFotoRecortadaId" header="Foto Recortada"
+									style="width: 180px; height: 260px;">
+
+									<p:graphicImage width="160px" cache="false"
+										rendered="#{professorController.exibirImagemCortada != false}"
+										value="#{professorController.imagemEnviada}" />
+									<center>
+										<p:commandButton value="Salvar" update="imagem-professor"
+											icon="fa fa-check-square-o" process="panelFotoRecortadaId"
+											rendered="#{professorController.exibeBotaoSalvar == true}"
+											style="width:100px"
+											action="#{professorController.salvarImagem}" />
+									</center>
+								</p:panel>
+
+							</p:panelGrid>
+
+						</p:panelGrid>
+
+						<!-- Footer do Painel -->
+						<p:panelGrid columns="3" layout="grid" id="botao"
+							style="margin-left:50px"
+							columnClasses="ui-grid-col-4,ui-grid-col-4,ui-grid-col-4"
+							styleClass="panelgrid-noborder">
+							<p:outputLabel/>
+							<p:commandButton value="Fechar" icon="fa fa-close"
+								process="@this" action="#{professorController.fecharTela}" />
+							<p:outputLabel/>
+						</p:panelGrid>
+					
+				</p:dialog>
+
+			</h:form>
+		</div>
+	</ui:define>
+</ui:composition>
+

@@ -1,0 +1,2835 @@
+<ui:composition template="/template/Layout.xhtml"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:p="http://primefaces.org/ui">
+
+	<ui:define name="titulo">KANBAN</ui:define>
+
+	<ui:define name="conteudo">
+		<div class="ui-fluid">
+			<h:form id="formKanban"
+				style="width: 100%; font-weight:bold;font-size: 12px; margin-top:1%">
+			
+
+				<p:panelGrid columns="4" layout="grid"
+					styleClass="panelgrid-noborder"
+					columnClasses="ui-grid-col-2,ui-grid-col-4,ui-grid-col-2,ui-grid-col-4">
+
+					<p:outputLabel value="Transportadora: " style="font-size:16px" />
+					<p:inputText value="#{cargaController.carga.transportadora}"
+						onkeyup="this.value = this.value.toUpperCase()"
+						style="font-size:16px" required="true"
+						requiredMessage="Insira uma Transportadora!!" />
+
+					<p:outputLabel value="Placa Carreta: " style="font-size:16px" />
+					<p:inputMask value="#{cargaController.carga.placa_carreta}"
+						mask="aaa-9999" style="font-size:16px" required="true"
+						requiredMessage="Insira um Número de placa!!" />
+
+					<p:outputLabel value="Motorista: " style="font-size:16px" />
+					<p:inputText value="#{cargaController.carga.motorista}"
+						onkeyup="this.value = this.value.toUpperCase()"
+						style="font-size:16px" />
+
+					<p:outputLabel value="Número da Carga: " style="font-size:16px" />
+					<p:outputLabel value="AGUARDANDO NOVA CARGA"
+						onkeyup="this.value = this.value.toUpperCase()"
+						style="font-size:18px"
+						rendered="#{cargaController.numeroCarga == null}" />
+					<p:outputLabel value="#{cargaController.numeroCarga}"
+						onkeyup="this.value = this.value.toUpperCase()"
+						style="font-size:18px" id="numCarga" />
+					<p:outputLabel rendered="#{cargaController.numeroCarga != null}" />
+					<p:outputLabel />
+					<p:outputLabel />
+					<p:outputLabel />
+					<p:outputLabel value="Tipo da Carga:" style="font-size:16px" />
+					<p:selectOneMenu value="#{cargaController.carga.tipoCarga}"
+						required="true"
+						requiredMessage="Selecione o Tipo Interno ou Externo!!"
+						style="font-size:16px;width:150px">
+						<f:selectItem itemLabel="Selecionar" itemValue="" />
+						<f:selectItem itemLabel="INTERNO" itemValue="INTERNO" />
+						<f:selectItem itemLabel="EXTERNO" itemValue="EXTERNO" />
+					</p:selectOneMenu>
+					<p:outputLabel />
+					<p:outputLabel value="Carga Paralela" style="font-size:16px" />
+
+				</p:panelGrid>
+				<p:separator />
+
+				<p:panelGrid columns="4" layout="grid"
+					styleClass="panelgrid-noborder"
+					columnClasses="ui-grid-col-3,ui-grid-col-3,ui-grid-col-3,ui-grid-col-3">
+					<p:panel>
+						<p:panelGrid columns="1" layout="grid"
+							columnClasses="ui-grid-col-12">
+							<h:graphicImage library="imagens" name="caminhaoChegada.png"
+								style="width:75%;margin-left: 15%" />
+
+							<p:panelGrid columns="3" layout="grid"
+								columnClasses="ui-grid-col-1,ui-grid-col-10,ui-grid-col-1">
+								<p:outputLabel />
+								<p:commandButton value="Chegada Caminhão"
+									style="width:85px;margin-left:13%;font-size:11px"
+									update="incluirCarga" action="#{cargaController.abrirCarga()}"
+									process="@form"
+									disabled="#{cargaController.carga.hora_chegada != null}" />
+
+								<p:outputLabel />
+
+							</p:panelGrid>
+
+							<p:panelGrid columns="3" layout="grid"
+								columnClasses="ui-grid-col-5,ui-grid-col-5,ui-grid-col-2">
+
+								<p:outputLabel value="Inicio:"
+									rendered="#{cargaController.carga.hora_chegada != null}"
+									id="textoChegada" style="font-size:16px;margin-left:-10%" />
+
+								<p:outputLabel value="#{cargaController.carga.hora_chegada}"
+									id="chegada" style="font-size:18px" />
+
+								<p:commandButton title="Fazer Cálculo de retorno"
+									rendered="#{cargaController.carga.hora_chegada != null}"
+									disabled="#{cargaController.carga.botaoCalculoRetorno == false}"
+									icon="fa fa-truck" style="width:30px;margin-left:10%"
+									update="@form" action="#{cargaController.retorno()}" />
+
+
+								<p:outputLabel value="Retorno:" id="textoRetorno"
+									rendered="#{cargaController.carga.tempo_retorno != null}"
+									style="font-size:16px;margin-left:-10%" />
+
+								<p:outputLabel
+									rendered="#{cargaController.carga.tempo_retorno != null}"
+									value="#{cargaController.carga.tempo_retorno}" id="retorno"
+									style="font-size:18px" />
+
+								<p:outputLabel
+									rendered="#{cargaController.carga.botaoCalculoRetorno != null}" />
+
+								<p:outputLabel value="Parado:" id="textoParado"
+									rendered="#{cargaController.carga.hora_total_parado != null}"
+									style="font-size:16px;margin-left:-10%" />
+
+								<p:outputLabel
+									value="#{cargaController.carga.hora_total_parado}"
+									id="totalTempoParado" style="font-size:18px" />
+								<p:outputLabel />
+
+							</p:panelGrid>
+
+							<p:commandButton icon="fa fa-trash-o"
+								oncomplete="PF('confirmarExclusaoCursoDialog').show()"
+								rendered="#{cargaController.carga.botaoExcluirEntrada1 == true}" />
+						</p:panelGrid>
+					</p:panel>
+					<p:panel>
+						<p:panelGrid columns="1" layout="grid"
+							columnClasses="ui-grid-col-12">
+							<h:graphicImage library="imagens" id="img2"
+								name="caminhaoDescarregamento.png"
+								style="width:75%;margin-left: 15%" />
+
+							<p:panelGrid columns="3" layout="grid" style="margin-left:-10px"
+								columnClasses="ui-grid-col-5,ui-grid-col-2,ui-grid-col-5">
+
+								<p:commandButton value="Inicio Operação"
+									style="width:80px;font-size:10px"
+									action="#{cargaController.salvarInicioOpParalela()}"
+									update="@form"
+									disabled="#{cargaController.carga.hora_inicio_descarregamento != null or cargaController.carga.botaoInicioOperacao != true}" />
+
+								<p:outputLabel />
+
+								<p:commandButton value="Término Operação"
+									style="width:80px;font-size:10px"
+									action="#{cargaController.salvarTerminoOpParalela()}"
+									update="@form"
+									disabled="#{cargaController.carga.hora_termino_descarregamento != null or cargaController.carga.botaoTerminoOperacao != true}" />
+
+							</p:panelGrid>
+							<p:panelGrid columns="3" layout="grid"
+								columnClasses="ui-grid-col-4,ui-grid-col-2,ui-grid-col-6">
+
+								<p:outputLabel value="Inicio:"
+									style="font-size:16px;;margin-left:-30%"
+									rendered="#{cargaController.carga.hora_inicio_descarregamento != null }" />
+								<p:outputLabel />
+								<p:outputLabel
+									value="#{cargaController.carga.hora_inicio_descarregamento}"
+									style="font-size:18px" id="inicioDesc" />
+
+
+								<p:outputLabel value="Término:"
+									style="font-size:16px;;margin-left:-30%"
+									rendered="#{cargaController.carga.hora_termino_descarregamento != null }" />
+								<p:outputLabel />
+								<p:outputLabel
+									value="#{cargaController.carga.hora_termino_descarregamento}"
+									style="font-size:18px" id="terminoDesc" />
+
+
+								<p:outputLabel value="Total:"
+									style="font-size:16px;margin-left:-30%"
+									rendered="#{cargaController.carga.hora_total_descarregamento != null}" />
+								<p:outputLabel />
+								<p:outputLabel
+									value="#{cargaController.carga.hora_total_descarregamento}"
+									id="totalTempoDescarregamento" style="font-size:18px" />
+
+							</p:panelGrid>
+							<p:commandButton icon="fa fa-trash-o"
+								oncomplete="PF('confirmarExclusaoCursoDialog1').show()"
+								rendered="#{cargaController.carga.botaoExcluirEntrada2 == true}" />
+						</p:panelGrid>
+					</p:panel>
+
+					<p:panel>
+						<p:panelGrid columns="1" layout="grid"
+							columnClasses="ui-grid-col-12">
+							<h:graphicImage library="imagens" name="caminhaoCarregamento.png"
+								style="width:75%;margin-left: 15%" />
+
+							<p:panelGrid columns="2" layout="grid"
+								columnClasses="ui-grid-col-6,ui-grid-col-6">
+
+								<p:commandButton value="Carregar" update="@form"
+									
+									action="#{cargaController.salvarInicioCarregamento()}"
+									style="width:70px; height: 36px;font-size:10px"
+									disabled="#{cargaController.carga.hora_inicio_carregamento != null or cargaController.carga.botaoInicioCarregamento != true}" />
+							<p:commandButton value="Término"
+									action="#{cargaController.abrirEnvio()}"
+									update="incluirEnvio" style="width:70px; height: 36px;font-size:10px"
+									disabled="#{cargaController.carga.hora_termino_carregamento != null or cargaController.carga.botaoTerminoCarregamento != true}" />
+
+							</p:panelGrid>
+
+							<p:panelGrid columns="3" layout="grid"
+								columnClasses="ui-grid-col-4,ui-grid-col-2,ui-grid-col-6">
+
+								<p:outputLabel value="Inicio:"
+									style="font-size:16px;margin-left:-30%"
+									rendered="#{cargaController.carga.hora_inicio_carregamento != null}" />
+								<p:outputLabel />
+								<p:outputLabel
+									value="#{cargaController.carga.hora_inicio_carregamento}"
+									id="inicioCar" style="font-size:18px" />
+
+								<p:outputLabel value="Término:"
+									style="font-size:16px;;margin-left:-30%"
+									rendered="#{cargaController.carga.hora_termino_carregamento != null}" />
+								<p:outputLabel />
+								<p:outputLabel
+									value="#{cargaController.carga.hora_termino_carregamento}"
+									id="terminoCar" style="font-size:18px" />
+
+
+								<p:outputLabel value="Total:"
+									style="font-size:16px;;margin-left:-30%"
+									rendered="#{cargaController.carga.hora_total_carregamento != null}" />
+								<p:outputLabel />
+								<p:outputLabel
+									value="#{cargaController.carga.hora_total_carregamento}"
+									id="totalTempoCarregamento" style="font-size:18px" />
+
+							</p:panelGrid>
+							<p:commandButton icon="fa fa-trash-o"
+								oncomplete="PF('confirmarExclusaoCursoDialog2').show()"
+								rendered="#{cargaController.carga.botaoExcluirEntrada3 == true}" />
+						</p:panelGrid>
+					</p:panel>
+
+					<p:panel>
+						<p:panelGrid columns="1" layout="grid"
+							columnClasses="ui-grid-col-12">
+							<h:graphicImage library="imagens" name="caminhaoSaida.png"
+								style="width:75%;margin-left: 15%" />
+
+							<p:panelGrid columns="3" layout="grid"
+								columnClasses="ui-grid-col-3,ui-grid-col-6,ui-grid-col-3">
+
+								<p:outputLabel />
+								<p:commandButton value="Saída Caminhão"
+									disabled="#{cargaController.carga.hora_total_carregamento == null }"
+									action="#{cargaController.finalizarCarga()}"
+									update="incluirEnvio,assunto,corpo"
+									style="width:85px;font-size:10px" />
+								<p:outputLabel />
+
+							</p:panelGrid>
+							<p:panelGrid columns="3" layout="grid"
+								columnClasses="ui-grid-col-6,ui-grid-col-2,ui-grid-col-4">
+
+								<p:outputLabel value="Tempo Olgber:"
+									style="font-size:16px;margin-left:-20%"
+									rendered="#{cargaController.carga.hora_total_olgber != null}" />
+								<p:outputLabel />
+								<p:outputLabel
+									value="#{cargaController.carga.hora_total_olgber}"
+									style="font-size:18px" />
+							</p:panelGrid>
+
+						</p:panelGrid>
+					</p:panel>
+				</p:panelGrid>
+
+				<!-- Tabela Kanban -->
+				<p:panel header="Dados do Carregamentos">
+
+					<p:dataTable widgetVar="tabelaKanban" emptyMessage="Lista Vazia"
+						value="#{cargaController.cargas}" var="kanban" id="tbl"
+						resizeMode="expand" reflow="true"
+						style="margin-top:5px;font-size:12px" paginator="true" rows="10"
+						rowsPerPageTemplate="3,5,8" paginatorPosition="bottom"
+						paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} ">
+
+						<p:column headerText="Carga N." width="8%"
+							style="text-align:center">
+							<h:outputLabel value="#{kanban.id}" />
+						</p:column>
+
+						<p:column headerText="Transportadora" width="16%"
+							style="text-align:center">
+							<h:outputLabel value="#{kanban.transportadora}" />
+						</p:column>
+
+						<p:column headerText="Carreta" width="17%"
+							style="text-align:center">
+							<h:outputLabel value="#{kanban.placa_carreta}" />
+						</p:column>
+
+						<p:column headerText="Motorista" width="13%"
+							style="text-align:center">
+							<h:outputLabel value="#{kanban.motorista}" />
+						</p:column>
+						<p:column headerText="Produto Recebido" width="13%"
+							style="text-align:center">
+							<h:outputLabel value="#{kanban.prodRecebido}" />
+						</p:column>
+						<p:column headerText="Status da Carga" width="13%"
+							style="text-align:center">
+							<h:outputLabel value="#{kanban.status}" />
+						</p:column>
+						<p:column headerText="Check-List" width="13%"
+							style="text-align:center">
+							<h:outputLabel
+								value="#{kanban.checkRecebimento} - #{kanban.temperatura} " />
+						</p:column>
+
+						<p:column width="12%" style="text-align:center">
+							<p:commandButton icon="fa fa-search" process="@this"
+								title="Clique para ver a Carga Detalhada" style="width:25px"
+								action="#{cargaController.verCarga(kanban)}"
+								update=":formKanban:impressao" />
+							<p:commandButton icon="fa fa-fw fa-edit"
+								title="Clique pra Editar"
+								action="#{cargaController.editar(kanban)}" process="@this"
+								style="width:25px;margin-left:5px" />
+
+						</p:column>
+					</p:dataTable>
+
+				</p:panel>
+
+
+				<!--Incluir Carga-->
+
+				<p:dialog resizable="false" position="top"
+					widgetVar="incluirProduto" width="92%" height="100%"
+					closable="false" modal="true" showEffect="blind" hideEffect="size"
+					style="margin-top: 50px">
+
+
+					<p:fieldset legend="Dados da Carga" style="margin-bottom:20px"
+						id="incluirCarga" collapsed="false">
+
+						<div style="width: 100%; height: 400px; overflow: auto;">
+
+							<p:panelGrid columns="4" layout="grid"
+								style="padding:10px;font-weight:bold"
+								columnClasses="ui-grid-col-3,ui-grid-col-3,ui-grid-col-3,ui-grid-col-3"
+								styleClass="panelgrid-noborder">
+
+
+								<p:panelGrid columns="1" layout="grid" style="font-weight:bold"
+									columnClasses="ui-grid-col-12">
+									<p:outputLabel value="Transportadora" />
+									<p:outputLabel value="#{cargaController.carga.transportadora}" />
+								</p:panelGrid>
+
+								<p:panelGrid columns="1" layout="grid" style="font-weight:bold"
+									columnClasses="ui-grid-col-12">
+									<p:outputLabel value="Placa-Carreta" />
+									<p:outputLabel value="#{cargaController.carga.placa_carreta}" />
+								</p:panelGrid>
+
+								<p:panelGrid columns="1" layout="grid" style="font-weight:bold"
+									columnClasses="ui-grid-col-12">
+									<p:outputLabel value="Motorista" />
+									<p:outputLabel value="#{cargaController.carga.motorista}" />
+								</p:panelGrid>
+
+								<p:panelGrid columns="2" layout="grid" style="font-weight:bold"
+									columnClasses="ui-grid-col-6,ui-grid-col-6">
+									<p:outputLabel />
+									<p:outputLabel />
+								</p:panelGrid>
+							</p:panelGrid>
+
+							<p:separator />
+
+							<p:panelGrid columns="3" layout="grid"
+								rendered="#{cargaController.botaoMenu == true}"
+								style="padding:10px;font-weight:bold"
+								columnClasses="ui-grid-col-4,ui-grid-col-4,ui-grid-col-4"
+								styleClass="panelgrid-noborder">
+
+								<p:commandButton action="#{cargaController.addCarga1}"
+									update="incluirCarga" value="Incluir Carga" />
+
+								<p:commandButton value="Insumo"
+									action="#{cargaController.addInsumo1}" update="incluirCarga" />
+
+								<p:commandButton value="Caminhão Vazio"
+									action="#{cargaController.salvarCargaVaziaParalelo()}"
+									update="@form" />
+
+							</p:panelGrid>
+
+							<!-- Carga1 -->
+
+							<p:panelGrid columns="4" layout="grid" id="menu"
+								rendered="#{cargaController.addCarga1 == true}"
+								style="padding:10px;font-weight:bold"
+								columnClasses="ui-grid-col-3,ui-grid-col-3,ui-grid-col-3,ui-grid-col-3"
+								styleClass="panelgrid-noborder">
+
+								<p:outputLabel value="Produto 1" style="font-size:24px" />
+								<p:outputLabel />
+								<p:outputLabel />
+								<p:outputLabel />
+
+								<p:panelGrid columns="1" layout="grid"
+									columnClasses="ui-grid-col-12">
+									<p:outputLabel value="Produto" />
+									<p:inputText value="#{cargaController.carga.prodRecebido}"
+										onkeyup="this.value = this.value.toUpperCase()" />
+								</p:panelGrid>
+
+								<p:panelGrid columns="1" layout="grid"
+									columnClasses="ui-grid-col-12">
+									<p:outputLabel value="NF Recebimento" />
+									<p:inputText value="#{cargaController.carga.nfRecebimento}"
+										onkeyup="this.value = this.value.toUpperCase()" />
+								</p:panelGrid>
+
+								<p:panelGrid columns="1" layout="grid"
+									columnClasses="ui-grid-col-12,">
+
+									<p:outputLabel value="Check-List" />
+									<h:selectOneRadio
+										value="#{cargaController.carga.checkRecebimento}">
+										<f:selectItem itemLabel="CONFORME" itemValue="CONFORME" />
+										<f:selectItem itemLabel="NÃO CONFORME"
+											itemValue="NÃO CONFORME" />
+
+									</h:selectOneRadio>
+
+								</p:panelGrid>
+								<p:panelGrid columns="1" layout="grid"
+									columnClasses="ui-grid-col-12,">
+									<p:outputLabel value="Temperatura" />
+									<p:inputMask value="#{cargaController.carga.temperatura}"
+										mask="99º" style="width:35px" placeholder="00º" />
+								</p:panelGrid>
+
+
+								<p:commandButton value="Incluir Carga"
+									action="#{cargaController.addCarga2()}" update="incluirCarga" />
+								<p:commandButton value="Incluir Insumo"
+									action="#{cargaController.addInsumo1}" update="incluirCarga" />
+								<p:commandButton value="Remover"
+									action="#{cargaController.removerCarga1()}"
+									update="menu,incluirCarga" />
+
+							</p:panelGrid>
+
+							<p:separator rendered="#{cargaController.addCarga1 == true}" />
+
+							<!-- Carga2 -->
+							<p:panelGrid columns="4" layout="grid"
+								rendered="#{cargaController.addCarga2 == true}"
+								style="padding:10px;font-weight:bold"
+								columnClasses="ui-grid-col-3,ui-grid-col-3,ui-grid-col-3,ui-grid-col-3"
+								styleClass="panelgrid-noborder">
+
+								<p:outputLabel value="Produto 2" style="font-size:24px" />
+								<p:outputLabel />
+								<p:outputLabel />
+								<p:outputLabel />
+
+								<p:panelGrid columns="1" layout="grid"
+									columnClasses="ui-grid-col-12">
+									<p:outputLabel value="Produto" />
+									<p:inputText value="#{cargaController.carga.prodRecebido2}"
+										onkeyup="this.value = this.value.toUpperCase()" />
+								</p:panelGrid>
+
+								<p:panelGrid columns="1" layout="grid"
+									columnClasses="ui-grid-col-12">
+									<p:outputLabel value="NF Recebimento" />
+									<p:inputText value="#{cargaController.carga.nfRecebimento2}"
+										onkeyup="this.value = this.value.toUpperCase()" />
+								</p:panelGrid>
+
+								<p:panelGrid columns="1" layout="grid"
+									columnClasses="ui-grid-col-12">
+
+									<p:outputLabel value="Check-List" />
+									<h:selectOneRadio
+										value="#{cargaController.carga.checkRecebimento2}">
+										<f:selectItem itemLabel="CONFORME" itemValue="CONFORME" />
+										<f:selectItem itemLabel="NÃO CONFORME"
+											itemValue="NÃO CONFORME" />
+
+									</h:selectOneRadio>
+
+								</p:panelGrid>
+
+								<p:panelGrid columns="1" layout="grid" style="font-weight:bold"
+									columnClasses="ui-grid-col-12">
+									<p:outputLabel value="Temperatura" />
+									<p:inputMask value="#{cargaController.carga.temperatura2}"
+										mask="99º" style="width:35px" placeholder="00º" />
+								</p:panelGrid>
+								<p:commandButton value="Carga"
+									action="#{cargaController.addCarga3()}" update="incluirCarga" />
+								<p:outputLabel />
+								<p:commandButton value="Remover"
+									action="#{cargaController.removerCarga2()}"
+									update="incluirCarga" />
+							</p:panelGrid>
+
+							<p:separator rendered="#{cargaController.addCarga2 == true}" />
+
+							<!-- Carga 3 -->
+							<p:panelGrid columns="4" layout="grid"
+								rendered="#{cargaController.addCarga3 == true}"
+								style="padding:10px;font-weight:bold"
+								columnClasses="ui-grid-col-3,ui-grid-col-3,ui-grid-col-3,ui-grid-col-3"
+								styleClass="panelgrid-noborder">
+
+								<p:outputLabel value="Produto 3" style="font-size:24px" />
+								<p:outputLabel />
+								<p:outputLabel />
+								<p:outputLabel />
+								<p:panelGrid columns="1" layout="grid"
+									columnClasses="ui-grid-col-12">
+									<p:outputLabel value="Produto" />
+									<p:inputText value="#{cargaController.carga.prodRecebido3}"
+										onkeyup="this.value = this.value.toUpperCase()" />
+								</p:panelGrid>
+
+								<p:panelGrid columns="1" layout="grid"
+									columnClasses="ui-grid-col-12">
+									<p:outputLabel value="NF Recebimento" />
+									<p:inputText value="#{cargaController.carga.nfRecebimento3}"
+										onkeyup="this.value = this.value.toUpperCase()" />
+								</p:panelGrid>
+
+								<p:panelGrid columns="1" layout="grid"
+									columnClasses="ui-grid-col-12">
+
+									<p:outputLabel value="Check-List" />
+									<h:selectOneRadio
+										value="#{cargaController.carga.checkRecebimento3}">
+										<f:selectItem itemLabel="CONFORME" itemValue="CONFORME" />
+										<f:selectItem itemLabel="NÃO CONFORME"
+											itemValue="NÃO CONFORME" />
+
+									</h:selectOneRadio>
+
+								</p:panelGrid>
+
+								<p:panelGrid columns="1" layout="grid" style="font-weight:bold"
+									columnClasses="ui-grid-col-12">
+									<p:outputLabel value="Temperatura" />
+									<p:inputMask value="#{cargaController.carga.temperatura3}"
+										mask="99º" style="width:35px" placeholder="00º" />
+								</p:panelGrid>
+
+								<p:commandButton value="Carga"
+									action="#{cargaController.addCarga4()}" update="incluirCarga" />
+								<p:outputLabel />
+								<p:commandButton value="Remover"
+									action="#{cargaController.removerCarga3()}"
+									update="incluirCarga" />
+							</p:panelGrid>
+
+							<p:separator rendered="#{cargaController.addCarga3 == true}" />
+
+							<!-- Carga 4 -->
+
+							<p:panelGrid columns="4" layout="grid"
+								rendered="#{cargaController.addCarga4 == true}"
+								style="padding:10px;font-weight:bold"
+								columnClasses="ui-grid-col-3,ui-grid-col-3,ui-grid-col-3,ui-grid-col-3"
+								styleClass="panelgrid-noborder">
+
+								<p:outputLabel value="Produto 4" style="font-size:24px" />
+								<p:outputLabel />
+								<p:outputLabel />
+								<p:outputLabel />
+								<p:panelGrid columns="1" layout="grid"
+									columnClasses="ui-grid-col-12">
+									<p:outputLabel value="Produto" />
+									<p:inputText value="#{cargaController.carga.prodRecebido4}"
+										onkeyup="this.value = this.value.toUpperCase()" />
+								</p:panelGrid>
+
+								<p:panelGrid columns="1" layout="grid"
+									columnClasses="ui-grid-col-12">
+									<p:outputLabel value="NF Recebimento" />
+									<p:inputText value="#{cargaController.carga.nfRecebimento4}"
+										onkeyup="this.value = this.value.toUpperCase()" />
+								</p:panelGrid>
+
+								<p:panelGrid columns="1" layout="grid"
+									columnClasses="ui-grid-col-12">
+
+									<p:outputLabel value="Check-List" />
+									<h:selectOneRadio
+										value="#{cargaController.carga.checkRecebimento4}">
+										<f:selectItem itemLabel="CONFORME" itemValue="CONFORME" />
+										<f:selectItem itemLabel="NÃO CONFORME"
+											itemValue="NÃO CONFORME" />
+
+									</h:selectOneRadio>
+
+								</p:panelGrid>
+								<p:panelGrid columns="1" layout="grid" style="font-weight:bold"
+									columnClasses="ui-grid-col-12">
+									<p:outputLabel value="Temperatura" />
+									<p:inputMask value="#{cargaController.carga.temperatura4}"
+										mask="99º" style="width:35px" placeholder="00º" />
+								</p:panelGrid>
+
+								<p:commandButton value="Carga"
+									action="#{cargaController.addCarga5()}" update="incluirCarga" />
+								<p:outputLabel />
+								<p:commandButton value="Remover"
+									action="#{cargaController.removerCarga4()}"
+									update="incluirCarga" />
+							</p:panelGrid>
+
+							<p:separator rendered="#{cargaController.addCarga4 == true}" />
+
+							<!-- Carga 5 -->
+							<p:panelGrid columns="4" layout="grid"
+								rendered="#{cargaController.addCarga5 == true}"
+								style="padding:10px;font-weight:bold"
+								columnClasses="ui-grid-col-3,ui-grid-col-3,ui-grid-col-3,ui-grid-col-3"
+								styleClass="panelgrid-noborder">
+
+								<p:outputLabel value="Produto 5" style="font-size:24px" />
+								<p:outputLabel />
+								<p:outputLabel />
+								<p:outputLabel />
+								<p:panelGrid columns="1" layout="grid"
+									columnClasses="ui-grid-col-12">
+									<p:outputLabel value="Produto" />
+									<p:inputText value="#{cargaController.carga.prodRecebido5}"
+										onkeyup="this.value = this.value.toUpperCase()" />
+								</p:panelGrid>
+
+								<p:panelGrid columns="1" layout="grid"
+									columnClasses="ui-grid-col-12">
+									<p:outputLabel value="NF Recebimento" />
+									<p:inputText value="#{cargaController.carga.nfRecebimento5}"
+										onkeyup="this.value = this.value.toUpperCase()" />
+								</p:panelGrid>
+
+								<p:panelGrid columns="1" layout="grid"
+									columnClasses="ui-grid-col-12">
+
+									<p:outputLabel value="Check-List" />
+									<h:selectOneRadio
+										value="#{cargaController.carga.checkRecebimento5}">
+										<f:selectItem itemLabel="CONFORME" itemValue="CONFORME" />
+										<f:selectItem itemLabel="NÃO CONFORME"
+											itemValue="NÃO CONFORME" />
+
+									</h:selectOneRadio>
+
+								</p:panelGrid>
+								<p:panelGrid columns="1" layout="grid" style="font-weight:bold"
+									columnClasses="ui-grid-col-12">
+									<p:outputLabel value="Temperatura" />
+									<p:inputMask value="#{cargaController.carga.temperatura5}"
+										mask="99º" style="width:35px" placeholder="00º" />
+
+								</p:panelGrid>
+								<p:outputLabel />
+
+								<p:commandButton value="Insumo"
+									action="#{cargaController.addInsumo1}" update="incluirCarga" />
+								<p:commandButton value="Remover"
+									action="#{cargaController.removerCarga5()}"
+									update="incluirCarga" />
+							</p:panelGrid>
+
+							<!-- Incluir Insumo -->
+
+
+
+							<p:panelGrid columns="4" layout="grid"
+								style="padding:10px;font-weight:bold"
+								rendered="#{cargaController.addInsumo1 == true}"
+								columnClasses="ui-grid-col-3,ui-grid-col-3,ui-grid-col-3,ui-grid-col-3"
+								styleClass="panelgrid-noborder">
+
+								<p:outputLabel value="Insumo 1" style="font-size:24px" />
+								<p:outputLabel />
+								<p:outputLabel />
+								<p:outputLabel />
+								<p:panelGrid columns="1" layout="grid"
+									columnClasses="ui-grid-col-12">
+									<p:outputLabel value="Produto" />
+									<p:inputText value="#{cargaController.carga.insumoRecebido}"
+										onkeyup="this.value = this.value.toUpperCase()" />
+								</p:panelGrid>
+
+								<p:panelGrid columns="1" layout="grid"
+									columnClasses="ui-grid-col-12">
+									<p:outputLabel value="NF Recebimento" />
+									<p:inputText value="#{cargaController.carga.nfInsumoRecebido}"
+										onkeyup="this.value = this.value.toUpperCase()" />
+								</p:panelGrid>
+
+								<p:outputLabel />
+
+								<p:outputLabel />
+								<p:commandButton value="Carga"
+									action="#{cargaController.addCarga1()}" update="incluirCarga" />
+								<p:commandButton value="Insumo"
+									action="#{cargaController.addInsumo2}" update="incluirCarga" />
+								<p:commandButton value="Remover"
+									action="#{cargaController.removerInsumo1()}"
+									update="incluirCarga" />
+							</p:panelGrid>
+
+							<p:separator rendered="#{cargaController.addInsumo2 == true}" />
+
+							<!-- Incluir Insumo 2 -->
+							<p:panelGrid columns="4" layout="grid"
+								style="padding:10px;font-weight:bold"
+								rendered="#{cargaController.addInsumo2 == true}"
+								columnClasses="ui-grid-col-3,ui-grid-col-3,ui-grid-col-3,ui-grid-col-3"
+								styleClass="panelgrid-noborder">
+
+								<p:outputLabel value="Insumo 2" style="font-size:24px" />
+								<p:outputLabel />
+								<p:outputLabel />
+								<p:outputLabel />
+								<p:panelGrid columns="1" layout="grid"
+									columnClasses="ui-grid-col-12">
+									<p:outputLabel value="Produto" />
+									<p:inputText value="#{cargaController.carga.insumoRecebido2}"
+										onkeyup="this.value = this.value.toUpperCase()" />
+								</p:panelGrid>
+
+								<p:panelGrid columns="1" layout="grid"
+									columnClasses="ui-grid-col-12">
+									<p:outputLabel value="NF Recebimento" />
+									<p:inputText value="#{cargaController.carga.nfInsumoRecebido2}"
+										onkeyup="this.value = this.value.toUpperCase()" />
+								</p:panelGrid>
+
+								<p:outputLabel />
+
+								<p:outputLabel />
+								<p:outputLabel />
+								<p:commandButton value="Insumo"
+									action="#{cargaController.addInsumo3}" update="incluirCarga" />
+								<p:commandButton value="Remover"
+									action="#{cargaController.removerInsumo2()}"
+									update="incluirCarga" />
+							</p:panelGrid>
+
+							<p:separator rendered="#{cargaController.addInsumo3 == true}" />
+
+							<!-- Incluir Insumo 3 -->
+							<p:panelGrid columns="4" layout="grid"
+								style="padding:10px;font-weight:bold"
+								rendered="#{cargaController.addInsumo3 == true}"
+								columnClasses="ui-grid-col-3,ui-grid-col-3,ui-grid-col-3,ui-grid-col-3"
+								styleClass="panelgrid-noborder">
+
+								<p:outputLabel value="Insumo 3" style="font-size:24px" />
+								<p:outputLabel />
+								<p:outputLabel />
+								<p:outputLabel />
+								<p:panelGrid columns="1" layout="grid"
+									columnClasses="ui-grid-col-12">
+									<p:outputLabel value="Produto" />
+									<p:inputText value="#{cargaController.carga.insumoRecebido3}"
+										onkeyup="this.value = this.value.toUpperCase()" />
+								</p:panelGrid>
+
+								<p:panelGrid columns="1" layout="grid"
+									columnClasses="ui-grid-col-12">
+									<p:outputLabel value="NF Recebimento" />
+									<p:inputText value="#{cargaController.carga.nfInsumoRecebido3}"
+										onkeyup="this.value = this.value.toUpperCase()" />
+								</p:panelGrid>
+
+								<p:outputLabel />
+
+								<p:outputLabel />
+								<p:outputLabel />
+								<p:commandButton value="Insumo"
+									action="#{cargaController.addInsumo4}" update="incluirCarga" />
+								<p:commandButton value="Remover"
+									action="#{cargaController.removerInsumo3()}"
+									update="incluirCarga" />
+							</p:panelGrid>
+
+							<p:separator rendered="#{cargaController.addInsumo4 == true}" />
+
+							<!-- Incluir Insumo 4 -->
+							<p:panelGrid columns="4" layout="grid"
+								style="padding:10px;font-weight:bold"
+								rendered="#{cargaController.addInsumo4 == true}"
+								columnClasses="ui-grid-col-3,ui-grid-col-3,ui-grid-col-3,ui-grid-col-3"
+								styleClass="panelgrid-noborder">
+
+								<p:outputLabel value="Insumo 4" style="font-size:24px" />
+								<p:outputLabel />
+								<p:outputLabel />
+								<p:outputLabel />
+								<p:panelGrid columns="1" layout="grid"
+									columnClasses="ui-grid-col-12">
+									<p:outputLabel value="Produto" />
+									<p:inputText value="#{cargaController.carga.insumoRecebido4}"
+										onkeyup="this.value = this.value.toUpperCase()" />
+								</p:panelGrid>
+
+								<p:panelGrid columns="1" layout="grid"
+									columnClasses="ui-grid-col-12">
+									<p:outputLabel value="NF Recebimento" />
+									<p:inputText value="#{cargaController.carga.nfInsumoRecebido4}"
+										onkeyup="this.value = this.value.toUpperCase()" />
+								</p:panelGrid>
+
+								<p:outputLabel />
+
+								<p:outputLabel />
+								<p:outputLabel />
+								<p:commandButton value="Insumo"
+									action="#{cargaController.addInsumo5}" update="incluirCarga" />
+								<p:commandButton value="Remover"
+									action="#{cargaController.removerInsumo4()}"
+									update="incluirCarga" />
+							</p:panelGrid>
+
+							<p:separator rendered="#{cargaController.addInsumo5 == true}" />
+
+							<!-- Incluir Insumo 5 -->
+							<p:panelGrid columns="4" layout="grid"
+								style="padding:10px;font-weight:bold"
+								rendered="#{cargaController.addInsumo5 == true}"
+								columnClasses="ui-grid-col-3,ui-grid-col-3,ui-grid-col-3,ui-grid-col-3"
+								styleClass="panelgrid-noborder">
+
+								<p:outputLabel value="Insumo 5" style="font-size:24px" />
+								<p:outputLabel />
+								<p:outputLabel />
+								<p:outputLabel />
+								<p:panelGrid columns="1" layout="grid"
+									columnClasses="ui-grid-col-12">
+									<p:outputLabel value="Produto" />
+									<p:inputText value="#{cargaController.carga.insumoRecebido5}"
+										onkeyup="this.value = this.value.toUpperCase()" />
+								</p:panelGrid>
+
+								<p:panelGrid columns="1" layout="grid"
+									columnClasses="ui-grid-col-12">
+									<p:outputLabel value="NF Recebimento" />
+									<p:inputText value="#{cargaController.carga.nfInsumoRecebido5}"
+										onkeyup="this.value = this.value.toUpperCase()" />
+								</p:panelGrid>
+
+								<p:outputLabel />
+
+								<p:outputLabel />
+								<p:outputLabel />
+								<p:commandButton value="Insumo"
+									action="#{cargaController.addInsumo3}" update="incluirCarga" />
+								<p:commandButton value="Remover"
+									action="#{cargaController.removerInsumo5()}"
+									update="incluirCarga" />
+							</p:panelGrid>
+							<!-- Footer do Painel -->
+							<p:panelGrid columns="3" layout="grid"
+								style="padding:10px;font-weight:bold"
+								columnClasses="ui-grid-col-4,ui-grid-col-4,ui-grid-col-4"
+								styleClass="panelgrid-noborder">
+
+
+
+								<p:commandButton value="Salvar Recebimento"
+									rendered="#{cargaController.botaoSalvarCarga == true}"
+									action="#{cargaController.salvarChegada()}" update="@form"
+									process="incluirCarga" />
+
+								<p:outputLabel />
+
+								<p:commandButton value="Fechar"
+									action="#{cargaController.fecharCarga()}" />
+
+							</p:panelGrid>
+						</div>
+					</p:fieldset>
+
+				</p:dialog>
+
+
+
+
+				<!-- Incluir Envio da Carga -->
+
+				<p:dialog resizable="false" position="top" widgetVar="incluirEnvio"
+					width="92%" height="100%" closable="false" modal="true"
+					showEffect="blind" hideEffect="size" style="margin-top: 70px">
+
+					<p:fieldset legend="Dados do Envio" id="incluirEnvio"
+						collapsed="false">
+
+						<div style="width: 100%; height: 400px; overflow: auto;">
+
+
+							<p:panelGrid columns="3" layout="grid" style="font-weight:bold"
+								rendered="#{cargaController.botaoMenuEnvio == true}"
+								columnClasses="ui-grid-col-4,ui-grid-col-4,ui-grid-col-4"
+								styleClass="panelgrid-noborder">
+
+								<p:commandButton action="#{cargaController.addCargaEnvio1()}"
+									update="incluirEnvio" value="Incluir Carga" />
+
+								<p:commandButton value="Insumo / Semi-Fabricado"
+									action="#{cargaController.addInsumoEnvio1()}"
+									update="incluirEnvio" />
+
+								<p:commandButton value="ENVIO DE CARGA VAZIA"
+									action="#{cargaController.salvarCargaEnvioVaziaParalelo()}"
+									update="@form" />
+
+
+							</p:panelGrid>
+
+
+
+							<!-- Carga Envio 1 -->
+
+							<p:panelGrid columns="4" layout="grid" style="font-weight:bold"
+								rendered="#{cargaController.addCargaEnvio1 == true}"
+								columnClasses="ui-grid-col-3,ui-grid-col-3,ui-grid-col-3,ui-grid-col-3"
+								styleClass="panelgrid-noborder">
+
+								<p:outputLabel value="Produto de Envio 1" style="font-size:24px" />
+								<p:outputLabel />
+								<p:outputLabel />
+								<p:outputLabel />
+
+								<p:panelGrid columns="1" layout="grid"
+									columnClasses="ui-grid-col-12">
+									<p:outputLabel value="Produto" />
+									<p:inputText value="#{cargaController.carga.prodEnviado}"
+										onkeyup="this.value = this.value.toUpperCase()" />
+								</p:panelGrid>
+
+								<p:panelGrid columns="1" layout="grid"
+									columnClasses="ui-grid-col-12">
+									<p:outputLabel value="NF Expedição" />
+									<p:inputText value="#{cargaController.carga.nfExpedicao}"
+										onkeyup="this.value = this.value.toUpperCase()" />
+								</p:panelGrid>
+
+								<p:panelGrid columns="1" layout="grid"
+									columnClasses="ui-grid-col-12">
+
+									<p:outputLabel value="Check-List" />
+									<h:selectOneRadio value="#{cargaController.carga.checkEnviado}">
+										<f:selectItem itemLabel="CONFORME" itemValue="CONFORME" />
+										<f:selectItem itemLabel="NÃO CONFORME"
+											itemValue="NÃO CONFORME" />
+
+									</h:selectOneRadio>
+
+								</p:panelGrid>
+
+								<p:panelGrid columns="1" layout="grid"
+									columnClasses="ui-grid-col-12">
+									<p:outputLabel value="Temperatura" />
+									<p:inputMask mask="99º" style="width:35px" placeholder="00º"
+										value="#{cargaController.carga.temperaturaEnvio}" />
+								</p:panelGrid>
+
+							</p:panelGrid>
+
+							<p:panelGrid columns="3" layout="grid"
+								rendered="#{cargaController.addCargaEnvio1 == true}"
+								style="font-weight:bold"
+								columnClasses="ui-grid-col-3,ui-grid-col-3,ui-grid-col-6"
+								styleClass="panelgrid-noborder">
+
+								<p:panelGrid columns="1" layout="grid"
+									columnClasses="ui-grid-col-12">
+									<p:outputLabel value="Quantidade Total de Produtos" />
+									<p:inputText style="width:65px"
+										value="#{cargaController.carga.totalEnviado}" />
+									<p:outputLabel value="Total Pallets" />
+									<p:inputMask mask="99" style="width:35px" placeholder="0"
+										value="#{cargaController.carga.totalPallets}" />
+
+								</p:panelGrid>
+
+								<p:panelGrid columns="1" layout="grid"
+									columnClasses="ui-grid-col-12">
+									<p:outputLabel value="Tipo de Envio" />
+									<p:selectOneMenu value="#{cargaController.carga.tipo}">
+										<f:selectItem itemLabel=".:SELECIONE:." itemValue="#{null}" />
+										<f:selectItems value="#{cargaController.envioCarga}"
+											itemLabel="#{carga}" var="carga" itemValue="#{carga}" />
+
+
+									</p:selectOneMenu>
+
+								</p:panelGrid>
+
+								<p:panelGrid columns="1" layout="grid" style="padding:10px"
+									columnClasses="ui-grid-col-12" styleClass="panelgrid-noborder">
+
+
+									<p:outputLabel value="Observação:" />
+
+									<p:inputTextarea cols="50" rows="3" style="font-size:14px"
+										onkeyup="this.value = this.value.toUpperCase()"
+										value="#{cargaController.carga.obs}" maxlength="250"
+										counterTemplate="{0} Caracteres restantes" counter="display" />
+
+									<p:outputLabel id="display" style="font-size:10px" />
+
+
+								</p:panelGrid>
+
+							</p:panelGrid>
+
+							<p:panelGrid columns="3" layout="grid"
+								rendered="#{cargaController.addCargaEnvio1 == true}"
+								style="font-weight:bold"
+								columnClasses="ui-grid-col-4,ui-grid-col-4,ui-grid-col-4"
+								styleClass="panelgrid-noborder">
+
+								<p:commandButton value="Incluir Carga"
+									action="#{cargaController.addCargaEnvio2()}"
+									update="incluirEnvio" />
+								<p:commandButton value="Incluir Insumo"
+									action="#{cargaController.addInsumoEnvio1}"
+									update="incluirEnvio" />
+								<p:commandButton value="Remover"
+									action="#{cargaController.removerCargaEnvio1()}"
+									update="menu,incluirEnvio" />
+
+							</p:panelGrid>
+
+
+
+
+							<!-- Carga Envio 2 -->
+							<p:separator rendered="#{cargaController.addCargaEnvio2 == true}" />
+
+							<p:panelGrid columns="4" layout="grid" style="font-weight:bold"
+								rendered="#{cargaController.addCargaEnvio2 == true}"
+								columnClasses="ui-grid-col-3,ui-grid-col-3,ui-grid-col-3,ui-grid-col-3"
+								styleClass="panelgrid-noborder">
+
+								<p:outputLabel value="Produto de Envio 2" style="font-size:24px" />
+								<p:outputLabel />
+								<p:outputLabel />
+								<p:outputLabel />
+
+								<p:panelGrid columns="1" layout="grid"
+									columnClasses="ui-grid-col-12">
+									<p:outputLabel value="Produto" />
+									<p:inputText value="#{cargaController.carga.prodEnviado2}"
+										onkeyup="this.value = this.value.toUpperCase()" />
+								</p:panelGrid>
+
+								<p:panelGrid columns="1" layout="grid"
+									columnClasses="ui-grid-col-12">
+									<p:outputLabel value="NF Expedição" />
+									<p:inputText value="#{cargaController.carga.nfExpedicao2}"
+										onkeyup="this.value = this.value.toUpperCase()" />
+								</p:panelGrid>
+
+								<p:panelGrid columns="1" layout="grid"
+									columnClasses="ui-grid-col-12">
+
+									<p:outputLabel value="Check-List" />
+									<h:selectOneRadio
+										value="#{cargaController.carga.checkEnviado2}">
+										<f:selectItem itemLabel="CONFORME" itemValue="CONFORME" />
+										<f:selectItem itemLabel="NÃO CONFORME"
+											itemValue="NÃO CONFORME" />
+
+									</h:selectOneRadio>
+
+								</p:panelGrid>
+
+								<p:panelGrid columns="1" layout="grid"
+									columnClasses="ui-grid-col-12">
+									<p:outputLabel value="Temperatura" />
+									<p:inputMask mask="99º" style="width:35px" placeholder="00º"
+										value="#{cargaController.carga.temperaturaEnvio2}" />
+								</p:panelGrid>
+
+							</p:panelGrid>
+
+							<p:panelGrid columns="3" layout="grid"
+								rendered="#{cargaController.addCargaEnvio2 == true}"
+								style="font-weight:bold"
+								columnClasses="ui-grid-col-3,ui-grid-col-3,ui-grid-col-6"
+								styleClass="panelgrid-noborder">
+
+								<p:panelGrid columns="1" layout="grid"
+									columnClasses="ui-grid-col-12">
+									<p:outputLabel value="Quantidade Total de Produtos" />
+									<p:inputText style="width:65px"
+										value="#{cargaController.carga.totalEnviado2}" />
+									<p:outputLabel value="Total Pallets" />
+									<p:inputMask mask="99" style="width:35px" placeholder="0"
+										value="#{cargaController.carga.totalPallets2}" />
+								</p:panelGrid>
+
+								<p:panelGrid columns="1" layout="grid"
+									columnClasses="ui-grid-col-12">
+									<p:outputLabel value="Tipo de Envio" />
+									<p:selectOneMenu value="#{cargaController.carga.tipo2}">
+										<f:selectItem itemLabel=".:SELECIONE:." itemValue="#{null}" />
+										<f:selectItems value="#{cargaController.envioCarga}"
+											itemLabel="#{carga}" var="carga" itemValue="#{carga}" />
+
+									</p:selectOneMenu>
+
+								</p:panelGrid>
+
+								<p:panelGrid columns="1" layout="grid" style="padding:10px"
+									columnClasses="ui-grid-col-12" styleClass="panelgrid-noborder">
+
+
+									<p:outputLabel value="Observação:" />
+
+									<p:inputTextarea cols="50" rows="3" style="font-size:14px"
+										onkeyup="this.value = this.value.toUpperCase()"
+										value="#{cargaController.carga.obs2}" maxlength="250"
+										counterTemplate="{0} Caracteres restantes" counter="display2" />
+
+									<p:outputLabel id="display2" style="font-size:10px" />
+
+
+								</p:panelGrid>
+
+							</p:panelGrid>
+
+							<p:panelGrid columns="3" layout="grid"
+								rendered="#{cargaController.addCargaEnvio2 == true}"
+								style="font-weight:bold"
+								columnClasses="ui-grid-col-4,ui-grid-col-4,ui-grid-col-4"
+								styleClass="panelgrid-noborder">
+
+								<p:commandButton value="Incluir Carga"
+									action="#{cargaController.addCargaEnvio3()}"
+									update="incluirEnvio" />
+
+								<p:commandButton value="Remover"
+									action="#{cargaController.removerCargaEnvio2()}"
+									update="menu,incluirEnvio" />
+
+							</p:panelGrid>
+
+							<p:separator rendered="#{cargaController.addCargaEnvio3 == true}" />
+							<!-- Carga de Envio 3 -->
+
+							<p:panelGrid columns="4" layout="grid" style="font-weight:bold"
+								rendered="#{cargaController.addCargaEnvio3 == true}"
+								columnClasses="ui-grid-col-3,ui-grid-col-3,ui-grid-col-3,ui-grid-col-3"
+								styleClass="panelgrid-noborder">
+
+								<p:outputLabel value="Produto de Envio 3" style="font-size:24px" />
+								<p:outputLabel />
+								<p:outputLabel />
+								<p:outputLabel />
+
+								<p:panelGrid columns="1" layout="grid"
+									columnClasses="ui-grid-col-12">
+									<p:outputLabel value="Produto" />
+									<p:inputText value="#{cargaController.carga.prodEnviado3}"
+										onkeyup="this.value = this.value.toUpperCase()" />
+								</p:panelGrid>
+
+								<p:panelGrid columns="1" layout="grid"
+									columnClasses="ui-grid-col-12">
+									<p:outputLabel value="NF Expedição" />
+									<p:inputText value="#{cargaController.carga.nfExpedicao3}"
+										onkeyup="this.value = this.value.toUpperCase()" />
+								</p:panelGrid>
+
+								<p:panelGrid columns="1" layout="grid"
+									columnClasses="ui-grid-col-12">
+
+									<p:outputLabel value="Check-List" />
+									<h:selectOneRadio
+										value="#{cargaController.carga.checkEnviado3}">
+										<f:selectItem itemLabel="CONFORME" itemValue="CONFORME" />
+										<f:selectItem itemLabel="NÃO CONFORME"
+											itemValue="NÃO CONFORME" />
+
+									</h:selectOneRadio>
+
+								</p:panelGrid>
+
+								<p:panelGrid columns="1" layout="grid"
+									columnClasses="ui-grid-col-12">
+									<p:outputLabel value="Temperatura" />
+									<p:inputMask mask="99º" style="width:35px" placeholder="00º"
+										value="#{cargaController.carga.temperaturaEnvio3}" />
+								</p:panelGrid>
+
+							</p:panelGrid>
+
+							<p:panelGrid columns="3" layout="grid"
+								rendered="#{cargaController.addCargaEnvio3 == true}"
+								style="font-weight:bold"
+								columnClasses="ui-grid-col-3,ui-grid-col-3,ui-grid-col-6"
+								styleClass="panelgrid-noborder">
+
+								<p:panelGrid columns="1" layout="grid"
+									columnClasses="ui-grid-col-12">
+									<p:outputLabel value="Quantidade Total de Produtos" />
+									<p:inputText style="width:65px"
+										value="#{cargaController.carga.totalEnviado3}" />
+									<p:outputLabel value="Total Pallets" />
+									<p:inputMask mask="99" style="width:35px" placeholder="0"
+										value="#{cargaController.carga.totalPallets3}" />
+								</p:panelGrid>
+
+								<p:panelGrid columns="1" layout="grid"
+									columnClasses="ui-grid-col-12">
+									<p:outputLabel value="Tipo de Envio" />
+									<p:selectOneMenu value="#{cargaController.carga.tipo3}">
+										<f:selectItem itemLabel=".:SELECIONE:." itemValue="#{null}" />
+										<f:selectItems value="#{cargaController.envioCarga}"
+											itemLabel="#{carga}" var="carga" itemValue="#{carga}" />
+
+									</p:selectOneMenu>
+
+								</p:panelGrid>
+
+								<p:panelGrid columns="1" layout="grid" style="padding:10px"
+									columnClasses="ui-grid-col-12" styleClass="panelgrid-noborder">
+
+
+									<p:outputLabel value="Observação:" />
+
+									<p:inputTextarea cols="50" rows="3" style="font-size:14px"
+										onkeyup="this.value = this.value.toUpperCase()"
+										value="#{cargaController.carga.obs3}" maxlength="250"
+										counterTemplate="{0} Caracteres restantes" counter="display3" />
+
+									<p:outputLabel id="display3" style="font-size:10px" />
+
+
+								</p:panelGrid>
+
+							</p:panelGrid>
+
+							<p:panelGrid columns="3" layout="grid"
+								rendered="#{cargaController.addCargaEnvio3 == true}"
+								style="font-weight:bold"
+								columnClasses="ui-grid-col-4,ui-grid-col-4,ui-grid-col-4"
+								styleClass="panelgrid-noborder">
+
+								<p:commandButton value="Incluir Carga"
+									action="#{cargaController.addCargaEnvio4()}"
+									update="incluirEnvio" />
+
+								<p:commandButton value="Remover"
+									action="#{cargaController.removerCargaEnvio3()}"
+									update="menu,incluirEnvio" />
+
+							</p:panelGrid>
+
+							<p:separator rendered="#{cargaController.addCargaEnvio4 == true}" />
+							<!-- Carga de Envio 4 -->
+
+							<p:panelGrid columns="4" layout="grid" style="font-weight:bold"
+								rendered="#{cargaController.addCargaEnvio4 == true}"
+								columnClasses="ui-grid-col-3,ui-grid-col-3,ui-grid-col-3,ui-grid-col-3"
+								styleClass="panelgrid-noborder">
+
+								<p:outputLabel value="Produto de Envio 4" style="font-size:24px" />
+								<p:outputLabel />
+								<p:outputLabel />
+								<p:outputLabel />
+
+								<p:panelGrid columns="1" layout="grid"
+									columnClasses="ui-grid-col-12">
+									<p:outputLabel value="Produto" />
+									<p:inputText value="#{cargaController.carga.prodEnviado4}"
+										onkeyup="this.value = this.value.toUpperCase()" />
+								</p:panelGrid>
+
+								<p:panelGrid columns="1" layout="grid"
+									columnClasses="ui-grid-col-12">
+									<p:outputLabel value="NF Expedição" />
+									<p:inputText value="#{cargaController.carga.nfExpedicao4}"
+										onkeyup="this.value = this.value.toUpperCase()" />
+								</p:panelGrid>
+
+								<p:panelGrid columns="1" layout="grid"
+									columnClasses="ui-grid-col-12">
+
+									<p:outputLabel value="Check-List" />
+									<h:selectOneRadio
+										value="#{cargaController.carga.checkEnviado4}">
+										<f:selectItem itemLabel="CONFORME" itemValue="CONFORME" />
+										<f:selectItem itemLabel="NÃO CONFORME"
+											itemValue="NÃO CONFORME" />
+
+									</h:selectOneRadio>
+
+								</p:panelGrid>
+
+								<p:panelGrid columns="1" layout="grid"
+									columnClasses="ui-grid-col-12">
+									<p:outputLabel value="Temperatura" />
+									<p:inputText style="width:65px"
+										value="#{cargaController.carga.totalEnviado4}" />
+									<p:outputLabel value="Total Pallets" />
+									<p:inputMask mask="99" style="width:35px" placeholder="0"
+										value="#{cargaController.carga.totalPallets4}" />
+								</p:panelGrid>
+
+							</p:panelGrid>
+
+							<p:panelGrid columns="3" layout="grid"
+								rendered="#{cargaController.addCargaEnvio4 == true}"
+								style="font-weight:bold"
+								columnClasses="ui-grid-col-3,ui-grid-col-3,ui-grid-col-6"
+								styleClass="panelgrid-noborder">
+
+								<p:panelGrid columns="1" layout="grid"
+									columnClasses="ui-grid-col-12">
+									<p:outputLabel value="Quantidade Total de Produtos" />
+									<p:inputMask mask="99.999" style="width:35px" placeholder="0"
+										value="#{cargaController.carga.totalEnviado4}" />
+									<p:outputLabel value="Total Pallets" />
+									<p:inputMask mask="99" style="width:35px" placeholder="0"
+										value="#{cargaController.carga.totalPallets4}" />
+								</p:panelGrid>
+
+								<p:panelGrid columns="1" layout="grid"
+									columnClasses="ui-grid-col-12">
+									<p:outputLabel value="Tipo de Envio" />
+									<p:selectOneMenu value="#{cargaController.carga.tipo4}">
+										<f:selectItem itemLabel=".:SELECIONE:." itemValue="#{null}" />
+										<f:selectItems value="#{cargaController.envioCarga}"
+											itemLabel="#{carga}" var="carga" itemValue="#{carga}" />
+
+									</p:selectOneMenu>
+
+								</p:panelGrid>
+
+								<p:panelGrid columns="1" layout="grid" style="padding:10px"
+									columnClasses="ui-grid-col-12" styleClass="panelgrid-noborder">
+
+
+									<p:outputLabel value="Observação:" />
+
+									<p:inputTextarea cols="50" rows="3" style="font-size:14px"
+										onkeyup="this.value = this.value.toUpperCase()"
+										value="#{cargaController.carga.obs4}" maxlength="250"
+										counterTemplate="{0} Caracteres restantes" counter="display4" />
+
+									<p:outputLabel id="display4" style="font-size:10px" />
+
+
+								</p:panelGrid>
+
+							</p:panelGrid>
+
+							<p:panelGrid columns="3" layout="grid"
+								rendered="#{cargaController.addCargaEnvio4 == true}"
+								style="font-weight:bold"
+								columnClasses="ui-grid-col-4,ui-grid-col-4,ui-grid-col-4"
+								styleClass="panelgrid-noborder">
+
+								<p:commandButton value="Incluir Carga"
+									action="#{cargaController.addCargaEnvio5()}"
+									update="incluirEnvio" />
+
+								<p:commandButton value="Remover"
+									action="#{cargaController.removerCargaEnvio4()}"
+									update="menu,incluirEnvio" />
+
+							</p:panelGrid>
+
+							<p:separator rendered="#{cargaController.addCargaEnvio5 == true}" />
+
+							<!-- Carga de Envio 5 -->
+
+							<p:panelGrid columns="4" layout="grid" style="font-weight:bold"
+								rendered="#{cargaController.addCargaEnvio5 == true}"
+								columnClasses="ui-grid-col-3,ui-grid-col-3,ui-grid-col-3,ui-grid-col-3"
+								styleClass="panelgrid-noborder">
+
+								<p:outputLabel value="Produto de Envio 5" style="font-size:24px" />
+								<p:outputLabel />
+								<p:outputLabel />
+								<p:outputLabel />
+
+								<p:panelGrid columns="1" layout="grid"
+									columnClasses="ui-grid-col-12">
+									<p:outputLabel value="Produto" />
+									<p:inputText value="#{cargaController.carga.prodEnviado5}" />
+								</p:panelGrid>
+
+								<p:panelGrid columns="1" layout="grid"
+									columnClasses="ui-grid-col-12">
+									<p:outputLabel value="NF Expedição" />
+									<p:inputText value="#{cargaController.carga.nfExpedicao5}" />
+								</p:panelGrid>
+
+								<p:panelGrid columns="1" layout="grid"
+									columnClasses="ui-grid-col-12">
+
+									<p:outputLabel value="Check-List" />
+									<h:selectOneRadio
+										value="#{cargaController.carga.checkEnviado5}">
+										<f:selectItem itemLabel="CONFORME" itemValue="CONFORME" />
+										<f:selectItem itemLabel="NÃO CONFORME"
+											itemValue="NÃO CONFORME" />
+
+									</h:selectOneRadio>
+
+								</p:panelGrid>
+
+								<p:panelGrid columns="1" layout="grid"
+									columnClasses="ui-grid-col-12">
+									<p:outputLabel value="Temperatura" />
+									<p:inputMask mask="99º" style="width:35px" placeholder="00º"
+										value="#{cargaController.carga.temperaturaEnvio5}" />
+								</p:panelGrid>
+
+							</p:panelGrid>
+
+							<p:panelGrid columns="3" layout="grid"
+								rendered="#{cargaController.addCargaEnvio5 == true}"
+								style="font-weight:bold"
+								columnClasses="ui-grid-col-3,ui-grid-col-3,ui-grid-col-6"
+								styleClass="panelgrid-noborder">
+
+								<p:panelGrid columns="1" layout="grid"
+									columnClasses="ui-grid-col-12">
+									<p:outputLabel value="Quantidade Total de Produtos" />
+									<p:inputText style="width:65px"
+										value="#{cargaController.carga.totalEnviado5}" />
+									<p:outputLabel value="Total Pallets" />
+									<p:inputMask mask="99" style="width:35px" placeholder="0"
+										value="#{cargaController.carga.totalPallets5}" />
+								</p:panelGrid>
+
+								<p:panelGrid columns="1" layout="grid"
+									columnClasses="ui-grid-col-12">
+									<p:outputLabel value="Tipo de Envio" />
+									<p:selectOneMenu value="#{cargaController.carga.tipo5}">
+										<f:selectItem itemLabel=".:SELECIONE:." itemValue="#{null}" />
+										<f:selectItems value="#{cargaController.envioCarga}"
+											itemLabel="#{carga}" var="carga" itemValue="#{carga}" />
+
+									</p:selectOneMenu>
+
+								</p:panelGrid>
+
+								<p:panelGrid columns="1" layout="grid" style="padding:10px"
+									columnClasses="ui-grid-col-12" styleClass="panelgrid-noborder">
+
+
+									<p:outputLabel value="Observação:" />
+
+									<p:inputTextarea cols="50" rows="3" style="font-size:14px"
+										onkeyup="this.value = this.value.toUpperCase()"
+										value="#{cargaController.carga.obs5}" maxlength="250"
+										counterTemplate="{0} Caracteres restantes" counter="display5" />
+
+									<p:outputLabel id="display5" style="font-size:10px" />
+
+
+								</p:panelGrid>
+
+							</p:panelGrid>
+
+							<p:panelGrid columns="3" layout="grid"
+								rendered="#{cargaController.addCargaEnvio5 == true}"
+								style="font-weight:bold"
+								columnClasses="ui-grid-col-4,ui-grid-col-4,ui-grid-col-4"
+								styleClass="panelgrid-noborder">
+
+
+								<p:commandButton value="Remover"
+									action="#{cargaController.removerCargaEnvio5()}"
+									update="menu,incluirEnvio" />
+
+							</p:panelGrid>
+
+
+							<!-- Insumo de Envio 1 -->
+
+							<p:panelGrid columns="4" layout="grid" style="font-weight:bold"
+								rendered="#{cargaController.addInsumoEnvio1 == true}"
+								columnClasses="ui-grid-col-3,ui-grid-col-3,ui-grid-col-3,ui-grid-col-3"
+								styleClass="panelgrid-noborder">
+
+								<p:outputLabel value="Insumo de Envio 1" style="font-size:24px" />
+								<p:outputLabel />
+								<p:outputLabel />
+								<p:outputLabel />
+
+								<p:panelGrid columns="1" layout="grid"
+									columnClasses="ui-grid-col-12">
+									<p:outputLabel value="Produto" />
+									<p:inputText value="#{cargaController.carga.prodInsumoEnviado}"
+										onkeyup="this.value = this.value.toUpperCase()" />
+								</p:panelGrid>
+
+								<p:panelGrid columns="1" layout="grid"
+									columnClasses="ui-grid-col-12">
+									<p:outputLabel value="NF Expedição" />
+									<p:inputText value="#{cargaController.carga.nfExpedicaoInsumo}"
+										onkeyup="this.value = this.value.toUpperCase()" />
+								</p:panelGrid>
+
+								<p:outputLabel />
+								<p:outputLabel />
+
+							</p:panelGrid>
+
+							<p:panelGrid columns="3" layout="grid"
+								rendered="#{cargaController.addInsumoEnvio1 == true}"
+								style="font-weight:bold"
+								columnClasses="ui-grid-col-3,ui-grid-col-3,ui-grid-col-6"
+								styleClass="panelgrid-noborder">
+
+								<p:panelGrid columns="1" layout="grid"
+									columnClasses="ui-grid-col-12">
+									<p:outputLabel value="Quantidade Envio" />
+									<p:inputMask mask="99" style="width:35px" placeholder="00"
+										value="#{cargaController.carga.totalInsumoEnviado}" />
+								</p:panelGrid>
+
+								<p:panelGrid columns="1" layout="grid"
+									columnClasses="ui-grid-col-12">
+									<p:outputLabel value="Tipo de Envio" />
+									<p:selectOneMenu value="#{cargaController.carga.tipoInsumo}">
+										<f:selectItem itemLabel=".:SELECIONE:." itemValue="#{null}" />
+										<f:selectItems value="#{cargaController.envioInsumo}"
+											itemLabel="#{insumo}" var="insumo" itemValue="#{insumo}" />
+
+									</p:selectOneMenu>
+
+								</p:panelGrid>
+
+								<p:panelGrid columns="1" layout="grid" style="padding:10px"
+									columnClasses="ui-grid-col-12" styleClass="panelgrid-noborder">
+
+
+									<p:outputLabel value="Observação:" />
+
+									<p:inputTextarea cols="50" rows="3" style="font-size:14px"
+										onkeyup="this.value = this.value.toUpperCase()"
+										value="#{cargaController.carga.obsInsumo}" maxlength="250"
+										counterTemplate="{0} Caracteres restantes"
+										counter="displayInsumo" />
+
+									<p:outputLabel id="displayInsumo" style="font-size:10px" />
+
+
+								</p:panelGrid>
+
+							</p:panelGrid>
+
+							<p:panelGrid columns="3" layout="grid"
+								rendered="#{cargaController.addInsumoEnvio1 == true}"
+								style="font-weight:bold"
+								columnClasses="ui-grid-col-4,ui-grid-col-4,ui-grid-col-4"
+								styleClass="panelgrid-noborder">
+
+								<p:commandButton value="Incluir Carga"
+									action="#{cargaController.addCargaEnvio1()}"
+									update="incluirEnvio" />
+								<p:commandButton value="Incluir Insumo"
+									action="#{cargaController.addInsumoEnvio2}"
+									update="incluirEnvio" />
+								<p:commandButton value="Remover"
+									action="#{cargaController.removerInsumoEnvio1()}"
+									update="menu,incluirEnvio" />
+
+							</p:panelGrid>
+
+							<!-- Insumo de Envio 2 -->
+
+							<p:separator
+								rendered="#{cargaController.addInsumoEnvio2 == true}" />
+
+							<p:panelGrid columns="4" layout="grid" style="font-weight:bold"
+								rendered="#{cargaController.addInsumoEnvio2 == true}"
+								columnClasses="ui-grid-col-3,ui-grid-col-3,ui-grid-col-3,ui-grid-col-3"
+								styleClass="panelgrid-noborder">
+
+								<p:outputLabel value="Insumo de Envio 2" style="font-size:24px" />
+								<p:outputLabel />
+								<p:outputLabel />
+								<p:outputLabel />
+
+								<p:panelGrid columns="1" layout="grid"
+									columnClasses="ui-grid-col-12">
+									<p:outputLabel value="Produto" />
+									<p:inputText
+										value="#{cargaController.carga.prodInsumoEnviado2}" />
+								</p:panelGrid>
+
+								<p:panelGrid columns="1" layout="grid"
+									columnClasses="ui-grid-col-12">
+									<p:outputLabel value="NF Expedição" />
+									<p:inputText
+										value="#{cargaController.carga.nfExpedicaoInsumo2}" />
+								</p:panelGrid>
+
+								<p:outputLabel />
+								<p:outputLabel />
+
+							</p:panelGrid>
+
+							<p:panelGrid columns="3" layout="grid"
+								rendered="#{cargaController.addInsumoEnvio2 == true}"
+								style="font-weight:bold"
+								columnClasses="ui-grid-col-3,ui-grid-col-3,ui-grid-col-6"
+								styleClass="panelgrid-noborder">
+
+								<p:panelGrid columns="1" layout="grid"
+									columnClasses="ui-grid-col-12">
+									<p:outputLabel value="Quantidade Envio" />
+									<p:inputMask mask="99" style="width:35px" placeholder="00"
+										value="#{cargaController.carga.totalInsumoEnviado2}" />
+								</p:panelGrid>
+
+								<p:panelGrid columns="1" layout="grid"
+									columnClasses="ui-grid-col-12">
+									<p:outputLabel value="Tipo de Envio" />
+									<p:selectOneMenu value="#{cargaController.carga.tipoInsumo2}">
+										<f:selectItem itemLabel=".:SELECIONE:." itemValue="#{null}" />
+										<f:selectItems value="#{cargaController.envioInsumo}"
+											itemLabel="#{insumo}" var="insumo" itemValue="#{insumo}" />
+
+									</p:selectOneMenu>
+
+								</p:panelGrid>
+
+								<p:panelGrid columns="1" layout="grid" style="padding:10px"
+									columnClasses="ui-grid-col-12" styleClass="panelgrid-noborder">
+
+
+									<p:outputLabel value="Observação:" />
+
+									<p:inputTextarea cols="50" rows="3" style="font-size:14px"
+										onkeyup="this.value = this.value.toUpperCase()"
+										value="#{cargaController.carga.obs2}" maxlength="250"
+										counterTemplate="{0} Caracteres restantes"
+										counter="displayInsumo2" />
+
+									<p:outputLabel id="displayInsumo2" style="font-size:10px" />
+
+
+								</p:panelGrid>
+
+							</p:panelGrid>
+
+							<p:panelGrid columns="3" layout="grid"
+								rendered="#{cargaController.addInsumoEnvio2 == true}"
+								style="font-weight:bold"
+								columnClasses="ui-grid-col-4,ui-grid-col-4,ui-grid-col-4"
+								styleClass="panelgrid-noborder">
+
+
+								<p:commandButton value="Incluir Insumo"
+									action="#{cargaController.addInsumoEnvio3}"
+									update="incluirEnvio" />
+								<p:commandButton value="Remover"
+									action="#{cargaController.removerInsumoEnvio2()}"
+									update="menu,incluirEnvio" />
+
+							</p:panelGrid>
+
+							<!-- Insumo de Envio 3 -->
+
+							<p:separator
+								rendered="#{cargaController.addInsumoEnvio3 == true}" />
+
+							<p:panelGrid columns="4" layout="grid" style="font-weight:bold"
+								rendered="#{cargaController.addInsumoEnvio3 == true}"
+								columnClasses="ui-grid-col-3,ui-grid-col-3,ui-grid-col-3,ui-grid-col-3"
+								styleClass="panelgrid-noborder">
+
+								<p:outputLabel value="Insumo de Envio 3" style="font-size:24px" />
+								<p:outputLabel />
+								<p:outputLabel />
+								<p:outputLabel />
+
+								<p:panelGrid columns="1" layout="grid"
+									columnClasses="ui-grid-col-12">
+									<p:outputLabel value="Produto" />
+									<p:inputText
+										value="#{cargaController.carga.prodInsumoEnviado3}"
+										onkeyup="this.value = this.value.toUpperCase()" />
+								</p:panelGrid>
+
+								<p:panelGrid columns="1" layout="grid"
+									columnClasses="ui-grid-col-12">
+									<p:outputLabel value="NF Expedição" />
+									<p:inputText
+										value="#{cargaController.carga.nfExpedicaoInsumo3}"
+										onkeyup="this.value = this.value.toUpperCase()" />
+								</p:panelGrid>
+
+								<p:outputLabel />
+								<p:outputLabel />
+
+							</p:panelGrid>
+
+							<p:panelGrid columns="3" layout="grid"
+								rendered="#{cargaController.addInsumoEnvio3 == true}"
+								style="font-weight:bold"
+								columnClasses="ui-grid-col-3,ui-grid-col-3,ui-grid-col-6"
+								styleClass="panelgrid-noborder">
+
+								<p:panelGrid columns="1" layout="grid"
+									columnClasses="ui-grid-col-12">
+									<p:outputLabel value="Quantidade Envio" />
+									<p:inputMask mask="99" style="width:35px" placeholder="00"
+										value="#{cargaController.carga.totalInsumoEnviado3}" />
+								</p:panelGrid>
+
+								<p:panelGrid columns="1" layout="grid"
+									columnClasses="ui-grid-col-12">
+									<p:outputLabel value="Tipo de Envio" />
+									<p:selectOneMenu value="#{cargaController.carga.tipoInsumo3}">
+										<f:selectItem itemLabel=".:SELECIONE:." itemValue="#{null}" />
+										<f:selectItems value="#{cargaController.envioInsumo}"
+											itemLabel="#{insumo}" var="insumo" itemValue="#{insumo}" />
+
+									</p:selectOneMenu>
+
+								</p:panelGrid>
+
+								<p:panelGrid columns="1" layout="grid" style="padding:10px"
+									columnClasses="ui-grid-col-12" styleClass="panelgrid-noborder">
+
+
+									<p:outputLabel value="Observação:" />
+
+									<p:inputTextarea cols="50" rows="3" style="font-size:14px"
+										onkeyup="this.value = this.value.toUpperCase()"
+										value="#{cargaController.carga.obsInsumo3}" maxlength="250"
+										counterTemplate="{0} Caracteres restantes"
+										counter="displayInsumo3" />
+
+									<p:outputLabel id="displayInsumo3" style="font-size:10px" />
+
+
+								</p:panelGrid>
+
+							</p:panelGrid>
+
+							<p:panelGrid columns="3" layout="grid"
+								rendered="#{cargaController.addInsumoEnvio3 == true}"
+								style="font-weight:bold"
+								columnClasses="ui-grid-col-4,ui-grid-col-4,ui-grid-col-4"
+								styleClass="panelgrid-noborder">
+
+
+								<p:commandButton value="Incluir Insumo"
+									action="#{cargaController.addInsumoEnvio4}"
+									update="incluirEnvio" />
+								<p:commandButton value="Remover"
+									action="#{cargaController.removerInsumoEnvio3()}"
+									update="menu,incluirEnvio" />
+
+							</p:panelGrid>
+
+
+							<!-- Insumo de Envio 4 -->
+
+							<p:separator
+								rendered="#{cargaController.addInsumoEnvio4 == true}" />
+
+							<p:panelGrid columns="4" layout="grid" style="font-weight:bold"
+								rendered="#{cargaController.addInsumoEnvio4 == true}"
+								columnClasses="ui-grid-col-3,ui-grid-col-3,ui-grid-col-3,ui-grid-col-3"
+								styleClass="panelgrid-noborder">
+
+								<p:outputLabel value="Insumo de Envio 4" style="font-size:24px" />
+								<p:outputLabel />
+								<p:outputLabel />
+								<p:outputLabel />
+
+								<p:panelGrid columns="1" layout="grid"
+									columnClasses="ui-grid-col-12">
+									<p:outputLabel value="Produto" />
+									<p:inputText
+										value="#{cargaController.carga.prodInsumoEnviado4}" />
+								</p:panelGrid>
+
+								<p:panelGrid columns="1" layout="grid"
+									columnClasses="ui-grid-col-12">
+									<p:outputLabel value="NF Expedição" />
+									<p:inputText
+										value="#{cargaController.carga.nfExpedicaoInsumo4}" />
+								</p:panelGrid>
+
+								<p:outputLabel />
+								<p:outputLabel />
+
+							</p:panelGrid>
+
+							<p:panelGrid columns="3" layout="grid"
+								rendered="#{cargaController.addInsumoEnvio4 == true}"
+								style="font-weight:bold"
+								columnClasses="ui-grid-col-3,ui-grid-col-3,ui-grid-col-6"
+								styleClass="panelgrid-noborder">
+
+								<p:panelGrid columns="1" layout="grid"
+									columnClasses="ui-grid-col-12">
+									<p:outputLabel value="Quantidade Envio" />
+									<p:inputMask mask="99" style="width:35px" placeholder="00"
+										value="#{cargaController.carga.totalInsumoEnviado4}" />
+								</p:panelGrid>
+
+								<p:panelGrid columns="1" layout="grid"
+									columnClasses="ui-grid-col-12">
+									<p:outputLabel value="Tipo de Envio" />
+									<p:selectOneMenu value="#{cargaController.carga.tipoInsumo4}">
+										<f:selectItem itemLabel=".:SELECIONE:." itemValue="#{null}" />
+										<f:selectItems value="#{cargaController.envioInsumo}"
+											itemLabel="#{insumo}" var="insumo" itemValue="#{insumo}" />
+
+									</p:selectOneMenu>
+
+								</p:panelGrid>
+
+								<p:panelGrid columns="1" layout="grid" style="padding:10px"
+									columnClasses="ui-grid-col-12" styleClass="panelgrid-noborder">
+
+
+									<p:outputLabel value="Observação:" />
+
+									<p:inputTextarea cols="50" rows="3" style="font-size:14px"
+										onkeyup="this.value = this.value.toUpperCase()"
+										value="#{cargaController.carga.obsInsumo4}" maxlength="250"
+										counterTemplate="{0} Caracteres restantes"
+										counter="displayInsumo4" />
+
+									<p:outputLabel id="displayInsumo4" style="font-size:10px" />
+
+
+								</p:panelGrid>
+
+							</p:panelGrid>
+
+							<p:panelGrid columns="3" layout="grid"
+								rendered="#{cargaController.addInsumoEnvio4 == true}"
+								style="font-weight:bold"
+								columnClasses="ui-grid-col-4,ui-grid-col-4,ui-grid-col-4"
+								styleClass="panelgrid-noborder">
+
+
+								<p:commandButton value="Incluir Insumo"
+									action="#{cargaController.addInsumoEnvio5}"
+									update="incluirEnvio" />
+								<p:commandButton value="Remover"
+									action="#{cargaController.removerInsumoEnvio4()}"
+									update="menu,incluirEnvio" />
+
+							</p:panelGrid>
+
+							<!-- Insumo de Envio 5 -->
+
+							<p:separator
+								rendered="#{cargaController.addInsumoEnvio5 == true}" />
+
+							<p:panelGrid columns="4" layout="grid" style="font-weight:bold"
+								rendered="#{cargaController.addInsumoEnvio5 == true}"
+								columnClasses="ui-grid-col-3,ui-grid-col-3,ui-grid-col-3,ui-grid-col-3"
+								styleClass="panelgrid-noborder">
+
+								<p:outputLabel value="Insumo de Envio 5" style="font-size:24px" />
+								<p:outputLabel />
+								<p:outputLabel />
+								<p:outputLabel />
+
+								<p:panelGrid columns="1" layout="grid"
+									columnClasses="ui-grid-col-12">
+									<p:outputLabel value="Produto" />
+									<p:inputText
+										value="#{cargaController.carga.prodInsumoEnviado5}"
+										onkeyup="this.value = this.value.toUpperCase()" />
+								</p:panelGrid>
+
+								<p:panelGrid columns="1" layout="grid"
+									columnClasses="ui-grid-col-12">
+									<p:outputLabel value="NF Expedição" />
+									<p:inputText
+										value="#{cargaController.carga.nfExpedicaoInsumo5}"
+										onkeyup="this.value = this.value.toUpperCase()" />
+								</p:panelGrid>
+
+								<p:outputLabel />
+								<p:outputLabel />
+
+							</p:panelGrid>
+
+							<p:panelGrid columns="3" layout="grid"
+								rendered="#{cargaController.addInsumoEnvio5 == true}"
+								style="font-weight:bold"
+								columnClasses="ui-grid-col-3,ui-grid-col-3,ui-grid-col-6"
+								styleClass="panelgrid-noborder">
+
+								<p:panelGrid columns="1" layout="grid"
+									columnClasses="ui-grid-col-12">
+									<p:outputLabel value="Quantidade Envio" />
+									<p:inputMask mask="99" style="width:35px" placeholder="00"
+										value="#{cargaController.carga.totalInsumoEnviado5}" />
+								</p:panelGrid>
+
+								<p:panelGrid columns="1" layout="grid"
+									columnClasses="ui-grid-col-12">
+									<p:outputLabel value="Tipo de Envio" />
+									<p:selectOneMenu value="#{cargaController.carga.tipoInsumo5}">
+										<f:selectItem itemLabel=".:SELECIONE:." itemValue="#{null}" />
+										<f:selectItems value="#{cargaController.envioInsumo}"
+											itemLabel="#{insumo}" var="insumo" itemValue="#{insumo}" />
+
+									</p:selectOneMenu>
+
+								</p:panelGrid>
+
+								<p:panelGrid columns="1" layout="grid" style="padding:10px"
+									columnClasses="ui-grid-col-12" styleClass="panelgrid-noborder">
+
+
+									<p:outputLabel value="Observação:" />
+
+									<p:inputTextarea cols="50" rows="3" style="font-size:14px"
+										onkeyup="this.value = this.value.toUpperCase()"
+										value="#{cargaController.carga.obsInsumo5}" maxlength="250"
+										counterTemplate="{0} Caracteres restantes"
+										counter="displayInsumo5" />
+
+									<p:outputLabel id="displayInsumo5" style="font-size:10px" />
+
+
+								</p:panelGrid>
+
+							</p:panelGrid>
+
+							<p:panelGrid columns="3" layout="grid"
+								style="font-weight:bold; margin-top: 20px"
+								columnClasses="ui-grid-col-4,ui-grid-col-4,ui-grid-col-4"
+								styleClass="panelgrid-noborder">
+
+
+								<p:commandButton value="Salvar Envio"
+									rendered="#{cargaController.botaoSalvarCargaEnvio == true}"
+									action="#{cargaController.salvarInicioCarregamentoParalelo()}"
+									update="@form" />
+
+								<p:outputLabel />
+
+								<p:commandButton value="FECHAR"
+									action="#{cargaController.fecharCargaEnvio()}" />
+
+							</p:panelGrid>
+						</div>
+					</p:fieldset>
+
+				</p:dialog>
+
+
+
+				<!-- Ver Carga Impressão -->
+
+				<p:dialog header="Carga Detalhada" resizable="false" position="top"
+					widgetVar="verCarga" width="70%" height="100%" closable="false"
+					modal="true" showEffect="blind" hideEffect="size"
+					style="margin-top: 70px">
+
+					<p:dataGrid columns="1" var="carga" id="impressao"
+						styleClass="data-grid" layout="grid"
+						value="#{cargaController.imprimr}">
+
+						<!-- 1º linha -->
+
+
+						<h:panelGrid columns="1">
+
+							<h:graphicImage library="imagens" name="LogoOlgber20Anos.png"
+								style="position: absolute; right:30px; margin-top:0px"
+								width="180" />
+
+						</h:panelGrid>
+
+
+
+						<h:panelGrid columns="2">
+							<p:outputLabel value="NÚMERO DA CARGA:" style="font-size:14px" />
+							<p:outputLabel value="#{carga.id}" style="font-size:14px" />
+							<p:outputLabel value="STATUS DA CARGA:" style="font-size:14px" />
+							<p:outputLabel value="#{carga.status}" style="font-size:14px" />
+							<p:outputLabel value="DATA DA ENTRADA:" style="font-size:14px" />
+							<p:outputLabel value="#{carga.data_chegada}"
+								style="font-size:14px">
+								<f:convertDateTime pattern="dd/MM/yyyy" locale="pt_BR" />
+							</p:outputLabel>
+
+						</h:panelGrid>
+
+						<!-- 	2º LINHA -->
+
+						<div style="width: 100%; height: 400px; overflow: auto;">
+							<h:panelGrid columns="5" style="margin-top:20px">
+								<h:panelGrid columns="2">
+									<p:outputLabel value="TRANSPORTADORA:" />
+									<p:outputLabel value="#{carga.transportadora}" />
+
+								</h:panelGrid>
+								<h:panelGrid columns="2">
+									<p:outputLabel value="PLACA-CARRETA:" />
+									<p:outputLabel value="#{carga.placa_carreta}" />
+
+								</h:panelGrid>
+
+								<h:panelGrid columns="2">
+									<p:outputLabel value="MOTORISTA:" />
+									<p:outputLabel value="#{carga.motorista}" />
+
+								</h:panelGrid>
+								<h:panelGrid columns="2">
+									<p:outputLabel value="HORA CHEGADA:" />
+									<p:outputLabel value="#{carga.hora_chegada}" />
+
+								</h:panelGrid>
+								<h:panelGrid columns="2">
+									<p:outputLabel value="TEMPO PARADO:" />
+									<p:outputLabel value="#{carga.hora_total_parado}" />
+
+								</h:panelGrid>
+
+							</h:panelGrid>
+
+							<!-- Chegada da Carga -->
+
+							<h:panelGrid columns="5">
+								<p:fieldset legend="Produto 1"
+									rendered="#{cargaController.carga.prodRecebido != null}">
+									<h:panelGrid columns="2">
+										<p:outputLabel value="PRODUTO:" />
+										<p:outputLabel value="#{carga.prodRecebido}" />
+
+										<p:outputLabel value="NOTA FISCAL:" />
+										<p:outputLabel value="#{carga.nfRecebimento}" />
+
+										<p:outputLabel value="CHECK-LIST:" />
+										<p:outputLabel value="#{carga.checkRecebimento}" />
+
+										<p:outputLabel value="TEMPERATURA:" />
+										<p:outputLabel value="#{carga.temperatura}" />
+
+									</h:panelGrid>
+								</p:fieldset>
+
+								<p:fieldset legend="Produto 2"
+									rendered="#{cargaController.carga.prodRecebido2 != null}">
+									<h:panelGrid columns="2">
+										<p:outputLabel value="PRODUTO:" />
+										<p:outputLabel value="#{carga.prodRecebido2}" />
+
+										<p:outputLabel value="NOTA FISCAL:" />
+										<p:outputLabel value="#{carga.nfRecebimento2}" />
+
+										<p:outputLabel value="CHECK-LIST:" />
+										<p:outputLabel value="#{carga.checkRecebimento2}" />
+
+										<p:outputLabel value="TEMPERATURA:" />
+										<p:outputLabel value="#{carga.temperatura2}" />
+
+									</h:panelGrid>
+								</p:fieldset>
+
+								<p:fieldset legend="Produto 3"
+									rendered="#{cargaController.carga.prodRecebido3 != null}">
+									<h:panelGrid columns="2">
+										<p:outputLabel value="PRODUTO:" />
+										<p:outputLabel value="#{carga.prodRecebido3}" />
+
+										<p:outputLabel value="NOTA FISCAL:" />
+										<p:outputLabel value="#{carga.nfRecebimento3}" />
+
+										<p:outputLabel value="CHECK-LIST:" />
+										<p:outputLabel value="#{carga.checkRecebimento3}" />
+
+										<p:outputLabel value="TEMPERATURA:" />
+										<p:outputLabel value="#{carga.temperatura3}" />
+
+									</h:panelGrid>
+								</p:fieldset>
+
+								<p:fieldset legend="Produto 4"
+									rendered="#{cargaController.carga.prodRecebido4 != null}">
+									<h:panelGrid columns="2">
+										<p:outputLabel value="PRODUTO:" />
+										<p:outputLabel value="#{carga.prodRecebido4}" />
+
+										<p:outputLabel value="NOTA FISCAL:" />
+										<p:outputLabel value="#{carga.nfRecebimento4}" />
+
+										<p:outputLabel value="CHECK-LIST:" />
+										<p:outputLabel value="#{carga.checkRecebimento4}" />
+
+										<p:outputLabel value="TEMPERATURA:" />
+										<p:outputLabel value="#{carga.temperatura4}" />
+
+									</h:panelGrid>
+								</p:fieldset>
+
+								<p:fieldset legend="Produto 5"
+									rendered="#{cargaController.carga.prodRecebido5 != null}">
+									<h:panelGrid columns="2">
+										<p:outputLabel value="PRODUTO:" />
+										<p:outputLabel value="#{carga.prodRecebido5}" />
+
+										<p:outputLabel value="NOTA FISCAL:" />
+										<p:outputLabel value="#{carga.nfRecebimento5}" />
+
+										<p:outputLabel value="CHECK-LIST:" />
+										<p:outputLabel value="#{carga.checkRecebimento5}" />
+
+										<p:outputLabel value="TEMPERATURA:" />
+										<p:outputLabel value="#{carga.temperatura5}" />
+
+									</h:panelGrid>
+
+								</p:fieldset>
+
+
+								<!-- Insumo Recebido -->
+
+
+								<p:fieldset legend="INSUMO 1"
+									rendered="#{cargaController.carga.insumoRecebido != null}">
+									<h:panelGrid columns="2">
+										<p:outputLabel value="PRODUTO:" />
+										<p:outputLabel value="#{carga.insumoRecebido}" />
+
+										<p:outputLabel value="NOTA FISCAL:" />
+										<p:outputLabel value="#{carga.nfInsumoRecebido}" />
+
+
+									</h:panelGrid>
+								</p:fieldset>
+
+								<p:fieldset legend="INSUMO 2"
+									rendered="#{cargaController.carga.insumoRecebido2 != null}">
+									<h:panelGrid columns="2">
+										<p:outputLabel value="PRODUTO:" />
+										<p:outputLabel value="#{carga.insumoRecebido2}" />
+
+										<p:outputLabel value="NOTA FISCAL:" />
+										<p:outputLabel value="#{carga.nfInsumoRecebido2}" />
+
+									</h:panelGrid>
+								</p:fieldset>
+
+								<p:fieldset legend="INSUMO 3"
+									rendered="#{cargaController.carga.insumoRecebido3 != null}">
+									<h:panelGrid columns="2">
+										<p:outputLabel value="PRODUTO:" />
+										<p:outputLabel value="#{carga.insumoRecebido3}" />
+
+										<p:outputLabel value="NOTA FISCAL:" />
+										<p:outputLabel value="#{carga.nfInsumoRecebido3}" />
+
+									</h:panelGrid>
+								</p:fieldset>
+
+								<p:fieldset legend="INSUMO 4"
+									rendered="#{cargaController.carga.insumoRecebido4 != null}">
+									<h:panelGrid columns="2">
+										<p:outputLabel value="PRODUTO:" />
+										<p:outputLabel value="#{carga.insumoRecebido4}" />
+
+										<p:outputLabel value="NOTA FISCAL:" />
+										<p:outputLabel value="#{carga.nfInsumoRecebido4}" />
+
+									</h:panelGrid>
+								</p:fieldset>
+
+								<p:fieldset legend="INSUMO 5"
+									rendered="#{cargaController.carga.insumoRecebido5 != null}">
+									<h:panelGrid columns="2">
+										<p:outputLabel value="PRODUTO:" />
+										<p:outputLabel value="#{carga.insumoRecebido5}" />
+
+										<p:outputLabel value="NOTA FISCAL:" />
+										<p:outputLabel value="#{carga.nfInsumoRecebido5}" />
+
+									</h:panelGrid>
+
+								</p:fieldset>
+
+							</h:panelGrid>
+							<!-- Inicio Descarregamento -->
+
+							<h:panelGrid columns="6">
+
+								<p:outputLabel value="INICIO DA OPERAÇÃO:" />
+								<p:outputLabel value="#{carga.hora_inicio_descarregamento}" />
+
+								<p:outputLabel value="TÉRMINO DA OPERAÇÃO:" />
+								<p:outputLabel value="#{carga.hora_termino_descarregamento}" />
+
+								<p:outputLabel value="TEMPO TOTAL DA OPERAÇÃO:" />
+								<p:outputLabel value="#{carga.hora_total_descarregamento}" />
+
+							</h:panelGrid>
+
+							<!-- Inicio Carregamento -->
+
+							<h:panelGrid columns="5">
+								<p:fieldset legend="CARREGAMENTO 1"
+									rendered="#{cargaController.carga.nfExpedicao != null}">
+									<h:panelGrid columns="2">
+										<p:outputLabel value="PRODUTO:" />
+										<p:outputLabel value="#{carga.prodEnviado}" />
+
+										<p:outputLabel value="NOTA FISCAL:" />
+										<p:outputLabel value="#{carga.nfExpedicao}" />
+
+										<p:outputLabel value="CHECK-LIST:" />
+										<p:outputLabel value="#{carga.checkEnviado}" />
+
+										<p:outputLabel value="TEMPERATURA:" />
+										<p:outputLabel value="#{carga.temperaturaEnvio}" />
+
+										<p:outputLabel value="TIPO DE ENVIO:" />
+										<p:outputLabel value="#{carga.tipo}" />
+
+										<p:outputLabel value="TOTAL DE PRODUTOS:" />
+										<p:outputLabel value="#{carga.totalEnviado}" />
+
+										<p:outputLabel value="TOTAL DE PALLETS:" />
+										<p:outputLabel value="#{carga.totalPallets}" />
+
+
+									</h:panelGrid>
+
+									<h:panelGrid columns="1">
+										<p:outputLabel value="OBSERVAÇÕES:" />
+
+										<p:outputLabel value="#{carga.obs}" />
+									</h:panelGrid>
+								</p:fieldset>
+
+								<p:fieldset legend="CARREGAMENTO 2"
+									rendered="#{cargaController.carga.prodEnviado2 != null}">
+									<h:panelGrid columns="2">
+										<p:outputLabel value="PRODUTO:" />
+										<p:outputLabel value="#{carga.prodEnviado2}" />
+
+										<p:outputLabel value="NOTA FISCAL:" />
+										<p:outputLabel value="#{carga.nfExpedicao2}" />
+
+										<p:outputLabel value="CHECK-LIST:" />
+										<p:outputLabel value="#{carga.checkEnviado2}" />
+
+										<p:outputLabel value="TEMPERATURA:" />
+										<p:outputLabel value="#{carga.temperaturaEnvio2}" />
+
+										<p:outputLabel value="TIPO DE ENVIO:" />
+										<p:outputLabel value="#{carga.tipo2}" />
+
+										<p:outputLabel value="TOTAL DE PRODUTOS:" />
+										<p:outputLabel value="#{carga.totalEnviado2}" />
+
+										<p:outputLabel value="TOTAL DE PALLETS:" />
+										<p:outputLabel value="#{carga.totalPallets2}" />
+
+
+									</h:panelGrid>
+
+									<h:panelGrid columns="1">
+										<p:outputLabel value="OBSERVAÇÕES:" />
+
+										<p:outputLabel value="#{carga.obs2}" />
+									</h:panelGrid>
+								</p:fieldset>
+
+								<p:fieldset legend="CARREGAMENTO 3"
+									rendered="#{cargaController.carga.prodEnviado3 != null}">
+									<h:panelGrid columns="2">
+										<p:outputLabel value="PRODUTO:" />
+										<p:outputLabel value="#{carga.prodEnviado3}" />
+
+										<p:outputLabel value="NOTA FISCAL:" />
+										<p:outputLabel value="#{carga.nfExpedicao3}" />
+
+										<p:outputLabel value="CHECK-LIST:" />
+										<p:outputLabel value="#{carga.checkEnviado3}" />
+
+										<p:outputLabel value="TEMPERATURA:" />
+										<p:outputLabel value="#{carga.temperaturaEnvio3}" />
+
+										<p:outputLabel value="TIPO DE ENVIO:" />
+										<p:outputLabel value="#{carga.tipo3}" />
+
+										<p:outputLabel value="TOTAL DE PRODUTOS:" />
+										<p:outputLabel value="#{carga.totalEnviado3}" />
+
+										<p:outputLabel value="TOTAL DE PALLETS:" />
+										<p:outputLabel value="#{carga.totalPallets3}" />
+
+
+									</h:panelGrid>
+
+									<h:panelGrid columns="1">
+										<p:outputLabel value="OBSERVAÇÕES:" />
+
+										<p:outputLabel value="#{carga.obs3}" />
+									</h:panelGrid>
+								</p:fieldset>
+
+								<p:fieldset legend="CARREGAMENTO 4"
+									rendered="#{cargaController.carga.prodEnviado4 != null}">
+									<h:panelGrid columns="2">
+										<p:outputLabel value="PRODUTO:" />
+										<p:outputLabel value="#{carga.prodEnviado4}" />
+
+										<p:outputLabel value="NOTA FISCAL:" />
+										<p:outputLabel value="#{carga.nfExpedicao4}" />
+
+										<p:outputLabel value="CHECK-LIST:" />
+										<p:outputLabel value="#{carga.checkEnviado4}" />
+
+										<p:outputLabel value="TEMPERATURA:" />
+										<p:outputLabel value="#{carga.temperaturaEnvio4}" />
+
+										<p:outputLabel value="TIPO DE ENVIO:" />
+										<p:outputLabel value="#{carga.tipo4}" />
+
+										<p:outputLabel value="TOTAL DE PRODUTOS:" />
+										<p:outputLabel value="#{carga.totalEnviado4}" />
+
+										<p:outputLabel value="TOTAL DE PALLETS:" />
+										<p:outputLabel value="#{carga.totalPallets4}" />
+
+
+									</h:panelGrid>
+									<h:panelGrid columns="1">
+										<p:outputLabel value="OBSERVAÇÕES:" />
+
+										<p:outputLabel value="#{carga.obs4}" />
+									</h:panelGrid>
+
+								</p:fieldset>
+
+								<p:fieldset legend="CARREGAMENTO 5"
+									rendered="#{cargaController.carga.prodEnviado5 != null}">
+									<h:panelGrid columns="2">
+										<p:outputLabel value="PRODUTO:" />
+										<p:outputLabel value="#{carga.prodEnviado5}" />
+
+										<p:outputLabel value="NOTA FISCAL:" />
+										<p:outputLabel value="#{carga.nfExpedicao5}" />
+
+										<p:outputLabel value="CHECK-LIST:" />
+										<p:outputLabel value="#{carga.checkEnviado5}" />
+
+										<p:outputLabel value="TEMPERATURA:" />
+										<p:outputLabel value="#{carga.temperaturaEnvio5}" />
+
+										<p:outputLabel value="TIPO DE ENVIO:" />
+										<p:outputLabel value="#{carga.tipo5}" />
+
+										<p:outputLabel value="TOTAL DE PRODUTOS:" />
+										<p:outputLabel value="#{carga.totalEnviado5}" />
+
+										<p:outputLabel value="TOTAL DE PALLETS:" />
+										<p:outputLabel value="#{carga.totalPallets5}" />
+
+
+
+									</h:panelGrid>
+
+									<h:panelGrid columns="1">
+										<p:outputLabel value="OBSERVAÇÕES:" />
+
+										<p:outputLabel value="#{carga.obs5}" />
+									</h:panelGrid>
+
+								</p:fieldset>
+
+
+								<!-- Insumo Recebido -->
+
+
+								<p:fieldset legend="INSUMO 1"
+									rendered="#{cargaController.carga.prodInsumoEnviado != null}">
+									<h:panelGrid columns="2">
+										<p:outputLabel value="PRODUTO:" />
+										<p:outputLabel value="#{carga.prodInsumoEnviado}" />
+
+										<p:outputLabel value="NOTA FISCAL:" />
+										<p:outputLabel value="#{carga.nfExpedicaoInsumo}" />
+
+										<p:outputLabel value="TIPO DE ENVIO:" />
+										<p:outputLabel value="#{carga.tipoInsumo}" />
+
+										<p:outputLabel value="TOTAL DE PALLETS:" />
+										<p:outputLabel value="#{carga.totalInsumoEnviado}" />
+
+
+
+									</h:panelGrid>
+
+									<h:panelGrid columns="1">
+										<p:outputLabel value="OBSERVAÇÕES:" />
+
+										<p:outputLabel value="#{carga.obsInsumo}" />
+									</h:panelGrid>
+								</p:fieldset>
+
+							</h:panelGrid>
+
+
+							<h:panelGrid columns="5">
+								<p:fieldset legend="INSUMO 2"
+									rendered="#{cargaController.carga.prodInsumoEnviado2 != null}">
+									<h:panelGrid columns="2">
+										<p:outputLabel value="PRODUTO:" />
+										<p:outputLabel value="#{carga.prodInsumoEnviado2}" />
+
+										<p:outputLabel value="NOTA FISCAL:" />
+										<p:outputLabel value="#{carga.nfExpedicaoInsumo2}" />
+
+										<p:outputLabel value="TIPO DE ENVIO:" />
+										<p:outputLabel value="#{carga.tipoInsumo2}" />
+
+										<p:outputLabel value="TOTAL DE PALLETS:" />
+										<p:outputLabel value="#{carga.totalInsumoEnviado2}" />
+
+
+									</h:panelGrid>
+
+									<h:panelGrid columns="1">
+										<p:outputLabel value="OBSERVAÇÕES:" />
+
+										<p:outputLabel value="#{carga.obsInsumo2}" />
+									</h:panelGrid>
+								</p:fieldset>
+
+							</h:panelGrid>
+
+							<h:panelGrid columns="5">
+
+								<p:fieldset legend="INSUMO 3"
+									rendered="#{cargaController.carga.prodInsumoEnviado3 != null}">
+									<h:panelGrid columns="2">
+										<p:outputLabel value="PRODUTO:" />
+										<p:outputLabel value="#{carga.prodInsumoEnviado3}" />
+
+										<p:outputLabel value="NOTA FISCAL:" />
+										<p:outputLabel value="#{carga.nfExpedicaoInsumo3}" />
+
+										<p:outputLabel value="TIPO DE ENVIO:" />
+										<p:outputLabel value="#{carga.tipoInsumo3}" />
+
+										<p:outputLabel value="TOTAL DE PALLETS:" />
+										<p:outputLabel value="#{carga.totalInsumoEnviado3}" />
+
+
+
+									</h:panelGrid>
+
+									<h:panelGrid columns="1">
+										<p:outputLabel value="OBSERVAÇÕES:" />
+
+										<p:outputLabel value="#{carga.obsInsumo3}" />
+									</h:panelGrid>
+								</p:fieldset>
+
+							</h:panelGrid>
+
+							<h:panelGrid columns="5">
+
+								<p:fieldset legend="INSUMO 4"
+									rendered="#{cargaController.carga.prodInsumoEnviado4 != null}">
+									<h:panelGrid columns="2">
+										<p:outputLabel value="PRODUTO:" />
+										<p:outputLabel value="#{carga.prodInsumoEnviado4}" />
+
+										<p:outputLabel value="NOTA FISCAL:" />
+										<p:outputLabel value="#{carga.nfExpedicaoInsumo4}" />
+
+										<p:outputLabel value="TIPO DE ENVIO:" />
+										<p:outputLabel value="#{carga.tipoInsumo4}" />
+
+										<p:outputLabel value="TOTAL DE PALLETS:" />
+										<p:outputLabel value="#{carga.totalInsumoEnviado4}" />
+
+
+
+									</h:panelGrid>
+
+									<h:panelGrid columns="1">
+										<p:outputLabel value="OBSERVAÇÕES:" />
+
+										<p:outputLabel value="#{carga.obsInsumo4}" />
+									</h:panelGrid>
+								</p:fieldset>
+							</h:panelGrid>
+
+							<h:panelGrid columns="5">
+
+								<p:fieldset legend="INSUMO 5"
+									rendered="#{cargaController.carga.prodInsumoEnviado5 != null}">
+									<h:panelGrid columns="2">
+										<p:outputLabel value="PRODUTO:" />
+										<p:outputLabel value="#{carga.prodInsumoEnviado5}" />
+
+										<p:outputLabel value="NOTA FISCAL:" />
+										<p:outputLabel value="#{carga.nfExpedicaoInsumo5}" />
+
+										<p:outputLabel value="TIPO DE ENVIO:" />
+										<p:outputLabel value="#{carga.tipoInsumo5}" />
+
+										<p:outputLabel value="TOTAL DE PALLETS:" />
+										<p:outputLabel value="#{carga.totalInsumoEnviado5}" />
+
+
+
+									</h:panelGrid>
+
+									<h:panelGrid columns="1">
+										<p:outputLabel value="OBSERVAÇÕES:" />
+
+										<p:outputLabel value="#{carga.obsInsumo5}" />
+									</h:panelGrid>
+
+								</p:fieldset>
+
+							</h:panelGrid>
+
+						</div>
+					</p:dataGrid>
+
+
+					<p:panelGrid columns="5" layout="grid"
+						style="padding:10px;font-weight:bold"
+						columnClasses="ui-grid-col-2,ui-grid-col-3,ui-grid-col-2,ui-grid-col-3,ui-grid-col-2"
+						styleClass="panelgrid-noborder">
+
+						<p:outputLabel />
+						<p:commandButton value="Fechar" process="@this"
+							action="#{cargaController.fecharVerCarga()}" />
+						<p:outputLabel />
+
+						<p:commandButton value="IMPRIMIR" process="@this">
+							<p:printer target="impressao" />
+						</p:commandButton>
+
+						<p:outputLabel />
+					</p:panelGrid>
+				</p:dialog>
+
+				<!-- FINALIZAR CARGA -->
+
+
+
+				<p:dialog resizable="false" position="top" id="finalizar"
+					widgetVar="finalizarCarga" width="92%" height="100%"
+					closable="false" modal="true" header="FINALIZAR CARGA"
+					showEffect="blind" hideEffect="size" style="margin-top: 70px">
+
+					#{cargaController.carregarEmails()}
+					<div style="width: 100%; height: 500px; overflow: auto;">
+
+						<p:panelGrid columns="2" layout="grid"
+							style="font-weight:bold;margin:10px"
+							columnClasses="ui-grid-col-8,ui-grid-col-4"
+							styleClass="panelgrid-noborder">
+
+							<p:panelGrid columns="1" layout="grid"
+								style="font-weight:bold;margin-left:-40px"
+								columnClasses="ui-grid-col-12" styleClass="panelgrid-noborder">
+
+								<p:panelGrid columns="2" layout="grid"
+									style="font-weight:bold;margin:10px"
+									columnClasses="ui-grid-col-2,ui-grid-col-10"
+									styleClass="panelgrid-noborder">
+
+									<p:outputLabel value="Para:" />
+									<p:dataGrid columns="2" var="email2" id="email3"
+										styleClass="panelgrid-noborder"
+										emptyMessage="Nenhum e-mail selecionado"
+										value="#{cargaController.emailsSelecionados}">
+										<p:outputLabel value="#{email2.email} (#{email2.nome})" />
+
+									</p:dataGrid>
+
+									<p:outputLabel value="Assunto:" />
+									<p:inputText value="#{cargaController.carga.assunto}"
+										id="assunto" style="font-weight:bold" />
+								</p:panelGrid>
+
+								<p:panelGrid columns="1" layout="grid"
+									style="font-weight:bold;margin:10px"
+									columnClasses="ui-grid-col-12" styleClass="panelgrid-noborder">
+
+									<p:outputLabel value="Texto do E-mail:" />
+									<h:selectOneRadio value="#{cargaController.carga.saudacao}">
+										<f:selectItem itemLabel="BOM DIA" itemValue="BOM DIA" />
+										<f:selectItem itemLabel="BOA TARDE" itemValue="BOA TARDE" />
+										<f:selectItem itemLabel="BOA NOITE" itemValue="BOA NOITE" />
+									</h:selectOneRadio>
+
+									<p:inputTextarea cols="100" rows="6" style="font-size:14px"
+										id="corpo" onkeyup="this.value = this.value.toUpperCase()"
+										value="#{cargaController.carga.corpo}" maxlength="250"
+										counterTemplate="{0} Caracteres restantes"
+										counter="displayInsumo6" />
+
+
+									<p:outputLabel id="displayInsumo6" style="font-size:10px" />
+
+								</p:panelGrid>
+
+								<p:panelGrid columns="1" layout="grid" id="arquivo"
+									style="padding:10px;font-weight:bold;margin:10px"
+									columnClasses="ui-grid-col-12" styleClass="panelgrid-noborder">
+
+
+									<p:outputLabel value="Incluir Anexos:" />
+
+									<p:fileUpload label="Selecione um Arquivo" multiple="true"
+										fileUploadListener="#{cargaController.fileUpLoaderHandler}"
+										update="arquivo" />
+									<p:outputLabel />
+									<p:outputLabel value="#{cargaController.arquivoSelecionado}" />
+
+
+								</p:panelGrid>
+								<p:panelGrid columns="5" layout="grid" id="saida"
+									style="padding:10px;font-weight:bold"
+									columnClasses="ui-grid-col-2,ui-grid-col-2,ui-grid-col-2,ui-grid-col-2,ui-grid-col-4"
+									styleClass="panelgrid-noborder">
+
+									<p:outputLabel value="Hora Saída:" />
+									<p:inputMask value="#{cargaController.carga.hora_saida_carga}"
+										mask="99:99" style="width:100px" />
+									<p:commandButton action="#{cargaController.calcularSaida()}"
+										process="saida" update="saida,botao" icon="fa fa-search-plus"
+										style="width:50px" title="Calcular Hora Saída" />
+									<p:outputLabel value="Total:" />
+									<p:outputLabel value="#{cargaController.carga.horaTotalsaida}" />
+								</p:panelGrid>
+							</p:panelGrid>
+
+
+							<p:panelGrid columns="1" layout="grid" id="tblEmailSelecionado"
+								style="font-weight:bold;margin-left:-40px"
+								columnClasses="ui-grid-col-12" styleClass="panelgrid-noborder">
+
+								<p:panelGrid columns="2" layout="grid"
+									style="font-weight:bold;margin:10px"
+									columnClasses="ui-grid-col-9,ui-grid-col-3"
+									styleClass="panelgrid-noborder">
+
+									<p:commandButton value="Cadastrar E-mail"
+										action="#{enderecosEmailController.abrirEmail()}" />
+									<p:commandButton icon="fa fa-refresh" style="widht:75px"
+										title="Atualizar Lista de e-Mails"
+										action="#{cargaController.carregarEmails()}"
+										update="tblEmailSelecionado" />
+
+								</p:panelGrid>
+
+
+								<p:outputLabel value="E-Mails Cadastrados" />
+
+								<p:dataTable widgetVar="tabelaEmailSelecionado"
+									emptyMessage="Lista Vazia" value="#{cargaController.emails}"
+									selection="#{cargaController.emailsSelecionados}"
+									var="emailSelecionado" reflow="true"
+									rowKey="#{emailSelecionado.id}" style="margin-top:5px" rows="5">
+
+									<p:column selectionMode="multiple"
+										style="width:16px;text-align:center" />
+									<p:column headerText="E-mail" width="57%"
+										style="text-align:center">
+										<h:outputLabel value="#{emailSelecionado.email}" />
+									</p:column>
+									<p:column headerText="Nome" width="23%"
+										style="text-align:center">
+										<h:outputLabel value="#{emailSelecionado.nome}" />
+									</p:column>
+
+								</p:dataTable>
+								<p:commandButton value="Selecionar E-mails" update="email3"
+									action="#{cargaController.selecionados()}" />
+
+
+
+							</p:panelGrid>
+						</p:panelGrid>
+
+						<p:panelGrid columns="3" layout="grid"
+							style="padding:10px;font-weight:bold;margin:10px"
+							columnClasses="ui-grid-col-5,ui-grid-col-2,ui-grid-col-5"
+							styleClass="panelgrid-noborder">
+
+							<p:commandButton value="Salvar e Enviar" id="botao"
+								action="#{cargaController.salvarSaidaParalelo() }"
+								process="finalizar"
+								disabled="#{cargaController.botaoSalvarSaida != true}" />
+							<p:outputLabel />
+							<p:commandButton value="Fechar"
+								action="#{cargaController.fecharFinalizarCarga()}"
+								update="finalizar" />
+						</p:panelGrid>
+					</div>
+
+				</p:dialog>
+
+				<!-- Adicionar E-mail -->
+
+				<p:dialog resizable="false" position="top" id="cadastrar"
+					widgetVar="email" width="55%" height="100%" closable="true"
+					modal="true" header="Adicionar E-mails" showEffect="blind"
+					hideEffect="size" style="margin-top: 50px">
+					
+					#{enderecosEmailController.listar()}
+					<p:panelGrid columns="2" layout="grid" id="emailCadastro"
+						style="font-weight:bold"
+						columnClasses="ui-grid-col-2,ui-grid-col-10"
+						styleClass="panelgrid-noborder">
+
+						<p:outputLabel value="Nome:" />
+						<p:inputText
+							value="#{enderecosEmailController.enderecosEmail.nome}" />
+						<p:outputLabel value="E-mail:" />
+						<p:inputText
+							value="#{enderecosEmailController.enderecosEmail.email}"
+							onkeyup="this.value = this.value.toLowerCase()" />
+
+					</p:panelGrid>
+
+					<p:panelGrid columns="2" layout="grid"
+						columnClasses="ui-grid-col-6,ui-grid-col-6"
+						styleClass="panelgrid-noborder">
+
+						<p:commandButton value="Salvar"
+							action="#{enderecosEmailController.salvar()}"
+							update="emailCadastro,tblEmail" />
+
+						<p:commandButton value="Fechar"
+							action="#{enderecosEmailController.fecharEmail()}"
+							update=":formKanban:tblEmailSelecionado" />
+					</p:panelGrid>
+
+					<p:dataTable widgetVar="tabelaEmail" emptyMessage="Lista Vazia"
+						value="#{enderecosEmailController.emails}" var="email"
+						id="tblEmail" reflow="true" style="margin-top:5px"
+						paginator="true" rows="8" rowsPerPageTemplate="3,5,8"
+						paginatorPosition="bottom"
+						paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} ">
+
+
+						<p:column headerText="Nome" width="33%" style="text-align:center">
+							<h:outputLabel value="#{email.nome}" />
+						</p:column>
+						<p:column headerText="E-mail" width="47%"
+							style="text-align:center">
+							<h:outputLabel value="#{email.email}" />
+						</p:column>
+
+						<p:column width="15%" style="text-align:center">
+
+							<p:commandButton icon="fa fa-fw fa-remove"
+								action="#{enderecosEmailController.prepararExclusao(email)}"
+								style="width:50%" update="tblEmail" />
+						</p:column>
+
+
+					</p:dataTable>
+
+
+				</p:dialog>
+
+				<p:confirmDialog widgetVar="confirmarExclusaoCursoDialog"
+					message="Deseja excluir esta Chegada? ">
+					<p:commandButton value="Sim" process="@this"
+						action="#{cargaController.excluirChegadaParalelo()}"
+						update="@form"
+						oncomplete="PF('confirmarExclusaoCursoDialog').hide()" />
+					<p:commandButton value="Não"
+						oncomplete="PF('confirmarExclusaoCursoDialog').hide()" />
+				</p:confirmDialog>
+
+				<p:confirmDialog widgetVar="confirmarExclusaoCursoDialog1"
+					message="Deseja excluir esta Operação? ">
+					<p:commandButton value="Sim" process="@this"
+						action="#{cargaController.excluirOperacaoParalelo()}"
+						update="@form"
+						oncomplete="PF('confirmarExclusaoCursoDialog1').hide()" />
+					<p:commandButton value="Não"
+						oncomplete="PF('confirmarExclusaoCursoDialog1').hide()" />
+				</p:confirmDialog>
+
+				<p:confirmDialog widgetVar="confirmarExclusaoCursoDialog2"
+					message="Deseja excluir este Carregamento? ">
+					<p:commandButton value="Sim" process="@this"
+						action="#{cargaController.excluirCarregamentoParalelo()}"
+						update="@form"
+						oncomplete="PF('confirmarExclusaoCursoDialog2').hide()" />
+					<p:commandButton value="Não"
+						oncomplete="PF('confirmarExclusaoCursoDialog2').hide()" />
+				</p:confirmDialog>
+			</h:form>
+		</div>
+	</ui:define>
+</ui:composition>
+

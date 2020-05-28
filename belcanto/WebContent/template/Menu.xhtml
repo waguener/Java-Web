@@ -1,0 +1,59 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:p="http://primefaces.org/ui">
+
+
+
+	<h:form style="margin-top:20px"
+		rendered="#{authenticationContext.usuarioLogado.tipo == 'ADMIN'}">
+		<nav class="aw-menu">
+			<ul>
+				<li><a href="Home.jsf">Home</a></li>
+				<li><a href="Atendimento.jsf">Atendimento</a></li>
+				<li><a href="#">Cadastros<span>▼</span></a>
+					<ul class="submenu">
+						<li><a href="CadProfessor.jsf">Professores</a></li>
+						<li><a href="CadCurso.jsf">Cursos</a></li>
+						<li><a href="CadContrato.jsf">Contrato</a></li>
+						<li><a href="CadBanco.jsf">Bancos</a></li>
+						<li><a href="CadUsuario.jsf">Usuários</a></li>
+					</ul></li>
+				<li><a href="#">Matricula<span>▼</span></a>
+					<ul class="submenu">
+						<li><a href="CadAluno.jsf">Nova Matrícula</a></li>
+						<li><a href="ConAluno.jsf">Adicionar Curso</a></li>
+						
+					</ul></li>
+				<li><a href="#">Financeiro<span>▼</span></a>
+					<ul class="submenu">
+						<li><a href="ConMensalidades.jsf">Mensalidades</a></li>
+						<li><a href="ConMovimentacao.jsf">Movimentações</a></li>
+					</ul></li>
+				
+				
+				
+				<li><a href="#">Consultas<span>▼</span></a>
+					<ul class="submenu">
+						<li><a href="ConResponsavel.jsf">Responsáveis</a></li>
+						<li><a href="ConProfessor.jsf">Professores</a></li>
+						
+						<li><a href="ConMatriculas.jsf">Matrículas</a></li>
+						<li><a href="ConContrato.jsf">Contratos</a></li>
+					</ul></li>
+			</ul>
+		</nav>
+
+	</h:form>
+	<h:form style="margin-top:20px"
+		rendered="#{authenticationContext.usuarioLogado.tipo == 'PROFESSOR'}">
+		<nav class="aw-menu">
+			<ul>
+				<li><a href="">Aulas</a></li>
+				<li><a href="">Requisições</a></li>
+				
+			</ul>
+		</nav>
+	</h:form>
+	
+</ui:composition>

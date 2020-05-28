@@ -1,0 +1,381 @@
+<ui:composition template="/template/Layout.xhtml"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:p="http://primefaces.org/ui">
+
+	<ui:define name="titulo">PesquisaFuncionario</ui:define>
+
+	<ui:define name="conteudo">
+
+		<div class="ui-fluid">
+			<h:form
+				style="margin-left: auto; margin-right:auto; font-weight:bold; font-size: 10px">
+				#{funcionarioController.iniciarPesquisa()}
+				<p:panel header="Pesquisar Funcionários">
+					<p:panelGrid columns="4" layout="grid"
+						styleClass="panelgrid-noborder"
+						columnClasses="ui-grid-col-4,ui-grid-col-1,ui-grid-col-3,ui-grid-col-4">
+
+						<p:inputText placeholder="Funcionário"
+							value="#{funcionarioController.nome}" onkeyup="this.value = this.value.toUpperCase()"/>
+
+						<p:commandButton icon="fa fa-search" process="@form" id="busca"
+							rendered="#{authenticationContext.usuarioLogado.usuarioNome() == true }"
+							action="#{funcionarioController.porNome()}" update="tbl" />
+
+
+						<p:commandButton icon="fa fa-search" process="@form" id="rhmaior"
+							rendered="#{authenticationContext.usuarioLogado.agenciaRhMaior() == true }"
+							action="#{funcionarioController.porAgencia()}" update="tbl" />
+
+						<p:commandButton icon="fa fa-search" process="@form" id="novaera"
+							rendered="#{authenticationContext.usuarioLogado.agenciaNovaEra() == true }"
+							action="#{funcionarioController.porAgencia()}" update="tbl" />
+
+
+					</p:panelGrid>
+					<p:dataTable id="tbl" reflow="true" resizeMode="expand" 
+						emptyMessage="Lista Vazia" resizableColumns="true" 
+						value="#{funcionarioController.peloNome}" scrollable="true"
+						var="funcionario" style="margin-top:5px" paginator="true"
+						rows="10" rowsPerPageTemplate="5,10,15" paginatorPosition="bottom"
+						paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}">
+
+						<p:column headerText="Foto " width="5%" style="text-align:center">
+							<p:graphicImage library="imagens" name="sem_foto.png"
+								width="64px" height="72px" style="text-align:center" 
+								rendered="#{funcionario.foto == null}">
+								<f:param name="idFuncionario" value="#{funcionario.id}" />
+							</p:graphicImage>
+							<p:graphicImage
+								value="#{funcionarioController.imagemFuncionario}" width="64px" height="72px" 
+								rendered="#{funcionarioController.imagemFuncionario != null}">
+								<f:param name="idFuncionario" value="#{funcionario.id}" />
+							</p:graphicImage>
+						</p:column>
+
+						<p:column headerText="Funcionário " width="15%">
+							<h:outputLabel value="#{funcionario.nome}" />
+						</p:column>
+
+						<p:column headerText="CPF" width="10%" style="text-align:center">
+							<h:outputLabel value="#{funcionario.cpf}" />
+						</p:column>
+						
+						
+						<p:column headerText="Projeto" width="8%"
+							style="text-align:center">
+							<h:outputLabel value="#{funcionario.projeto.projeto}">
+
+							</h:outputLabel>
+						</p:column>
+						<p:column headerText="Status" width="7%" style="text-align:center">
+							<h:outputLabel value="#{funcionario.status}"/>
+						
+						</p:column>
+						<p:column headerText="Agência" width="10%"
+							style="text-align:center">
+							<h:outputLabel value="#{funcionario.agencia}"/>
+							
+						</p:column>
+						
+						<p:column headerText="Opta por Transporte" width="10%"
+							style="text-align:center">
+							<h:outputLabel value="#{funcionario.transporte}"/>
+							
+						</p:column>
+
+						<p:column width="10%" style="text-align:center">
+
+							<p:commandButton icon="fa fa-print" style="width:25px"
+								title="Clique para imprimir"
+								action="#{funcionarioController.imprimir(funcionario)}"
+								update="@form" />
+
+							<p:commandButton icon="fa fa-edit" style="width:25px"
+								action="#{funcionarioController.editarFuncionario(funcionario)}"
+								title="Clique para Editar" />
+																				
+						</p:column>
+					</p:dataTable>
+					
+					<p:blockUI block="tbl" trigger="busca,rhmaior,novaera" animate="true">
+						PESQUISANDO FUNCIONÁRIOS...<br />
+						<p:graphicImage library="imagens" name="load.gif" />
+					</p:blockUI>
+
+
+				</p:panel>
+
+				<!-- Impressão da Ficha -->
+
+				<p:dialog header="Ficha do Funcionário" resizable="false" id="tela"
+					position="top" widgetVar="verDialog" width="70%" height="60%"
+					style="position:absolute; margin-top:30px; margin-left:50px"
+					modal="true" showEffect="clip" hideEffect="clip">
+
+					<p:dataGrid columns="1" var="funcionario" id="impressao"
+						styleClass="data-grid" layout="grid"
+						value="#{funcionarioController.imprimir}">
+
+						<h:panelGrid columns="1" style="font-size:12px">
+
+							<h:graphicImage library="imagens" name="olgber.png"
+								style="position: absolute; right:30px; margin-top:20px"
+								width="180px" />
+						</h:panelGrid>
+						<h:panelGrid columns="1" style="margin-top:10px; font-size:12px">
+							<p:outputLabel value="OLGBER ESPECIALIDADES EIRELI" />
+						</h:panelGrid>
+
+						<h:panelGrid columns="1" style="font-size:12px">
+							<p:outputLabel
+								value="CNPJ: 03.293.568/00001-36 / IE: 234.100.542.113" />
+						</h:panelGrid>
+
+						<h:panelGrid columns="1" style="font-size:12px">
+							<p:outputLabel value="RUA MANOEL NUNES DA COSTA, 290" />
+						</h:panelGrid>
+
+						<h:panelGrid columns="1" style="font-size:12px">
+							<p:outputLabel value="VILA GALVÃO - CAÇAPAVA / SP" />
+						</h:panelGrid>
+
+						<h:panelGrid columns="3" style="font-size:12px; margin-top:20px">
+
+							<h:panelGrid columns="1">
+								<p:graphicImage
+									value="#{funcionarioController.imagemFuncionario}" width="64px"
+									height="72px" rendered="#{funcionario.foto != null}" >
+									<f:param name="idFuncionario" value="#{funcionario.id}" />
+								</p:graphicImage>
+
+								<p:graphicImage library="imagens" name="sem_foto.png"
+									height="30%" rendered="#{funcionario.foto == null}">
+									<f:param name="idFuncionario" value="#{funcionario.id}" />
+								</p:graphicImage>
+
+							</h:panelGrid>
+							<h:panelGrid columns="2">
+								<p:outputLabel value="Nome: "
+									style="margin-left: 10px;font-size:12px" />
+								<p:outputLabel value="#{funcionario.nome}"
+									style="font-size:12px" />
+
+								<p:outputLabel value="Endereço: "
+									style="margin-left: 10px;font-size:12px" />
+								<p:outputLabel value="#{funcionario.endereco}"
+									style="font-size:12px" />
+
+								<p:outputLabel value="Bairro: "
+									style="margin-left: 10px;font-size:12px" />
+								<p:outputLabel value="#{funcionario.bairro}"
+									style="font-size: 12px" />
+
+								<p:outputLabel value="Cadastro: "
+									style="margin-left: 10px;font-size:12px" />
+								<p:outputLabel value="#{funcionario.dataCadastro}"
+									style="font-size:12px">
+									<f:convertDateTime pattern="dd/MM/yyyy" locale="pt_BR" />
+								</p:outputLabel>
+
+							</h:panelGrid>
+							<h:panelGrid columns="2">
+
+								<p:outputLabel value="Agência:"
+									style="margin-left: 10px;font-size:12px" />
+								<p:outputLabel value="#{funcionarioController.agencia.nome}"
+									style="font-size:12px" />
+
+								<p:outputLabel value="Cpf: "
+									style="margin-left: 10px;font-size:12px" />
+								<p:outputLabel value="#{funcionario.cpf}" style="font-size:12px" />
+
+								<p:outputLabel value="RG: "
+									style="margin-left: 10px;font-size:12px" />
+								<p:outputLabel value="#{funcionario.rg}" style="font-size:12px" />
+
+								<p:outputLabel value="E-mail: "
+									style="margin-left: 10px;font-size:12px" />
+								<p:outputLabel value="#{funcionario.email}" rendered="#{funcionario.email != ''}"
+									style="font-size:12px" />
+								<p:outputLabel value="Não Possui" rendered="#{funcionario.email == ''}"
+									style="font-size:12px" />
+
+							</h:panelGrid>
+
+							<h:panelGrid columns="1">
+
+							</h:panelGrid>
+
+						</h:panelGrid>
+
+						<h:panelGrid columns="2" style="margin-left:10px; font-size:12px">
+
+							<p:outputLabel value="Sexo: " style="font-size:12px" />
+							<p:outputLabel value="#{funcionario.sexo}" style="font-size:12px" />
+
+						</h:panelGrid>
+
+						<h:panelGrid columns="1"
+							style="margin-top:10px;margin-left:10px; font-size:14px">
+
+							<p:outputLabel value="Contato" />
+
+						</h:panelGrid>
+
+						<h:panelGrid columns="4" style="margin-left:10px">
+
+							<h:panelGrid columns="1">
+								<p:outputLabel value="Telefone Fixo: " />
+								<p:outputLabel value="#{funcionario.telFixo}"
+									style="font-size:12px" rendered="#{funcionario.cel1 != ''}"/>
+								<p:outputLabel value="Não Possui"
+									rendered="#{funcionario.telFixo == ''}"
+									style="margin-left: 20px;font-size:12px" />
+																
+							</h:panelGrid>
+
+							<h:panelGrid columns="1">
+								<p:outputLabel value="Celular 1: " style="margin-left: 20px;font-size:12px" />
+								<p:outputLabel value="#{funcionario.cel1}"
+									rendered="#{funcionario.cel1 != ''}"
+									style="margin-left: 20px;font-size:12px" />
+								<p:outputLabel value="Não Possui"
+									rendered="#{funcionario.cel1 == ''}"
+									style="margin-left: 20px;font-size:12px" />
+							</h:panelGrid>
+
+							<h:panelGrid columns="1">
+								<p:outputLabel value="Celular 2: " style="margin-left: 20px;font-size:12px" />
+								<p:outputLabel value="#{funcionario.cel2}"
+									rendered="#{funcionario.cel2 != ''}"
+									style="margin-left: 20px;font-size:12px" />
+								<p:outputLabel value="Não Possui"
+									rendered="#{funcionario.cel2 == ''}"
+									style="margin-left: 20px;font-size:12px" />
+							</h:panelGrid>
+
+							<h:panelGrid columns="1">
+								<p:outputLabel value="Celular 3: " style="margin-left: 20px;font-size:12px" />
+								<p:outputLabel value="#{funcionario.cel3}"
+									rendered="#{funcionario.cel3 != ''}"
+									style="margin-left: 20px;font-size:12px" />
+								<p:outputLabel value="Não Possui"
+									rendered="#{funcionario.cel3 == ''}"
+									style="margin-left: 20px;font-size:12px" />
+							</h:panelGrid>
+						</h:panelGrid>
+
+						<h:panelGrid columns="1" style="margin-top:10px;margin-left:10px">
+
+							<p:outputLabel value="Observação:" />
+							<p:outputLabel value="#{funcionario.obs}" style="font-size:12px" />
+
+						</h:panelGrid>
+
+
+						<h:panelGrid columns="1" style="margin-top:10px;margin-left:10px">
+
+							<p:outputLabel value="Dados Complementares" />
+
+						</h:panelGrid>
+
+						<h:panelGrid columns="5"
+							style="margin-top:10px;margin-left:10px; font-size:12px">
+
+							<h:panelGrid columns="1">
+								<p:outputLabel value="Turno Pretendido:" />
+								<p:outputLabel value="#{funcionario.turno.turno}"
+									style="font-size:12px" />
+							</h:panelGrid>
+
+							<h:panelGrid columns="1">
+								<p:outputLabel value="Projeto:" style="margin-left: 25px" />
+								<p:outputLabel value="#{funcionario.projeto.projeto}"
+									style="font-size:12px;margin-left: 25px" rendered="#{funcionario.projeto.projeto != null}"/> 
+								<p:outputLabel value="Não Determinado" rendered="#{funcionario.projeto.projeto == null}"
+									style="font-size:12px;margin-left: 25px" />
+							</h:panelGrid>
+
+							<h:panelGrid columns="1">
+								<p:outputLabel value="Status:" style="margin-left: 25px" />
+								<p:outputLabel value="#{funcionario.status}"
+									style="font-size:12px;margin-left: 25px" />
+							</h:panelGrid>
+
+							<h:panelGrid columns="1">
+								<p:outputLabel value="Homologado:" style="margin-left: 25px" />
+								<p:outputLabel value="#{funcionario.homologado}"
+									style="font-size:12px;margin-left: 25px" />
+							</h:panelGrid>
+
+							<h:panelGrid columns="1">
+								<p:outputLabel value="Utiliza Van?" style="margin-left: 25px" />
+								<p:outputLabel value="#{funcionario.transporte}"
+									style="font-size:12px;margin-left: 25px" />
+							</h:panelGrid>
+						</h:panelGrid>
+
+						<h:panelGrid columns="1"
+							rendered="#{funcionario.dataDesligamento != null}"
+							style="margin-top:10px;margin-left:10px">
+
+							<p:outputLabel value="Dados de Desligamento" />
+
+						</h:panelGrid>
+
+						<h:panelGrid columns="4" style="margin-left:10px;font-size:12px">
+
+							<p:outputLabel value="Data: "
+								rendered="#{funcionario.dataDesligamento != null}" />
+							<p:outputLabel value="#{funcionario.dataDesligamento}"
+								style="font-size:12px"
+								rendered="#{funcionario.dataDesligamento != null}">
+								<f:convertDateTime pattern="dd/MM/yyyy" locale="pt_BR" />
+							</p:outputLabel>
+
+							<p:outputLabel value="Motivo:" style="margin-left: 25px"
+								rendered="#{funcionario.dataDesligamento != null}" />
+							<p:outputLabel value="#{funcionario.motivo}"
+								rendered="#{funcionario.dataDesligamento != null}"
+								style="font-size:12px" />
+						</h:panelGrid>
+
+						<h:panelGrid columns="1" style="margin-top:10px;margin-left:10px">
+							<p:outputLabel value="Observação:"
+								rendered="#{funcionario.dataDesligamento != null}" />
+							<p:outputLabel value="#{funcionario.obsDesligamento}"
+								rendered="#{funcionario.dataDesligamento != null}"
+								style="font-size:12px" />
+
+						</h:panelGrid>
+						<p:outputLabel value="#{funcionarioController.data}"
+							style="font-size:8px;position: absolute; right:30px; margin-top:10px" />
+					</p:dataGrid>
+
+					
+					<h:panelGrid columns="2"
+						style="margin-left:auto; margin-right:auto; margin-top:15px">
+
+						<p:commandButton icon="fa fa-print" value="Imprimir"
+							style="margin-left:10px" oncomplete="PF('verDialog').hide()"
+							type="button">
+							<p:printer target="impressao" />
+						</p:commandButton>
+
+						<p:commandButton icon="fa fa-sign-out" value="Fechar"
+							style="margin-left:10px" onclick="PF('verDialog').hide()" />
+					</h:panelGrid>
+				</p:dialog>
+			</h:form>
+
+
+		</div>
+
+
+
+	</ui:define>
+</ui:composition>

@@ -1,0 +1,482 @@
+<ui:composition template="/template/Layout.xhtml"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:p="http://primefaces.org/ui">
+
+	<ui:define name="titulo">FuncionarioEdit</ui:define>
+
+	<ui:define name="conteudo">
+
+		<div class="ui-fluid">
+			<h:form
+				style="margin-left: auto; margin-right:auto; font-weight:bold; font-size: 10px">
+				#{funcionarioController.comboBox()}
+				#{funcionarioController.iniciarEdicao()}
+				<!-- 1º Bloco  -->
+				<p:fieldset legend="Geral Funcionário" style="margin-bottom:20px"
+					toggleable="true" toggleSpeed="300">
+
+					<p:panelGrid columns="6" layout="grid" style="padding:10px"
+						id="bloco1"
+						columnClasses="ui-grid-col-2,ui-grid-col-1,ui-grid-col-3,ui-grid-col-1,ui-grid-col-3,ui-grid-col-2"
+						styleClass="panelgrid-noborder">
+
+						<p:outputLabel />
+						<p:outputLabel value="Nome:" />
+						<p:inputText value="#{funcionarioController.funcionario.nome}"
+							onkeyup="this.value = this.value.toUpperCase()" id="nome"
+							required="true" requiredMessage="Informe o nome" />
+
+
+
+
+						<p:outputLabel value="R.G.:" />
+						<p:inputText value="#{funcionarioController.funcionario.rg}"
+							required="true" requiredMessage="Informe o rg" />
+						<p:outputLabel />
+
+						<p:outputLabel />
+						<p:outputLabel value="CPF:" />
+						<p:inputMask mask="999.999.999-99" required="true"
+							value="#{funcionarioController.funcionario.cpf}"
+							requiredMessage="Informe o cpf" />
+
+
+						<p:outputLabel value="Sexo:" />
+						<h:selectOneRadio
+							value="#{funcionarioController.funcionario.sexo}" required="true"
+							requiredMessage="Selecione o Sexo">
+							<f:selectItem itemLabel="MASCULINO" itemValue="MASCULINO" />
+							<f:selectItem itemLabel="FEMININO" itemValue="FEMININO" />
+						</h:selectOneRadio>
+						<p:outputLabel />
+
+						<p:outputLabel />
+						<p:outputLabel value="Endereço:" />
+						<p:inputText value="#{funcionarioController.funcionario.endereco}"
+							onkeyup="this.value = this.value.toUpperCase()" required="true"
+							requiredMessage="Informe o endereço" />
+
+
+						<p:outputLabel value="Bairro:" />
+						<p:inputText value="#{funcionarioController.funcionario.bairro}"
+							onkeyup="this.value = this.value.toUpperCase()" required="true"
+							requiredMessage="Informe o bairro" />
+						<p:outputLabel />
+
+						<p:outputLabel />
+						<p:outputLabel value="Telefone Fixo:" />
+						<p:inputMask mask="(99) 9999-9999"
+							value="#{funcionarioController.funcionario.telFixo}" />
+
+
+						<p:outputLabel value="Celular 1:" />
+						<p:inputMask mask="(99) 9 9999-9999"
+							value="#{funcionarioController.funcionario.cel1}" />
+						<p:outputLabel />
+
+						<p:outputLabel />
+						<p:outputLabel value="Celular 2:" style="padding-right:5px" />
+						<p:inputMask mask="(99) 9 9999-9999"
+							value="#{funcionarioController.funcionario.cel2}" />
+
+
+						<p:outputLabel value="Celular 3:" />
+						<p:inputMask mask="(99) 9 9999-9999"
+							value="#{funcionarioController.funcionario.cel3}" />
+						<p:outputLabel />
+
+						<p:outputLabel />
+						<p:outputLabel value="E-Mail" />
+						<p:inputText value="#{funcionarioController.funcionario.email}">
+
+						</p:inputText>
+
+					</p:panelGrid>
+
+					<p:panelGrid columns="2" styleClass="panelgrid-noborder"
+						layout="grid" columnClasses="ui-grid-col-7,ui-grid-col-5">
+
+
+						<p:panelGrid columns="3" layout="grid" style="padding:10px"
+							columnClasses="ui-grid-col-2,ui-grid-col-2,ui-grid-col-8"
+							styleClass="panelgrid-noborder">
+
+							<p:outputLabel />
+							<p:outputLabel value="Observação:" />
+
+							<p:inputTextarea cols="100" rows="6" style="font-size:16px"
+								onkeyup="this.value = this.value.toUpperCase()"
+								value="#{funcionarioController.funcionario.obs}" required="true"
+								maxlength="250" counterTemplate="{0} Caracteres restantes"
+								counter="display" requiredMessage="Informe a referente" />
+							<p:outputLabel />
+							<p:outputLabel />
+							<p:outputLabel id="display" style="font-size:10px" />
+						</p:panelGrid>
+
+
+						<p:panelGrid columns="1" id="grid-update"
+							styleClass="panelgrid-noborder"
+							columnClasses="ui-grid-col-12">
+
+							<h:outputLabel value="Foto" />
+
+							<h:panelGrid columns="3" id="imagem-funcionario"
+								styleClass="panelgrid-noborder">
+								<f:facet name="header">
+									<p:graphicImage library="imagens" name="sem_foto.png"
+										width="110px" height="140px" id="padrao"
+										rendered="#{funcionarioController.funcionario.foto == null}" />
+									<p:graphicImage
+										value="#{funcionarioController.funcionario.imagem}"
+										rendered="#{funcionarioController.funcionario.foto != null}"
+										width="110px" height="140px" id="foto"
+										style="margin-left:10px; box-shadow: 1px 1px 4px " />
+
+								</f:facet>
+
+								<p:commandButton value="Incluir Imagem"
+									rendered="#{funcionarioController.funcionario.foto == null}"
+									icon="fa fa-file-image-o" process="@this"
+									action="#{funcionarioController.abrirTela}" />
+
+								<p:commandButton value="Alterar Imagem"
+									rendered="#{funcionarioController.funcionario.foto != null}"
+									icon="fa fa-exchange" process="@this"
+									action="#{funcionarioController.abrirTela}" />
+
+								<p:commandButton value="Excluir" icon="fa fa-trash-o"
+									style="width: 80px; font-size: 12px;font-weight: bold"
+									action="#{funcionarioController.apagarFoto}" process="@this"
+									update="imagem-funcionario" />
+
+							</h:panelGrid>
+						</p:panelGrid>
+
+					</p:panelGrid>
+
+
+
+
+				</p:fieldset>
+
+
+				<!-- 2º Bloco -->
+
+				<p:fieldset legend="Dados complementares" style="margin-bottom:20px"
+					toggleable="true" toggleSpeed="300">
+
+					<p:panelGrid columns="5" layout="grid" id="bloco2"
+						style="padding:10px;font-weight:bold"
+						columnClasses="ui-grid-col-2,ui-grid-col-3,ui-grid-col-1,ui-grid-col-3,ui-grid-col-3"
+						styleClass="panelgrid-noborder">
+
+
+						<p:outputLabel />
+						<p:selectOneMenu converter="omnifaces.SelectItemsConverter"
+							value="#{funcionarioController.funcionario.turno}"
+							immediate="true" required="true"
+							requiredMessage="Selecione o Turno">
+							<f:selectItem itemValue="#{null}" itemLabel="Turno Pretendido" />
+							<f:selectItems value="#{funcionarioController.turnos}"
+								var="turno" itemValue="#{turno}" itemLabel="#{turno.turno}" />
+						</p:selectOneMenu>
+
+
+
+						<p:outputLabel />
+
+
+
+						<p:selectOneMenu converter="omnifaces.SelectItemsConverter"
+							value="#{funcionarioController.funcionario.projeto}"
+							immediate="true" autoWidth="false">
+							<f:selectItem itemValue="#{null}" itemLabel="Projeto" />
+							<f:selectItems value="#{funcionarioController.projetos}"
+								var="projeto" itemValue="#{projeto}"
+								itemLabel="#{projeto.projeto}" />
+						</p:selectOneMenu>
+
+						<p:outputLabel />
+
+
+					</p:panelGrid>
+
+					<!-- 3º Bloco -->
+
+					<p:panelGrid columns="5" layout="grid"
+						style="padding:10px;font-weight:bold"
+						columnClasses="ui-grid-col-2,ui-grid-col-2,ui-grid-col-3,ui-grid-col-1,ui-grid-col-3"
+						styleClass="panelgrid-noborder">
+
+
+						<p:fieldset legend="Status" style="font-size:14px" id="status">
+							<p:panelGrid columns="2" layout="grid"
+								style="padding:10px;font-weight:bold"
+								columnClasses="ui-grid-col-5,ui-grid-col-7"
+								styleClass="panelgrid-noborder">
+
+								<p:panelGrid columns="1" layout="grid" style="font-weight:bold"
+									columnClasses="ui-grid-col-12" styleClass="panelgrid-noborder">
+
+									<p:commandButton value="ATIVO"
+										action="#{funcionarioController.ativo}" process="@this"
+										update="status,desligamento" />
+
+									<h:graphicImage library="imagens" name="positivo.png"
+										style="width:20px;margin-left: 25px" id="positivo"
+										rendered="#{funcionarioController.funcionario.status == 'ATIVO'}" />
+								</p:panelGrid>
+
+								<p:panelGrid columns="1" layout="grid" style="font-weight:bold"
+									columnClasses="ui-grid-col-12" styleClass="panelgrid-noborder">
+
+									<p:commandButton value="DESLIGADO"
+										action="#{funcionarioController.desligado}" process="@this" />
+
+									<h:graphicImage library="imagens" name="negativo.png"
+										style="width:20px;margin-left: 45px"
+										rendered="#{funcionarioController.funcionario.status == 'DESLIGADO'}" />
+
+								</p:panelGrid>
+
+							</p:panelGrid>
+
+						</p:fieldset>
+
+						<p:outputLabel />
+						<p:fieldset legend="Homologado"
+							rendered="#{authenticationContext.usuarioLogado.usuarioNome() == true }"
+							style="margin-bottom:20px;font-size:14px">
+							<p:selectOneButton id="homologado"
+								value="#{funcionarioController.funcionario.homologado}"
+								style="width:200px">
+								<f:selectItem itemLabel="SIM" itemValue="SIM" />
+								<f:selectItem itemLabel="NÃO" itemValue="NÃO" />
+							</p:selectOneButton>
+
+						</p:fieldset>
+						<p:outputLabel />
+						<p:fieldset legend="Pretende uso de Van?"
+							style="margin-bottom:20px;font-size:14px">
+							<p:selectOneButton required="true" id="transporte"
+								requiredMessage="Opta por Transporte?"
+								value="#{funcionarioController.funcionario.transporte}"
+								style="width:150px">
+								<f:selectItem itemLabel="SIM" itemValue="SIM" />
+								<f:selectItem itemLabel="NÃO" itemValue="NÃO" />
+							</p:selectOneButton>
+						</p:fieldset>
+						<p:outputLabel />
+					</p:panelGrid>
+				</p:fieldset>
+
+
+
+
+				<!-- 4º Bloco -->
+				<p:panelGrid columns="5" layout="grid" style="padding:10px"
+					columnClasses="ui-grid-col-3,ui-grid-col-2,ui-grid-col-2,ui-grid-col-2,ui-grid-col-3"
+					styleClass="panelgrid-noborder">
+					<p:outputLabel />
+					<p:outputLabel />
+					<p:commandButton value="Salvar" id="salvarEdit" ajax="true"
+						action="#{funcionarioController.salvarFuncionarioEdit()}"
+						update="@form" process="@form" />
+					<p:outputLabel />
+					<p:outputLabel />
+					<p:blockUI block="@form" trigger="salvarEdit" animate="true">
+						SALVANDO...<br />
+						<p:graphicImage library="imagens" name="load.gif" />
+					</p:blockUI>
+				</p:panelGrid>
+
+
+				<p:dialog resizable="false" position="center"
+					widgetVar="verDesligamento" width="70%" height="50%"
+					closable="false" style=" margin-top:30px; margin-left:50px"
+					modal="true" showEffect="clip" hideEffect="clip">
+
+					<p:fieldset legend="Desligamento Funcionário:" id="desligamento"
+						style="margin-bottom:20px" collapsed="false">
+						<p:panelGrid columns="6" layout="grid"
+							style="padding:10px;font-weight:bold"
+							columnClasses="ui-grid-col-1,ui-grid-col-2,ui-grid-col-3,ui-grid-col-1,ui-grid-col-2,ui-grid-col-4"
+							styleClass="panelgrid-noborder">
+
+							<p:outputLabel />
+							<p:outputLabel value="Data Desligamento:" />
+							<p:calendar pattern="dd/MM/yyyy" mask="99/99/9999"
+								navigator="true" showOn="button" size="10"
+								value="#{funcionarioController.funcionario.dataDesligamento}"
+								effect="fold" locale="pt" title="Clique para abrir o calendário" />
+
+							<p:outputLabel />
+							<p:outputLabel value="Motivo:" />
+							<p:selectOneMenu
+								value="#{funcionarioController.funcionario.motivo}"
+								style="width:200px">
+								<f:selectItem itemLabel="Selecione" itemValue="#{null}" />
+								<f:selectItem itemLabel="FIM DO PROJETO"
+									itemValue="FIM DO PROJETO" />
+								<f:selectItem itemLabel="DESISTÊNCIA" itemValue="DESISTÊNCIA" />
+								<f:selectItem itemLabel="DEMITIDO" itemValue="DEMITIDO" />
+								<f:selectItem itemLabel="EFETIVADO" itemValue="EFETIVADO" />
+							</p:selectOneMenu>
+
+						</p:panelGrid>
+
+						<p:panelGrid columns="5" layout="grid"
+							style="padding:10px;font-weight:bold"
+							columnClasses="ui-grid-col-2,ui-grid-col-2,ui-grid-col-6,ui-grid-col-1,ui-grid-col-1"
+							styleClass="panelgrid-noborder">
+
+							<p:outputLabel />
+							<p:outputLabel value="Observação:" />
+							<p:inputTextarea cols="100" rows="6" style="font-size:16px"
+								onkeyup="this.value = this.value.toUpperCase()"
+								value="#{funcionarioController.funcionario.obsDesligamento}"
+								maxlength="250" counterTemplate="{0} Caracteres restantes"
+								counter="display2" />
+							<p:outputLabel />
+							<p:outputLabel />
+
+							<p:outputLabel />
+							<p:outputLabel />
+							<p:outputLabel id="display2" style="font-size:10px" />
+							<p:outputLabel />
+							<p:outputLabel />
+
+						</p:panelGrid>
+						<p:panelGrid columns="5" layout="grid"
+							style="padding:10px;font-weight:bold"
+							columnClasses="ui-grid-col-3,ui-grid-col-2,ui-grid-col-1,ui-grid-col-2,ui-grid-col-4"
+							styleClass="panelgrid-noborder">
+							<p:outputLabel />
+							<p:commandButton value="Salvar e Voltar"
+								action="#{funcionarioController.salvarDesligado}"
+								process="desligamento" update="status" />
+							<p:outputLabel />
+							<p:commandButton value="Fechar"
+								action="#{funcionarioController.fecharDesligado}"
+								process="@this" />
+							<p:outputLabel />
+							<p:outputLabel />
+						</p:panelGrid>
+					</p:fieldset>
+				</p:dialog>
+				<!-- Web Cam -->
+
+				<p:dialog widgetVar="dialogCamera" resizable="false" id="camera"
+					closable="true" position="center" showHeader="true"
+					header="Web Cam">
+					<p:photoCam widgetVar="photoCam" forceFlash="true"
+						listener="#{funcionarioController.capturar}" update="painel,botao" />
+
+					<p:panelGrid columns="2" layout="grid" style="padding:10px"
+						columnClasses="ui-grid-col-6,ui-grid-col-6"
+						styleClass="panelgrid-noborder">
+
+						<p:commandButton value="Capturar" icon="fa fa-asterisk"
+							style="margin-top:10px;margin-left:70px"
+							onclick="PF('photoCam').capture();" process="camera"
+							action="#{funcionarioController.botao}"
+							oncomplete="PF('dialogCamera').hide()" />
+
+					</p:panelGrid>
+				</p:dialog>
+
+				<!-- Painel -->
+				<p:dialog widgetVar="painelCamera" resizable="false" width="42%"
+					closable="false" position="top" showHeader="true"
+					header="Adicionar Imagem" style="margin-top:50px;" modal="true"
+					showEffect="fade" hideEffect="fade" id="principal">
+
+					<p:panelGrid columns="1" layout="grid"
+						columnClasses="ui-grid-col-12" styleClass="panelgrid-noborder">
+
+						<p:fileUpload auto="true" label="Abrir Pasta" skinSimple="true"
+							allowTypes="/(\.|\/)(jpe?g|png)$/" sizeLimit="712000"
+							invalidSizeMessage="Tamanho máximo da imagem 700kb"
+							invalidFileMessage="Formato de arquivo inválido"
+							fileUploadListener="#{funcionarioController.abrirPasta}"
+							update="cropped_com_foto,botao" />
+
+					</p:panelGrid>
+
+					<p:panelGrid columns="2" layout="grid" id="painel"
+						columnClasses="ui-grid-col-8,ui-grid-col-4"
+						styleClass="panelgrid-noborder">
+
+						<p:panelGrid columns="1" layout="grid"
+							columnClasses="ui-grid-col-12" styleClass="panelgrid-noborder">
+
+							<p:panel id="cropped_com_foto" header="Foto"
+								style="width: 340px; height: 320px;">
+
+								<p:imageCropper value="#{funcionarioController.imagemCortada}"
+									boxHeight="250" boxWidth="300" initialCoords="225,75,300,125"
+									aspectRatio="0.8" id="imageCropperFotoId"
+									rendered="#{funcionarioController.exibirImagem != false}"
+									image="#{pageContext.servletContext.contextPath}/resources/imagens/#{funcionarioController.fotoCapturada}" />
+								<center>
+									<p:commandButton value="Cortar" process="cropped_com_foto"
+										icon="fa fa-cut"
+										action="#{funcionarioController.cortarImagem}"
+										style="margin-top:15px; width:100px"
+										update="panelFotoRecortadaId"
+										rendered="#{funcionarioController.exibeBotao == true}" />
+								</center>
+							</p:panel>
+
+						</p:panelGrid>
+
+
+						<p:panelGrid columns="1" layout="grid" style="margin:0px"
+							columnClasses="ui-grid-col-12" styleClass="panelgrid-noborder">
+
+							<p:panel id="panelFotoRecortadaId" header="Foto Recortada"
+								style="width: 180px; height: 260px;">
+
+								<p:graphicImage
+									rendered="#{funcionarioController.exibirImagemCortada != false}"
+									value="#{funcionarioController.imagemEnviada}" width="160px"
+									cache="false" />
+								<center>
+									<p:commandButton value="Salvar" update="imagem-funcionario"
+										icon="fa fa-check-square-o"
+										rendered="#{funcionarioController.exibeBotaoSalvar == true}"
+										style="width:100px"
+										action="#{funcionarioController.salvarImagem}"
+										process="panelFotoRecortadaId,cropped_com_foto" />
+								</center>
+							</p:panel>
+
+						</p:panelGrid>
+
+					</p:panelGrid>
+
+					<!-- Footer do Painel -->
+					<p:panelGrid columns="3" layout="grid" id="botao"
+						style="margin-left:50px"
+						columnClasses="ui-grid-col-3,ui-grid-col-3,ui-grid-col-6"
+						styleClass="panelgrid-noborder">
+
+						<p:commandButton value="Usar WebCam" icon="fa fa-camera"
+							action="#{funcionarioController.abrirWebCam}" process="@this" />
+
+						<p:commandButton value="Fechar" icon="fa fa-close"
+							action="#{funcionarioController.fecharTela}" process="@this" />
+
+					</p:panelGrid>
+
+				</p:dialog>
+
+			</h:form>
+
+		</div>
+	</ui:define>
+</ui:composition>

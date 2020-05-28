@@ -1,0 +1,17 @@
+
+<ui:composition template="/Paginas/template/template.xhtml"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui">
+
+	<ui:define name="titulo">Perfis</ui:define>
+
+	<ui:define name="Principal">
+		<h:form id="form-perfis">
+			<ui:include src="/Paginas/Perfis/CadastroPerfil.xhtml"/>
+			<ui:include src="/Paginas/Perfis/ListaPerfis.xhtml"/>
+		</h:form>
+	</ui:define>
+</ui:composition>

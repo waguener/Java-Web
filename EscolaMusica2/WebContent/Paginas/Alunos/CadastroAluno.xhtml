@@ -1,0 +1,88 @@
+
+<ui:composition template="/Paginas/template/template.xhtml"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui">
+	
+	<ui:define name="titulo" >Cadastro de Alunos</ui:define>
+	<ui:define name="Principal">
+	<p:panel header="Cadastro de Alunos" style="width:90%">
+		<h:form id="cadastro-aluno-form">
+			<p:growl />
+			<p:panel header="Dados Pessoais">
+				<h:panelGrid columns="2" cellpadding="5" id="grid-update">
+					<h:outputLabel value="Foto" />
+					<h:panelGrid columns="2" id="imagem-aluno">
+						 <p:fileUpload auto="true" label="Selecione uma Foto"
+							allowTypes="/(\.|\/)(jpe?g|png)$/"
+							invalidFileMessage="Formato de arquivo inválido"
+							fileUploadListener="#{alunoController.enviarFoto}" update="grid-update" />
+						<p:graphicImage value="#{alunoController.aluno.imagem}"
+							rendered="#{alunoController.aluno.foto != null}" width="150px"
+							height="100px"
+							style="margin-left:10px; box-shadow: 1px 1px 4px " /> 
+					</h:panelGrid>
+					<h:outputLabel value="Nome do Aluno" />
+
+					<p:inputText value="#{alunoController.aluno.nome}" />
+
+					<h:outputLabel value="Cpf" />
+
+					<p:inputMask mask="999.999.999-99" value="#{alunoController.aluno.cpf}"/>
+
+					<h:outputLabel value="E-Mail" />
+
+					<p:inputText value="#{alunoController.aluno.email}" />
+
+					<h:outputLabel value="Telefone" />
+
+					<p:inputNumber value="#{alunoController.aluno.telefone}" />
+
+					<h:outputLabel value="Data de Nascimento" />
+
+					<p:calendar pattern="dd/MM/yyyy" mask="99/99/9999" navigator="true"
+						yearRange="1950:2017" showOn="button" size="10"
+						value="#{alunoController.aluno.dataNascimento}" required="true"
+						requiredMessage="Informe a Data" />
+
+					<h:outputLabel value="Ativo" />
+
+					<p:selectBooleanCheckbox value="#{alunoController.aluno.ativo}" />
+
+				</h:panelGrid>
+			</p:panel>
+
+			<p:panel header="Dados de Endereço" >
+				<h:panelGrid columns="2" cellpadding="5">
+					<h:outputLabel value="Logradouro" />
+					<p:inputText value="#{alunoController.aluno.endereco.logradouro}" />
+					<h:outputLabel value="Número" />
+					<p:inputNumber value="#{alunoController.aluno.endereco.numero}" />
+					<h:outputLabel value="Bairro" />
+					<p:inputText value="#{alunoController.aluno.endereco.bairro}" />
+					<h:outputLabel value="Cidade" />
+					<p:inputText value="#{alunoController.aluno.endereco.cidade}" />
+					<h:outputLabel value="Cep" />
+					<p:inputMask mask="99999-999"
+						value="#{alunoController.aluno.endereco.cep}" />
+					<h:outputLabel value="Estado" />
+					<p:selectOneMenu value="#{alunoController.aluno.endereco.estado}">
+						<f:selectItem itemLabel=":Selecione:" itemValue="#{null}" />
+						<f:selectItems value="#{alunoController.estados}" var="estado"
+								itemValue="#{estado}" itemLabel="#{estado}" />
+					</p:selectOneMenu>
+				</h:panelGrid>
+			</p:panel>
+			<h:panelGrid columns="2">
+			<p:commandButton value="Salvar" action="#{alunoController.salvar}"
+				style="margin:15px 0px 0px 200px" update="@form"/>
+			<p:commandButton value="Cancelar"
+				action="#{alunoController.cancelar}"
+				style="margin:15px 0px 0px 100px" process="@this"/>
+			</h:panelGrid>
+		</h:form>
+	</p:panel>
+</ui:define>
+</ui:composition>

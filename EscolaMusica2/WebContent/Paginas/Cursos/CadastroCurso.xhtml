@@ -1,0 +1,55 @@
+<ui:composition template="/Paginas/template/template.xhtml"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui">
+
+	<ui:define name="Principal">
+	
+
+	<p:panel header="Cadastro de Cursos" style="width:50%">
+		<h:form id="cadastro-curso-form">
+			<p:messages />
+			<p:growl autoUpdate="true" life="6000" />
+
+			<h:panelGrid columns="2" cellpadding="5">
+				<h:outputLabel value="Nome" />
+				<p:inputText value="#{cursoController.curso.nome}" required="true"
+					requiredMessage="Informe o campo nome" />
+				<h:outputLabel value="Descrição" />
+				<h:panelGrid>
+					<p:inputTextarea cols="40" rows="3"
+						value="#{cursoController.curso.descricao}" required="true"
+						requiredMessage="Informe o campo descrição" counter="display"
+						maxlength="255" counterTemplate="{0} Caracteres restantes"
+						validatorMessage="A descrição deve ter no minimo de 10 caracteres">
+						<f:validateLength minimum="10" />
+					</p:inputTextarea>
+					<h:outputText id="display" />
+				</h:panelGrid>
+				<h:outputLabel value="Tipo" />
+				<p:selectOneMenu value="#{cursoController.curso.tipo}"
+					required="true" requiredMessage="Selecione o tipo">
+					<f:selectItem itemValue="#{null}" itemLabel="::Selecione::" />
+					<f:selectItems value="#{cursoController.tiposCurso}" var="tipo"
+						itemValue="#{tipo}" itemLabel="#{tipo.label}" />
+				</p:selectOneMenu>
+				<h:outputLabel value="Duração" />
+				<p:inputText value="#{cursoController.curso.duracao}"
+					required="true" requiredMessage="Informe a Duração" />
+				<h:outputLabel value="Data de Criação" />
+				<p:calendar pattern="dd/MM/yyyy" mask="99/99/9999" navigator="true"
+					yearRange="1950:2017" showOn="button"
+					value="#{cursoController.curso.dataCriacao}" />
+			</h:panelGrid>
+			<h:panelGrid columns="2" cellpadding="8">
+				<p:commandButton value="Salvar" icon="salvar-icon"
+					action="#{cursoController.salvarCurso}" />
+				<p:commandButton value="Cancelar"
+					action="#{cursoController.cancelar}" process="@this" />
+			</h:panelGrid>
+		</h:form>
+	</p:panel>
+	</ui:define>
+</ui:composition>

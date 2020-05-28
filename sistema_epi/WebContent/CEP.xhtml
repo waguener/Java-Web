@@ -1,0 +1,54 @@
+<ui:composition template="/template/LayoutPadrao.xhtml"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:p="http://primefaces.org/ui">
+
+	<ui:define name="titulo">Cep</ui:define>
+
+	<ui:define name="conteudo">
+
+
+	 <h:form id="frmBusca">
+			<p:focus for="cep" />
+
+			<h:panelGrid id="pnCEP" columns="3">
+				<h:outputText value="CEP: "
+					style="margin-left:42px;font-weight:bold" />
+				<p:inputMask mask="99999-999" value="#{mbService.cep}" size="10"
+					style="margin-left: 5px" id="cep" />
+
+				<p:commandButton icon="ui-icon-search" title="Clique para pesquisar"
+					action="#{mbService.encontraCEP}" update=":frmResultado" />
+			</h:panelGrid>
+		</h:form>
+
+		<h:form id="frmResultado">
+        	#{mbService.novo()} 
+            <h:panelGrid id="pnResultado" columns="2">
+				<h:outputLabel value="UF: "
+					style="font-weight:bold; padding-right: 5px; float: right;" />
+				<p:inputText size="2" value="#{mbService.estado}" />
+
+				<h:outputLabel value="Logradouro: "
+					style="font-weight:bold; padding-right: 5px; float: right;" />
+				<p:inputText size="40"
+					value="#{mbService.tipoLogradouro} #{mbService.logradouro}" />
+
+				<h:outputLabel value="Cidade: "
+					style="font-weight:bold; padding-right: 5px; float: right;" />
+				<p:inputText size="15" value="#{mbService.cidade}" />
+
+				<h:outputLabel value="Bairro: "
+					style="font-weight:bold; padding-right: 5px; float: right;" />
+				<p:inputText size="25" value="#{mbService.bairro}" />
+
+			</h:panelGrid>
+			
+			
+			
+		</h:form>
+
+	</ui:define>
+</ui:composition>

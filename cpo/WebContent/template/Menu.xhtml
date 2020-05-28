@@ -1,0 +1,41 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:p="http://primefaces.org/ui">
+
+
+	<nav class="aw-menu">
+		<h:form style="margin-left:5px">
+			
+			<p:panelMenu style="width:202px">
+				<p:submenu label="KANBAN" style="font-size:14px">
+					<p:menuitem value="Operação" outcome="Kanban.xhtml" style="font-size:14px"/>
+					<p:menuitem value="Pesquisar" outcome="Pesquisar.xhtml" style="font-size:14px"/>
+				</p:submenu>
+				<p:submenu label="MOVIMENTAÇÕES" style="font-size:14px">
+					<p:menuitem value="Recebimento" outcome="Recebimento.xhtml" style="font-size:14px"/>
+					<p:menuitem value="Retirar Armazém" outcome="Retirar.xhtml" style="font-size:14px"/>
+					<p:menuitem value="Devolução Armazém" outcome="Devolucao.xhtml" style="font-size:14px"/>
+					<p:menuitem value="Devolução Cliente" outcome="DevCliente.xhtml" style="font-size:14px"/>
+					<p:menuitem value="Ver Movimentações" outcome="PesquisarMov.xhtml" style="font-size:14px"/>
+									
+				</p:submenu>
+				<p:submenu label="CADASTROS" style="font-size:14px">
+					
+					<p:menuitem value="Cadastrar Func." outcome="CadFunc.xhtml" style="font-size:14px"/>
+				</p:submenu>
+				<p:submenu label="ESTOQUE" style="font-size:14px">
+					<p:menuitem value="Estoque Armazém" outcome="Estoque.xhtml" style="font-size:14px"/>
+					<p:menuitem value="Estoque Produção" outcome="EstoqueProducao.xhtml" style="font-size:14px"/>
+					<p:menuitem value="Contagem Olgber" outcome="ContagemOlgber.xhtml" style="font-size:14px"/>
+				</p:submenu>
+				
+				
+			</p:panelMenu>
+			
+			<p:calendar value="#{cargaController.hoje}" locale="pt" style="font-size:10px;margin-left:0px"  mode="inline"/>
+			
+		</h:form>
+	</nav>
+
+</ui:composition>

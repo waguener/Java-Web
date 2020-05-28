@@ -1,0 +1,99 @@
+<ui:composition template="/template/Layout.xhtml"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:p="http://primefaces.org/ui">
+
+	<ui:define name="titulo">Consulta de Professores </ui:define>
+
+	<ui:define name="conteudo">
+		<div class="ui-fluid">
+			<h:form id="form"
+				style="width: 100%; font-weight:bold;font-size: 12px; margin-top:1%">
+				#{professorController.inicioConsulta()}
+				<p:panelGrid columns="1" layout="grid" style="margin-top:80px"
+					styleClass="panelgrid-noborder" columnClasses="ui-grid-col-12">
+					<p:outputLabel value="Consulta de Professores"
+						style="font-size: 26pt;font-family:'Cabin', sans-serif" />
+
+				</p:panelGrid>
+				<p:panelGrid columns="6" layout="grid" style="margin-top:20px"
+					styleClass="panelgrid-noborder" id="busca"
+					columnClasses="ui-grid-col-1,ui-grid-col-3,ui-grid-col-0.5,ui-grid-col-0.5,ui-grid-col-3.5,ui-grid-col-1.5">
+					<p:outputLabel value="Busca" style="font-size: 16pt;" />
+
+					<p:inputText value="#{professorController.nome}"
+						style="margin-left:10px;font-size:14pt;font-weigth:bold;color:#000;"
+						onkeyup="this.value = this.value.toUpperCase()" />
+
+
+					<p:commandButton action="#{professorController.buscarProf()}" id="pesquisar"
+						update="tbl,total" process="@form" icon="fa fa-search" />
+					<p:outputLabel />
+					<p:outputLabel value="Professores Ativos:" style="font-size: 16pt;"/>
+					<p:outputLabel value="#{professorController.total}" id="total" style="font-size: 16pt;"/>
+				</p:panelGrid>
+
+
+				<p:dataTable id="tbl" reflow="true" resizeMode="expand"
+					emptyMessage="Lista Vazia" resizableColumns="true"
+					value="#{professorController.listar}" scrollable="true" var="prof"
+					style="margin-top:5px" paginator="true" rows="15"
+					rowsPerPageTemplate="5,10,15" paginatorPosition="bottom"
+					paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} ">
+
+					<p:column headerText="Foto " width="5%" style="text-align:center">
+						<p:graphicImage library="imagens" name="sem_foto.png" width="44px"
+							height="52px" style="text-align:center;box-shadow: 1px 1px 4px;border-radius: 10px;"
+							rendered="#{prof.foto == null}">
+							<f:param name="idProfessor" value="#{prof.id}" />
+						</p:graphicImage>
+						<p:graphicImage value="#{professorController.imagemProfessor}"
+							width="44px" height="52px"
+							style="text-align:center;box-shadow: 1px 1px 4px;border-radius: 10px;"
+							rendered="#{professorController.imagemProfessor != null}">
+							<f:param name="idProfessor" value="#{prof.id}" />
+						</p:graphicImage>
+					</p:column>
+					<p:column headerText="Nome " width="15%" filterBy="#{prof.nome}" >
+
+						<h:outputLabel value="#{prof.nome}" />
+					</p:column>
+					<p:column headerText="RG " width="7%" >
+
+						<h:outputLabel value="#{prof.rg}" />
+					</p:column>
+					<p:column headerText="CPF " width="7%">
+
+						<h:outputLabel value="#{prof.cpf}" />
+					</p:column>
+					<p:column headerText="Ativo " width="5%" sortBy="#{prof.ativo}" style="text-align:center">
+
+						<h:outputLabel value="SIM" rendered="#{prof.ativo == true}" style="color:green"/>
+						<h:outputLabel value="NÃO" rendered="#{prof.ativo != true}" style="color:red"/>
+					</p:column>
+					
+					<p:column headerText="Disciplinas " width="7%">
+
+						<h:outputLabel value="#{prof.disciplina}" />
+					</p:column>
+					<p:column width="10%" style="text-align:center">
+
+
+						<p:commandButton icon="fa fa-edit" style="width:25px"
+								action="#{professorController.editarProfessor(prof)}"
+								title="Clique para Editar"/>
+					</p:column>
+				</p:dataTable>
+					<p:blockUI block="tbl" trigger="pesquisar" animate="true">
+						PESQUISANDO PROFESSORES...<br />
+					<p:graphicImage library="imagens" name="load.gif" />
+				</p:blockUI>
+
+
+			</h:form>
+		</div>
+	</ui:define>
+</ui:composition>
+

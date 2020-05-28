@@ -1,0 +1,51 @@
+ <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:p="http://primefaces.org/ui">
+<h:head>
+	#{sistemaControllerEntrega.novoEpi()}
+	
+	<h:form style="width: 95%; margin-left: auto; margin-right:auto; font-size: 10px">
+		
+		<div style="margin-top: 5px; margin-bottom: 10px">
+			<p:inputText id="descricao" 
+				value="#{sistemaControllerEntrega.descricao}"
+				placeholder="Descrição do EPI" onkeyup="this.value = this.value.toUpperCase()" />
+
+			<p:spacer width="10px" />
+
+			<p:commandButton value="Pesquisar"
+				action="#{sistemaControllerEntrega.pesquisarEpi}" update="@form" />
+
+		</div>
+		<p:dataTable id="busca" value="#{sistemaControllerEntrega.episFiltrados }"
+			widgetVar="tabelaEpiBusca" var="epi" style="margin-top:10px"
+			paginator="true" rows="9" rowsPerPageTemplate="3,6,9"
+			paginatorPosition="bottom" emptyMessage="Nenhum epi encontrado" resizableColumns="true" scrollable="true" >
+			<p:column headerText="Descrição" width="25%" >
+				<h:outputText value="#{epi.descricao} " />
+			</p:column>
+			<p:column headerText="C.A." width="10%" style="text-align:center">
+				<h:outputText value="#{epi.ca}" />
+			</p:column>
+			<p:column headerText="Lote" width="10%" style="text-align:center">
+				<h:outputText value="#{epi.lote}" />
+			</p:column>
+			<p:column headerText="Saldo" width="6%" style="text-align:center">
+				<h:outputText value="#{epi.quantidadeTotal}"/>
+			</p:column>
+			<p:column width="5%" style="width:30px; text-align:center">
+				<p:commandButton icon="fa fa-check-square" title="Clique para seleciar este Epi!!"
+					action="#{sistemaControllerEntrega.selecionarEpi(epi) }"
+					style="text-decoration: none" process="@this" id="selecionar">
+					
+				</p:commandButton>
+			</p:column>
+		</p:dataTable>
+	</h:form>
+</h:head>
+</html>

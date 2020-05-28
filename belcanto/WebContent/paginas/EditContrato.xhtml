@@ -1,0 +1,123 @@
+<ui:composition template="/template/Layout.xhtml"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:p="http://primefaces.org/ui">
+
+	<ui:define name="titulo">Editar Contrato</ui:define>
+
+	<ui:define name="conteudo">
+		<div class="ui-fluid">
+			<h:form id="form"
+				style="width: 100%; font-weight:bold;font-size: 12px; margin-top:1%">
+				
+				<p:panelGrid columns="1" layout="grid" style="margin-top:80px"
+					styleClass="panelgrid-noborder" columnClasses="ui-grid-col-12">
+					<p:outputLabel value="Editar Contrato"
+						style="font-size: 26pt;font-family:'Cabin', sans-serif" />
+
+				</p:panelGrid>
+				<p:panelGrid columns="5" layout="grid" style="margin-top:20px"
+					styleClass="panelgrid-noborder"
+					columnClasses="ui-grid-col-1,ui-grid-col-4,ui-grid-col-0.5,ui-grid-col-1.5,ui-grid-col-3.5">
+
+					<p:outputLabel value="Contrato" style="font-size: 16pt;" />
+
+					<p:inputText
+						value="#{contratoController.contrato.nome}"
+						style="margin-left:10px;font-size:14pt;font-weigth:bold;color:#000;"
+						onkeyup="this.value = this.value.toUpperCase()" />
+
+				</p:panelGrid>
+				<p:fieldset legend="Cabeçalho do Contrato" style="margin-top:20px">
+					<p:panelGrid columns="1" layout="grid" 
+						styleClass="panelgrid-noborder"
+						columnClasses="ui-grid-col-12">
+
+						<p:editor value="#{contratoController.contrato.cabecalho}" height="200" width="595" />
+
+					</p:panelGrid>
+				</p:fieldset>
+				<p:panelGrid columns="3" layout="grid" style="margin-top:20px"
+					styleClass="panelgrid-noborder"
+					columnClasses="ui-grid-col-2.5,ui-grid-col-1,ui-grid-col-6.5">
+					<p:outputLabel value="Adicionar Claúsulas" style="font-size: 16pt;" />
+					<p:commandButton icon="fa fa-plus" style="width:50px"
+						action="#{contratoController.incluirClausula()}" update="tbl" />
+
+				</p:panelGrid>
+
+
+				<p:dataTable id="tbl" reflow="true" resizeMode="expand"
+					scrollHeight="350" emptyMessage="Lista Vazia"
+					resizableColumns="true" editable="true" rowIndexVar="indice"
+					value="#{contratoController.contrato.clausulas}" scrollable="true"
+					var="clausula" style="margin-top:5px;width:90%" paginator="true"
+					rows="15" rowsPerPageTemplate="5,10,15" paginatorPosition="bottom"
+					paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} ">
+
+
+					<p:column headerText="Nº da Clausula " width="10%"
+						style="text-align:center;">
+
+						<p:inputText value="#{clausula.numClausula}"
+							style=" font-size:26pt" size="2" min="0"
+							onkeyup="$(this).val($(this).val().replace(/[^0-9]/g, ''));" />
+
+					</p:column>
+
+					<p:column headerText="Clausula " width="80%"
+						style="text-align:center">
+						<p:editor value="#{clausula.clausula}" height="120" />
+					</p:column>
+					<p:column width="10%" style="text-align:center">
+						<p:commandButton icon="fa fa-trash"
+							oncomplete="PF('confirmarExclusaoClausulaDialog').show()"
+							action="#{contratoController.prepararExclusaoClausula(indice)}"
+							process="@this" style="width:50px;height:30px" />
+					</p:column>
+					
+
+				</p:dataTable>
+				<p:fieldset legend="Contrato de Imagem" style="margin-top:20px">
+					<p:panelGrid columns="1" layout="grid" 
+						styleClass="panelgrid-noborder"
+						columnClasses="ui-grid-col-12">
+
+						<p:editor value="#{contratoController.contrato.dirImagem}" height="200" width="595" />
+
+					</p:panelGrid>
+				</p:fieldset>
+				
+				<h:panelGrid columns="1" style="margin:20px">
+					<p:commandButton value="Salvar" style="width:120px;" id="save"
+						update="@form" action="#{contratoController.salvarEdit()}" />
+				</h:panelGrid>
+
+				<p:confirmDialog widgetVar="confirmarExclusaoClausulaDialog"
+					closable="false" header="Exclusão de Clausula!" responsive="true"
+					message="Deseja excluir essa Clausula?">
+					<p:panelGrid columns="5" layout="grid"
+						styleClass="panelgrid-noborder"
+						columnClasses="ui-grid-col-1,ui-grid-col-4,ui-grid-col-2,ui-grid-col-4,ui-grid-col-1">
+						<p:outputLabel />
+						<p:commandButton value="Sim" update="tbl" process="@this"
+							action="#{contratoController.excluirClausula()}"
+							oncomplete="PF('confirmarExclusaoClausulaDialog').hide()"
+							style="width:50px" />
+						<p:outputLabel />
+						<p:commandButton value="Não"
+							oncomplete="PF('confirmarExclusaoClausulaDialog').hide()"
+							style="width:50px" />
+						<p:outputLabel />
+					</p:panelGrid>
+				</p:confirmDialog>
+				
+				
+
+			</h:form>
+		</div>
+	</ui:define>
+</ui:composition>
+

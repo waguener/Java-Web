@@ -1,0 +1,157 @@
+<ui:composition template="/template/Layout.xhtml"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:p="http://primefaces.org/ui">
+
+	<ui:define name="titulo">Editar Aula</ui:define>
+
+	<ui:define name="conteudo">
+		<div class="ui-fluid">
+			<h:form id="form"
+				style="width: 100%; font-weight:bold;font-size: 12px; margin-top:1%">
+				 #{aulaController.initEdit()}
+				<p:panelGrid columns="1" layout="grid" style="margin-top:80px"
+					styleClass="panelgrid-noborder" columnClasses="ui-grid-col-12">
+					<p:outputLabel value="Editar Aula"
+						style="font-size: 26pt;font-family:'Cabin', sans-serif" />
+
+				</p:panelGrid>
+
+				<p:fieldset legend="Turmas e Horarios" style="margin-top:5px">
+					<p:panelGrid columns="6" layout="grid"
+						styleClass="panelgrid-noborder"
+						columnClasses="ui-grid-col-1,ui-grid-col-3,ui-grid-col-1,ui-grid-col-1,ui-grid-col-3,
+						ui-grid-col-0.5">
+
+						<p:outputLabel value="Turma" style="font-size: 14pt;" />
+						<p:selectOneMenu converter="omnifaces.SelectItemsConverter"
+							value="#{aulaController.aula.turma}">
+							<f:selectItem itemValue="#{null}" itemLabel=".:Selecione:." />
+							<f:selectItems value="#{aulaController.turmas}" var="turma"
+								itemValue="#{turma}"
+								itemLabel="#{turma.nome} - #{turma.curso.nome}" />
+							<p:ajax event="itemSelect"
+								listener="#{aulaController.buscarAlunos()}" process="@this"
+								update="horarios,mat" />
+						</p:selectOneMenu>
+						<p:outputLabel />
+						<p:outputLabel value="Horários" style="font-size: 14pt;" />
+						<p:selectOneMenu id="horarios"
+							converter="omnifaces.SelectItemsConverter"
+							value="#{aulaController.aula.horario}">
+							<f:selectItem itemValue="#{null}" itemLabel=".:Selecione:." />
+							<f:selectItems value="#{aulaController.horarios}" var="hor"
+								itemValue="#{hor}"
+								itemLabel="#{hor.diasSemana} - #{hor.horaInicio} até #{hor.horaFinal}" />
+						</p:selectOneMenu>
+						<p:outputLabel />
+
+						<p:outputLabel value="Professor" style="font-size: 14pt;" />
+						<p:selectOneMenu converter="omnifaces.SelectItemsConverter"
+							value="#{aulaController.aula.professor}">
+							<f:selectItem itemValue="#{null}" itemLabel=".:Selecione:." />
+							<f:selectItems value="#{aulaController.professores}" var="pro"
+								itemValue="#{pro}" itemLabel="#{pro.nome} - #{pro.disciplina}" />
+						</p:selectOneMenu>
+						<p:outputLabel />
+						<p:outputLabel />
+						<p:outputLabel />
+						<p:outputLabel />
+						<p:outputLabel value="Sala" style="font-size: 14pt;" />
+						<p:inputText value="#{aulaController.aula.sala}" required="true"
+							requiredMessage="Informe a Sala"
+							style="font-size:14pt;font-weigth:bold;color:#000;"
+							onkeyup="this.value = this.value.toUpperCase()" />
+					</p:panelGrid>
+				</p:fieldset>
+				<p:fieldset legend="Alunos Matrículados" style="margin-top:15px"
+					id="mat">
+					<p:dataGrid var="mat" value="#{aulaController.matriculas}"
+						id="alunos" columns="5">
+						<p:panel header="#{mat.aluno.nome}" id="pnl">
+							<p:panelGrid columns="2" layout="grid"
+								styleClass="panelgrid-noborder"
+								columnClasses="ui-grid-col-4,ui-grid-col-8">
+
+								<h:panelGrid columns="1">
+									<p:graphicImage library="imagens" name="sem_foto.png" 
+										width="44px" height="52px" style="text-align:center"
+										rendered="#{mat.aluno.foto == null}">
+										<f:param name="idAluno" value="#{mat.aluno.id}" />
+									</p:graphicImage>
+									<p:graphicImage value="#{alunoController.imagemAluno}"
+										width="44px" height="52px"
+										rendered="#{aulaController.imagemAluno != null}">
+										<f:param name="idAluno" value="#{mat.aluno.id}" />
+									</p:graphicImage>
+								</h:panelGrid>
+								<h:panelGrid>
+									<p:outputLabel value="Módulo"/>
+									<p:outputLabel value="#{mat.modulo.nome}" />
+								</h:panelGrid>
+							</p:panelGrid>
+						</p:panel>
+
+						<p:draggable for="pnl" revert="true" stack=".ui-panel"
+							handle=".ui-panel-titlebar" />
+					</p:dataGrid>
+				</p:fieldset>
+				<p:fieldset legend="Alunos Selecionados" style="margin-top:15px"
+					id="turma">
+					<p:outputPanel id="drop-area">
+						<p:outputLabel value="Arraste os Alunos e Solte Aqui!!"
+							style="font-size: 14pt;" id="txt"
+							rendered="#{empty aulaController.matriculasInseridas}" />
+						<p:dataTable id="tbl" reflow="true" resizeMode="expand"
+							rendered="#{not empty aulaController.matriculasInseridas}"
+							emptyMessage="Lista Vazia" resizableColumns="true"
+							value="#{aulaController.matriculasInseridas}" scrollable="true"
+							var="mat" style="margin-top:5px" paginator="true" rows="15"
+							rowsPerPageTemplate="5,10,15" paginatorPosition="bottom"
+							paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} ">
+
+							<p:column headerText="Nome " width="30%">
+
+								<h:outputLabel value="#{mat.aluno.nome}" />
+							</p:column>
+							<p:column headerText="Rg " width="30%" style="text-align:center">
+
+								<h:outputLabel value="#{mat.aluno.rg}" />
+							</p:column>
+							<p:column headerText="Número Matrícula" width="30%"
+								style="text-align:center">
+
+								<h:outputLabel value="#{mat.numMatricula}" />
+
+							</p:column>
+							<p:column width="10%" style="text-align:center">
+
+								<p:commandButton action="#{aulaController.excluirDrop(mat)}"
+									update=":form:tbl,:form:alunos,:form:drop-area"
+									icon="fa fa-trash" process="@this"
+									style="width:40px;height:20px"
+									title="Clique para excluir aluno" />
+
+							</p:column>
+						</p:dataTable>
+					</p:outputPanel>
+				</p:fieldset>
+				<p:droppable for="turma" datasource="alunos" onDrop="handleDrop"
+					tolerance="touch" activeStyleClass="ui-state-highlight">
+					<p:ajax listener="#{aulaController.onMatriculaDrop}"
+						update="drop-area, alunos" />
+				</p:droppable>
+				<p:panelGrid columns="3" layout="grid"
+					styleClass="panelgrid-noborder"
+					columnClasses="ui-grid-col-4,ui-grid-col-4,ui-grid-col-4">
+					<p:commandButton value="Salvar"
+						style="width:150px;height:50px;font-size:18px;font-weight:bold"
+						process="@form" action="#{aulaController.salvarEdit}"/>
+				</p:panelGrid>
+			</h:form>
+		</div>
+	</ui:define>
+</ui:composition>
+

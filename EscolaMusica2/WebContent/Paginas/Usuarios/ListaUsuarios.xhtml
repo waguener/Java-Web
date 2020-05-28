@@ -1,0 +1,33 @@
+
+<ui:composition template="/Paginas/template/template.xhtml"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui">
+
+	<ui:define name="titulo">Lista Usuarios</ui:define>
+
+	<ui:define name="Principal">
+
+		<p:panel header="Usuários Cadastrados">
+			<h:form>
+				<p:commandButton value="Novo Usuário"
+					action="#{cadastroUsuarioController.novoUsuario()}" />
+				<p:dataTable value="#{listaUsuariosController.usuarios}"
+					var="usuario">
+					<p:column headerText="Nome">
+						<h:outputText value="#{usuario.nome}" />
+					</p:column>
+					<p:column headerText="E-mail">
+						<h:outputText value="#{usuario.login}" />
+					</p:column>
+					<p:column width="10%">
+						<p:commandButton icon="fa fa-pencil" action="#{listaUsuariosController.editar(usuario)}"/>
+					</p:column>
+				</p:dataTable>
+			</h:form> 
+		</p:panel>
+
+	</ui:define>
+</ui:composition>

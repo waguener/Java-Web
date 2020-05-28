@@ -1,0 +1,36 @@
+
+<ui:composition template="/Paginas/template/template.xhtml"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui">
+	
+	<ui:define name="Principal">
+
+	<p:panel header="Cadastro de Matrículas" style="width:50%">
+		<h:form id="form-cadastro-matricula">
+		<p:growl autoUpdate="true"/>
+			<h:panelGrid columns="2">
+				<h:outputLabel value="Número da Matrícula:"/>
+				<p:inputText value="#{matriculaController.matricula.numero}"/>
+				<h:outputLabel value="Curso:"/>
+				<p:selectOneMenu value="#{matriculaController.matricula.curso }" converter="omnifaces.SelectItemsConverter">
+					<f:selectItem itemLabel=":Selecione:" itemValue="#{null}"/>
+					<f:selectItems value="#{matriculaController.cursos}" var="curso" itemLabel="#{curso.nome}" itemValue="#{curso}"/>
+				</p:selectOneMenu>
+				<h:outputLabel value="Aluno:"/>
+				<p:selectOneMenu value="#{matriculaController.matricula.aluno}" converter="omnifaces.SelectItemsConverter">
+					<f:selectItem itemLabel=":Selecione:" itemValue="#{null}"/>
+					<f:selectItems value="#{matriculaController.alunos}" var="aluno" itemLabel="#{aluno.nome}" itemValue="#{aluno}"/>
+				</p:selectOneMenu>
+			</h:panelGrid>
+			<p:commandButton value="salvar" action="#{matriculaController.salvar}" update="form-cadastro-matricula"/>
+			<p:commandButton value="Cancelar"
+				action="#{matriculaController.cancelar}"
+				style="margin:15px 0px 0px 100px" process="@this"/>
+		</h:form>
+	</p:panel>
+	
+</ui:define>
+</ui:composition>

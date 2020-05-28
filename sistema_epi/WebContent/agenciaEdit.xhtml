@@ -1,0 +1,55 @@
+ <ui:composition template="/template/LayoutPadrao.xhtml"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:p="http://primefaces.org/ui">
+
+	<ui:define name="titulo">Editar Agência</ui:define>
+	
+	<ui:define name="conteudo">
+		<h:form id="cadastro-agencia-form">
+		
+			<p:growl  autoUpdate="true"/>
+			<p:focus for="nome"/>
+			<div id="agencia">
+				<p:panel header="Cadastro de Agência">
+					<h:panelGrid columns="2" cellpadding="3">
+						<h:outputLabel value="Nome da Agência:" />
+						<br />
+						<p:inputText value="#{sistemaControllerAgencia.agencia.agencia}" onkeyup="this.value = this.value.toUpperCase()"
+							size="25" required="true" id="nome"
+							requiredMessage="Informe o campo Agência" />
+						<br />
+						<h:outputLabel value="Endereço:" />
+						 
+						<br /> 
+						<p:inputText value="#{sistemaControllerAgencia.agencia.endereco}" onkeyup="this.value = this.value.toUpperCase()"
+							size="28" required="true"
+							requiredMessage="Informe o campo Endereço:"  />
+						<br />
+						<h:outputLabel value="Cidade" />
+						<br />
+						<p:inputText value="#{sistemaControllerAgencia.agencia.cidade}" onkeyup="this.value = this.value.toUpperCase()"
+							required="true" requiredMessage="Informe o campo Cidade:"  />
+						<br />
+						<h:outputLabel value="Data do Cadastro:" />
+						<br />
+						<p:calendar pattern="dd/MM/yyyy" mask="99/99/9999" mindate="#{sistemaControllerFuncionario.dataMinima}"
+							navigator="true" yearRange="1950:2017" showOn="button" size="10"
+							value="#{sistemaControllerAgencia.agencia.data}" required="true"
+							requiredMessage="Informe a Data" effect="fold" locale="pt" title="Clique para abrir o calendário"/>
+						<br />
+
+
+
+					</h:panelGrid>
+				</p:panel>
+			</div>
+
+			<p:commandButton value="Salvar" validateClient="true"
+				action="#{sistemaControllerAgencia.salvarAgencia()}"
+				style="margin:15px " />
+		</h:form>
+	</ui:define>
+</ui:composition>

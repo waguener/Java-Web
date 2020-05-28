@@ -1,0 +1,81 @@
+<ui:composition template="/template/Layout.xhtml"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:p="http://primefaces.org/ui">
+
+	<ui:define name="titulo">UsuarioEdit</ui:define>
+
+	<ui:define name="conteudo">
+
+		<div class="ui-fluid">
+			<h:form
+				style="margin-left: auto; margin-right:auto; font-weight:bold; font-size: 12px"
+				rendered="#{authenticationContext.usuarioLogado.usuarioNome() == true }" >
+				
+				#{agenciaController.agencias()}
+				<!-- 1º Bloco  -->
+
+				<p:panelGrid columns="3" layout="grid" style="padding:10px"
+					columnClasses="ui-grid-col-4,ui-grid-col-4,ui-grid-col-4"
+					styleClass="panelgrid-noborder">
+					<p:outputLabel />
+					<p:fieldset legend="Editar Usuario" style="margin-bottom:20px"
+						toggleable="true" toggleSpeed="300">
+
+						<p:panelGrid columns="1" layout="grid" style="padding:10px"
+							columnClasses="ui-grid-col-12" styleClass="panelgrid-noborder">
+
+							<p:outputLabel value="Nome:" />
+							<p:inputText value="#{usuarioController.usuario.nome}"
+								required="true" requiredMessage="Informe o Nome" />
+
+							<p:outputLabel value="Login:" />
+							<p:inputText value="#{usuarioController.usuario.login}"
+								required="true" requiredMessage="Informe o Login" />
+
+							<p:outputLabel value="Senha:" />
+							<p:password value="#{usuarioController.usuario.senha}"
+								required="true" requiredMessage="Informe a Senha"
+								redisplay="true" feedback="true" strongLabel="Forte"
+								weakLabel="Fraca" promptLabel="Entre com uma Senha"
+								goodLabel="Média" />
+
+							<p:outputLabel value="Confirmar Senha" />
+							<p:inputText value="#{usuarioController.confirmaSenha}"
+								required="true" requiredMessage="Confirmar Senha" />
+
+							<p:outputLabel value="Tipo:" />
+							<p:selectOneMenu immediate="true" required="true" value="#{usuarioController.usuario.tipo}"
+								requiredMessage="Selecione o Tipo">
+
+								<f:selectItem itemValue="#{null}" itemLabel="Selecione" />
+								<f:selectItem itemValue="Administrador"
+									itemLabel="Administrador" />
+								<f:selectItem itemValue="Usuario" itemLabel="Usuario" />
+
+							</p:selectOneMenu>
+
+							<p:outputLabel value="*Agencia:" /> 
+							<p:selectOneMenu value="#{usuarioController.usuario.agencia}"
+								immediate="true" required="true" converter="omnifaces.SelectItemsConverter"
+								requiredMessage="Selecione a Agência">
+								<f:selectItem itemValue="#{null}" itemLabel="Selecione" />
+								<f:selectItems value="#{agenciaController.listarAgencias}"
+									var="agencia" itemValue="#{agencia}"
+									itemLabel="#{agencia.nome}" />
+							</p:selectOneMenu>
+
+							<p:commandButton value="Salvar"
+								action="#{usuarioController.salvarUsuarioEdit()}" update="@form" />
+							<p:outputLabel />
+							<p:outputLabel />
+						</p:panelGrid>
+
+					</p:fieldset>
+				</p:panelGrid>
+			</h:form>
+		</div>
+	</ui:define>
+</ui:composition>

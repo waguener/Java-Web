@@ -1,0 +1,186 @@
+
+<ui:composition template="/template/LayoutPadrao.xhtml"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:p="http://primefaces.org/ui">
+
+	<ui:define name="titulo">Estatistica</ui:define>
+
+	<ui:define name="conteudo">
+		<h:form>
+			#{sistemaControllerEstatistica.init()}
+			<p:scrollPanel style="width:100%;height:400px" mode="native">
+
+				<p:panel header="Estatisticas do Funcionário">
+
+					<h:panelGrid columns="4">
+						<h:outputLabel value="Funcionario:" />
+						<h:outputLabel
+							value="#{sistemaControllerEstatistica.funcionario.nome}"
+							style="font-weight:bold" />
+						<h:outputLabel value="Agência:" style="margin-left:150px" />
+						<h:outputLabel
+							value="#{sistemaControllerEstatistica.funcionario.agencia}"
+							style="font-weight:bold" />
+					</h:panelGrid>
+					<p:separator />
+					<p:panelGrid columns="6" style="font-size: 12px; margin:0px"
+						layout="grid">
+
+						<h:panelGrid columns="2">
+							<h:outputLabel value="Função:" style="font-weight:bold" />
+							<p:outputLabel
+								value="#{sistemaControllerEstatistica.funcionario.funcao}"
+								escape="false" />
+						</h:panelGrid>
+						<h:panelGrid columns="2">
+							<h:outputLabel value="CPF:" style="font-weight:bold" />
+							<p:outputLabel
+								value="#{sistemaControllerEstatistica.funcionario.cpf}"
+								escape="false" />
+						</h:panelGrid>
+						<h:panelGrid columns="2">
+							<h:outputLabel value="RG:" style="font-weight:bold" />
+							<p:outputLabel
+								value="#{sistemaControllerEstatistica.funcionario.rg}"
+								escape="false" />
+						</h:panelGrid>
+
+						<h:panelGrid columns="2">
+							<h:outputLabel value="Situação:" style="font-weight:bold" />
+							<h:outputLabel
+								value="#{sistemaControllerEstatistica.funcionario.status}"
+								escape="false" />
+						</h:panelGrid>
+
+					</p:panelGrid>
+
+					<!-- Tabelas -->
+
+					<h:panelGrid columns="3">
+
+						<h:panelGrid columns="3">
+
+							<h:outputLabel value="Consumo de EPIs" style="font-weight:bold" />
+							<p:commandButton value="Mostrar"
+								title="Clique para mostrar os dados"
+								action="#{sistemaControllerEstatistica.mostrar()}"
+								process="@this" update="epi devolucoes" />
+
+							
+						</h:panelGrid>
+
+					</h:panelGrid>
+
+					<h:panelGrid columns="2">
+						<p:dataTable id="epi"
+							value="#{sistemaControllerEstatistica.entrega }"
+							widgetVar="tabelaEpi" var="epi"
+							style="font-size: 11px;font-weight:bold" rows="10"
+							scrollRows="20" scrollable="true" liveScroll="true"
+							scrollHeight="70" emptyMessage="Nenhum epi em uso"
+							resizableColumns="true">
+							<p:column headerText="Epis em Uso" width="61%">
+								<h:outputText value="#{epi.nomeEquipamento}" />
+							</p:column>
+							<p:column headerText="Qtd em posse" style="text-align:center"
+								width="16%">
+								<h:outputText value="#{epi.quantidade}" />
+							</p:column>
+							<p:column headerText="Data inicio do uso"
+								style="text-align:center" width="22%">
+								<h:outputText value="#{epi.dataEntrega}">
+									<f:convertDateTime pattern="dd/MM/yyyy" locale="pt_BR" />
+								</h:outputText>
+							</p:column>
+							<p:column headerText="Recebeu ás" style="text-align:center"
+								width="16%">
+								<h:outputText value="#{epi.hora}" />
+							</p:column>
+							<p:column headerText="Dias em uso" style="text-align:center"
+								width="15%">
+								<h:outputText value="#{epi.diasEmUso}" />
+							</p:column>
+
+						</p:dataTable>
+					</h:panelGrid>
+					<h:panelGrid columns="1">
+						<h:outputLabel value="Devoluções" style="font-weight:bold" />
+
+						<p:dataTable id="devolucoes" widgetVar="tabelaEpi"
+							var="devolucoes"
+							value="#{sistemaControllerEstatistica.devolucoes}"
+							style="font-size: 11px;font-weight:bold" rows="30"
+							scrollRows="20" scrollable="true" liveScroll="true"
+							scrollHeight="100" emptyMessage="Nenhuma devolução feita"
+							resizableColumns="true">
+							<p:column headerText="Epis devolvidos" width="41%">
+								<h:outputText value="#{devolucoes.epi}" />
+							</p:column>
+							<p:column headerText="Tipo devolução" width="16%"
+								style="text-align:center">
+								<h:outputText value="#{devolucoes.status}" />
+							</p:column>
+							<p:column headerText="Qtd devolvidos" width="16%"
+								style="text-align:center">
+								<h:outputText value="#{devolucoes.qtdDevolvida}" />
+							</p:column>
+							<p:column headerText="Data entrega" width="16%">
+								<h:outputText value="#{devolucoes.dataEntrega}">
+									<f:convertDateTime pattern="dd/MM/yyyy" locale="pt_BR" />
+								</h:outputText>
+							</p:column>
+							<p:column headerText="Data da Devolução" width="20%"
+								style="text-align:center">
+								<h:outputText value="#{devolucoes.dataDevolucao}">
+									<f:convertDateTime pattern="dd/MM/yyyy" locale="pt_BR" />
+								</h:outputText>
+							</p:column>
+							<p:column headerText="Qtd dias uso" width="13%"
+								style="text-align:center">
+								<h:outputText value="#{devolucoes.totalDias}" />
+							</p:column>
+
+						</p:dataTable>
+					</h:panelGrid>
+					<p:chart type="bar"
+							model="#{sistemaControllerEstatistica.grafico}"
+							style="width:300;height:300px" widgetVar="graficoBarras" />
+
+					<p:commandButton value="Imprimir"
+								title="Clique para mostrar os dados"
+								onclick="exportChart()" 
+								/>
+					<!-- <p:dialog widgetVar="dialogGrafico" resizable="true"
+						position="center" showHeader="true" header="Meter Gauge"
+						width="600">
+
+						
+
+						<p:chart type="metergauge"
+							model="#{sistemaControllerEstatistica.meterGaugeModel1}"
+							style="width:400px;height:250px" />
+						<p:commandButton value="Imprimir" type="button"
+							onclick="exportChart()">
+
+						</p:commandButton>
+					</p:dialog> -->
+
+					
+
+					<p:dialog widgetVar="dlg" showEffect="fade" modal="true" 
+						 resizable="false" id="dialogo">
+						<p:outputPanel id="output" 
+							style="width:300px;height:300px" />
+						<p:commandButton value="Imprimir">
+							<p:printer target="output"/>
+						</p:commandButton>
+					</p:dialog>
+
+				</p:panel>
+			</p:scrollPanel>
+		</h:form>
+	</ui:define>
+</ui:composition>

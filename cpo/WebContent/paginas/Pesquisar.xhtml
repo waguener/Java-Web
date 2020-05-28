@@ -1,0 +1,895 @@
+<ui:composition template="/template/Layout.xhtml"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:p="http://primefaces.org/ui">
+
+	<ui:define name="titulo">Pesquisar</ui:define>
+
+	<ui:define name="conteudo">
+		<div class="ui-fluid">
+			<h:form id="form"
+				style="width: 100%; font-weight:bold;font-size: 12px; margin-top:1%">
+				#{cargaController.initPesquisar()}
+
+				<p:panelGrid columns="3" layout="grid" style="font-weight:bold"
+					columnClasses="ui-grid-col-4,ui-grid-col-4,ui-grid-col-4"
+					styleClass="panelgrid-noborder">
+
+					<h:panelGrid columns="2">
+						<p:outputLabel value="Data Inicial" />
+						<p:calendar value="#{cargaController.data1}" pattern="dd/MM/yyyy"
+							mask="99/99/9999" navigator="true" showOn="button" size="15"
+							locale="pt" effect="fold" />
+						<p:outputLabel value="Data Final" />
+						<p:calendar value="#{cargaController.data2}" pattern="dd/MM/yyyy"
+							mask="99/99/9999" navigator="true" showOn="button" size="10"
+							locale="pt" effect="fold"  />
+					</h:panelGrid>
+					<p:outputLabel />
+					<p:outputLabel />
+					<p:commandButton value="Pesquisar" style="width: 250px"
+						action="#{cargaController.porData()}" update="tbl" process="@form"
+						id="pesquisar" />
+
+
+				</p:panelGrid>
+				
+				<p:dataTable widgetVar="tabelaKanban" emptyMessage="Lista Vazia"
+					value="#{cargaController.cargasPesquisadas}" var="kanban" id="tbl"
+					selection="#{cargaController.relatorio}" rowKey="#{kanban.id}"
+					reflow="true" style="margin-top:5px" paginator="true" rows="12"
+					rowsPerPageTemplate="3,6,12" paginatorPosition="bottom"
+					paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} ">
+
+
+					<p:column selectionMode="multiple"
+						style="width:16px;text-align:center" />
+					<p:column headerText="Carga N." width="8%"
+						style="text-align:center">
+						<h:outputLabel value="#{kanban.id}" />
+					</p:column>
+
+					<p:column headerText="Data de Chegada" width="16%"
+						style="text-align:center">
+						<p:outputLabel value="#{kanban.data_chegada}">
+							<f:convertDateTime pattern="dd/MM/yyyy" locale="pt_BR" />
+						</p:outputLabel>
+					</p:column>
+
+					<p:column headerText="Transportadora" width="16%"
+						style="text-align:center">
+						<h:outputLabel value="#{kanban.transportadora}" />
+					</p:column>
+
+					<p:column headerText="PLaca-Carreta" width="17%"
+						style="text-align:center">
+						<h:outputLabel value="#{kanban.placa_carreta}" />
+					</p:column>
+
+					<p:column headerText="Motorista" width="13%"
+						style="text-align:center">
+						<h:outputLabel value="#{kanban.motorista}" />
+					</p:column>
+					<p:column headerText="Hora de Chegada" width="13%"
+						style="text-align:center">
+						<h:outputLabel value="#{kanban.hora_chegada}" />
+					</p:column>
+
+
+
+					<p:column width="9%" style="text-align:center">
+
+						<p:commandButton icon="fa fa-fw fa-edit" style="width:25px"
+							title="Clique para Editar esta Carga"
+							action="#{cargaController.editar(kanban)}" process="@this" />
+
+						<p:commandButton icon="fa fa-fw fa-download"
+							style="width:25px;margin-left:5px" update=":form:arquivos"
+							title="Clique para obter os Arquivos desta Carga"
+							action="#{cargaController.baixarArquivos(kanban)}"
+							process="@this" />
+					</p:column>
+				</p:dataTable>
+
+				<p:commandButton value="Obter Relatório"
+					style="width:150px;margin-top:5px" process="tbl"
+					update="tbl,titulo" oncomplete="PF('relatorio').show()" />
+
+				<p:blockUI block="tbl" trigger="pesquisar" animate="true">
+						PESQUISANDO ENTRADAS...<br />
+					<p:graphicImage library="imagens" name="load.gif" />
+				</p:blockUI>
+
+				<p:dialog header="Relatório " resizable="false" position="top"
+					widgetVar="relatorio" width="80%" height="100%" closable="false"
+					modal="true" showEffect="blind" hideEffect="size"
+					style="margin-top: 70px">
+					#{cargaController.mes()}
+					<div style="width: 100%; height: 400px; overflow: auto;">
+						<p:outputPanel id="imprimir" autoUpdate="true">
+
+							<h:outputLabel value="RELATÓRIO KANBAN - #{cargaController.mes}"
+								id="titulo"
+								style="margin-left:30%;font-size:14px;margin-bottom:10px" />
+							<br></br>
+							<h:outputLabel value="OLGBER ESPECIALIDADES"
+								style="margin-left:36%;font-size:14px;margin-bottom:10px;margin-top:10px" />
+
+							<p:dataGrid columns="1" var="impressao"
+								emptyMessage="Nenhum Relatório Selecionado!!"
+								value="#{cargaController.relatorio}">
+								<h:panelGrid columns="9" style="border:solid 1px">
+									<h:panelGrid columns="2">
+										<p:outputLabel value="Descrição"
+											style="font-size:12px; margin-left:35px" />
+										<p:outputLabel />
+										<p:outputLabel value="Carga Nº:" style="font-size:9px" />
+										<p:outputLabel value="#{impressao.id}" style="font-size:9px" />
+										<p:outputLabel value="Transportadora:" style="font-size:9px" />
+										<p:outputLabel value="#{impressao.transportadora}"
+											style="font-size:9px" />
+										<p:outputLabel value="Placa-Carreta:" style="font-size:9px" />
+										<p:outputLabel value="#{impressao.placa_carreta}"
+											style="font-size:9px" />
+										<p:outputLabel value="Tipo da Carga:" style="font-size:9px" />
+										<p:outputLabel value="#{impressao.tipoCarga}"
+											style="font-size:9px" />
+										<p:outputLabel />
+										<p:outputLabel />
+									</h:panelGrid>
+
+									<h:graphicImage library="imagens" name="barra.png"
+										style="margin-right:5px; margin-left:5px" width="3" />
+
+									<h:panelGrid columns="2">
+
+										<p:outputLabel value="Chegada"
+											style="font-size:12px; margin-left:35px" />
+										<p:outputLabel />
+										<p:outputLabel value="Data Chegada:" style="font-size:9px" />
+										<p:outputLabel value="#{impressao.data_chegada}"
+											style="font-size:9px">
+											<f:convertDateTime pattern="dd/MM/yyyy" locale="pt_BR" />
+										</p:outputLabel>
+										<p:outputLabel value="Hora:" style="font-size:9px" />
+										<p:outputLabel value="#{impressao.hora_chegada}"
+											style="font-size:9px" />
+										<p:outputLabel value="Tempo Parado:" style="font-size:9px" />
+										<p:outputLabel value="#{impressao.hora_total_parado}"
+											style="font-size:9px" />
+										<p:outputLabel value="Tempo Retorno:" style="font-size:9px" />
+										<p:outputLabel value="#{impressao.tempo_retorno}"
+											rendered="#{impressao.tempo_retorno != null}"
+											style="font-size:9px" />
+										<p:outputLabel value="x x x x"
+											rendered="#{impressao.tempo_retorno == null}"
+											style="font-size:9px" />
+									</h:panelGrid>
+
+									<h:graphicImage library="imagens" name="barra.png"
+										style="margin-right:5px; margin-left:5px" width="3" />
+
+									<h:panelGrid columns="2">
+
+										<p:outputLabel value="Descarregamento"
+											style="font-size:12px; margin-left:35px" />
+										<p:outputLabel />
+										<p:outputLabel value="Inicio Operação:" style="font-size:9px" />
+										<p:outputLabel
+											value="#{impressao.hora_inicio_descarregamento}"
+											style="font-size:9px" />
+										<p:outputLabel value="Término:" style="font-size:9px" />
+										<p:outputLabel
+											value="#{impressao.hora_termino_descarregamento}"
+											style="font-size:9px" />
+										<p:outputLabel value="Total:" style="font-size:9px" />
+										<p:outputLabel value="#{impressao.hora_total_descarregamento}"
+											style="font-size:9px" />
+										<p:outputLabel />
+										<p:outputLabel />
+										<p:outputLabel />
+										<p:outputLabel />
+									</h:panelGrid>
+
+									<h:graphicImage library="imagens" name="barra.png"
+										style="margin-right:5px; margin-left:5px" width="3" />
+
+									<h:panelGrid columns="2">
+										<p:outputLabel value="Carregamento"
+											style="font-size:12px; margin-left:35px" />
+										<p:outputLabel />
+										<p:outputLabel value="Inicio Carregamento:"
+											style="font-size:9px" />
+										<p:outputLabel value="#{impressao.hora_inicio_carregamento}"
+											style="font-size:9px" />
+										<p:outputLabel value="Término:" style="font-size:9px" />
+										<p:outputLabel value="#{impressao.hora_termino_carregamento}"
+											style="font-size:9px" />
+										<p:outputLabel value="Total:" style="font-size:9px" />
+										<p:outputLabel value="#{impressao.hora_total_carregamento}"
+											style="font-size:9px" />
+										<p:outputLabel value="Tempo Olgber:" style="font-size:9px" />
+										<p:outputLabel value="#{impressao.hora_total_olgber}"
+											style="font-size:9px" />
+									</h:panelGrid>
+									
+									<h:graphicImage library="imagens" name="barra.png"
+										style="margin-right:5px; margin-left:5px" width="3" />
+
+									<h:panelGrid columns="2">
+										<p:outputLabel value="Saída"
+											style="font-size:12px; margin-left:35px" />
+										<p:outputLabel />
+										<p:outputLabel value="Data Saída:"
+											style="font-size:9px" />
+										<p:outputLabel value="#{impressao.data_saida}"
+											style="font-size:9px" >
+											<f:convertDateTime pattern="dd/MM/yyyy" locale="pt_BR" />
+										</p:outputLabel>
+										<p:outputLabel value="Hora Saída:"
+											style="font-size:9px" />
+										<p:outputLabel value="#{impressao.hora_saida_carga}"
+											style="font-size:9px" />
+										<p:outputLabel value="Total Parado:" style="font-size:9px" />
+										<p:outputLabel value="#{impressao.horaTotalsaida}"
+											style="font-size:9px" />
+										<p:outputLabel />
+										
+										<p:outputLabel />
+										<p:outputLabel />
+										<p:outputLabel />
+										<p:outputLabel />
+										<p:outputLabel />
+									</h:panelGrid>
+
+								</h:panelGrid>
+
+
+								<h:panelGrid columns="1">
+
+									<p:outputLabel value="Produtos Recebidos"
+										style="font-size:12px;font-weight:bold;mergin-left:40%;position: center" />
+
+								</h:panelGrid>
+
+								<h:panelGrid columns="5">
+									<p:fieldset legend="Produto 1"
+										rendered="#{impressao.prodRecebido != null}">
+										<h:panelGrid columns="2">
+											<p:outputLabel value="PRODUTO:" style="font-size:9px" />
+											<p:outputLabel value="#{impressao.prodRecebido}"
+												style="font-size:9px" />
+
+											<p:outputLabel value="NOTA FISCAL:" style="font-size:9px" />
+											<p:outputLabel value="#{impressao.nfRecebimento}"
+												style="font-size:9px" />
+
+											<p:outputLabel value="CHECK-LIST:" style="font-size:9px" />
+											<p:outputLabel value="#{impressao.checkRecebimento}"
+												style="font-size:9px" />
+
+											<p:outputLabel value="TEMPERATURA:" style="font-size:9px" />
+											<p:outputLabel value="#{impressao.temperatura}"
+												style="font-size:9px" />
+
+										</h:panelGrid>
+									</p:fieldset>
+
+									<p:fieldset legend="Produto 2"
+										rendered="#{impressao.prodRecebido2 != null}">
+										<h:panelGrid columns="2">
+											<p:outputLabel value="PRODUTO:" style="font-size:9px" />
+											<p:outputLabel value="#{impressao.prodRecebido2}"
+												style="font-size:9px" />
+
+											<p:outputLabel value="NOTA FISCAL:" style="font-size:9px" />
+											<p:outputLabel value="#{impressao.nfRecebimento2}"
+												style="font-size:9px" />
+
+											<p:outputLabel value="CHECK-LIST:" style="font-size:9px" />
+											<p:outputLabel value="#{impressao.checkRecebimento2}"
+												style="font-size:9px" />
+
+											<p:outputLabel value="TEMPERATURA:" style="font-size:9px" />
+											<p:outputLabel value="#{impressao.temperatura2}"
+												style="font-size:9px" />
+
+										</h:panelGrid>
+									</p:fieldset>
+									<p:fieldset legend="Produto 3"
+										rendered="#{impressao.prodRecebido3 != null}">
+										<h:panelGrid columns="2">
+											<p:outputLabel value="PRODUTO:" style="font-size:9px" />
+											<p:outputLabel value="#{impressao.prodRecebido3}"
+												style="font-size:9px" />
+
+											<p:outputLabel value="NOTA FISCAL:" style="font-size:9px" />
+											<p:outputLabel value="#{impressao.nfRecebimento3}"
+												style="font-size:9px" />
+
+											<p:outputLabel value="CHECK-LIST:" style="font-size:9px" />
+											<p:outputLabel value="#{impressao.checkRecebimento3}"
+												style="font-size:9px" />
+
+											<p:outputLabel value="TEMPERATURA:" style="font-size:9px" />
+											<p:outputLabel value="#{impressao.temperatura3}"
+												style="font-size:9px" />
+
+										</h:panelGrid>
+									</p:fieldset>
+
+									<p:fieldset legend="Produto 4"
+										rendered="#{impressao.prodRecebido4 != null}">
+										<h:panelGrid columns="2">
+											<p:outputLabel value="PRODUTO:" style="font-size:9px" />
+											<p:outputLabel value="#{impressao.prodRecebido4}"
+												style="font-size:9px" />
+
+											<p:outputLabel value="NOTA FISCAL:" style="font-size:9px" />
+											<p:outputLabel value="#{impressao.nfRecebimento4}"
+												style="font-size:9px" />
+
+											<p:outputLabel value="CHECK-LIST:" style="font-size:9px" />
+											<p:outputLabel value="#{impressao.checkRecebimento4}"
+												style="font-size:9px" />
+
+											<p:outputLabel value="TEMPERATURA:" style="font-size:9px" />
+											<p:outputLabel value="#{impressao.temperatura4}"
+												style="font-size:9px" />
+
+										</h:panelGrid>
+									</p:fieldset>
+									<p:fieldset legend="Produto 5"
+										rendered="#{impressao.prodRecebido5 != null}">
+										<h:panelGrid columns="2">
+											<p:outputLabel value="PRODUTO:" style="font-size:9px" />
+											<p:outputLabel value="#{impressao.prodRecebido5}"
+												style="font-size:9px" />
+
+											<p:outputLabel value="NOTA FISCAL:" style="font-size:9px" />
+											<p:outputLabel value="#{impressao.nfRecebimento5}"
+												style="font-size:9px" />
+
+											<p:outputLabel value="CHECK-LIST:" style="font-size:9px" />
+											<p:outputLabel value="#{impressao.checkRecebimento5}"
+												style="font-size:9px" />
+
+											<p:outputLabel value="TEMPERATURA:" style="font-size:9px" />
+											<p:outputLabel value="#{impressao.temperatura5}"
+												style="font-size:9px" />
+
+										</h:panelGrid>
+
+									</p:fieldset>
+
+									<p:fieldset legend="INSUMO 1"
+										rendered="#{impressao.insumoRecebido != null}">
+										<h:panelGrid columns="2">
+											<p:outputLabel value="PRODUTO:" style="font-size:9px" />
+											<p:outputLabel value="#{impressao.insumoRecebido}"
+												style="font-size:9px" />
+
+											<p:outputLabel value="NOTA FISCAL:" style="font-size:9px" />
+											<p:outputLabel value="#{impressao.nfInsumoRecebido}"
+												style="font-size:9px" />
+
+
+										</h:panelGrid>
+									</p:fieldset>
+
+									<p:fieldset legend="INSUMO 2"
+										rendered="#{impressao.insumoRecebido2 != null}">
+										<h:panelGrid columns="2">
+											<p:outputLabel value="PRODUTO:" style="font-size:9px" />
+											<p:outputLabel value="#{impressao.insumoRecebido2}"
+												style="font-size:9px" />
+
+											<p:outputLabel value="NOTA FISCAL:" style="font-size:9px" />
+											<p:outputLabel value="#{impressao.nfInsumoRecebido2}"
+												style="font-size:9px" />
+
+										</h:panelGrid>
+									</p:fieldset>
+
+									<p:fieldset legend="INSUMO 3"
+										rendered="#{impressao.insumoRecebido3 != null}">
+										<h:panelGrid columns="2">
+											<p:outputLabel value="PRODUTO:" style="font-size:9px" />
+											<p:outputLabel value="#{impressao.insumoRecebido3}"
+												style="font-size:9px" />
+
+											<p:outputLabel value="NOTA FISCAL:" style="font-size:9px" />
+											<p:outputLabel value="#{impressao.nfInsumoRecebido3}"
+												style="font-size:9px" />
+
+										</h:panelGrid>
+									</p:fieldset>
+
+									<p:fieldset legend="INSUMO 4"
+										rendered="#{impressao.insumoRecebido4 != null}">
+										<h:panelGrid columns="2">
+											<p:outputLabel value="PRODUTO:" style="font-size:9px" />
+											<p:outputLabel value="#{impressao.insumoRecebido4}"
+												style="font-size:9px" />
+
+											<p:outputLabel value="NOTA FISCAL:" style="font-size:9px" />
+											<p:outputLabel value="#{impressao.nfInsumoRecebido4}"
+												style="font-size:9px" />
+
+										</h:panelGrid>
+									</p:fieldset>
+
+									<p:fieldset legend="INSUMO 5"
+										rendered="#{impressao.insumoRecebido5 != null}">
+										<h:panelGrid columns="2">
+											<p:outputLabel value="PRODUTO:" style="font-size:9px" />
+											<p:outputLabel value="#{impressao.insumoRecebido5}"
+												style="font-size:9px" />
+
+											<p:outputLabel value="NOTA FISCAL:" style="font-size:9px" />
+											<p:outputLabel value="#{impressao.nfInsumoRecebido5}"
+												style="font-size:9px" />
+
+										</h:panelGrid>
+
+									</p:fieldset>
+								</h:panelGrid>
+
+								<h:panelGrid columns="1">
+
+									<p:outputLabel value="Produtos Enviados"
+										style="font-size:12px;font-weight:bold" />
+
+								</h:panelGrid>
+
+								<h:panelGrid columns="5">
+
+									<p:fieldset legend="CARREGAMENTO 1"
+										rendered="#{impressao.prodEnviado != null}">
+										<h:panelGrid columns="2">
+											<p:outputLabel value="PRODUTO:" style="font-size:9px" />
+											<p:outputLabel value="#{impressao.prodEnviado}"
+												style="font-size:9px" />
+
+											<p:outputLabel value="NOTA FISCAL:" style="font-size:9px" />
+											<p:outputLabel value="#{impressao.nfExpedicao}"
+												style="font-size:9px" />
+
+											<p:outputLabel value="CHECK-LIST:" style="font-size:9px" />
+											<p:outputLabel value="#{impressao.checkEnviado}"
+												style="font-size:9px" />
+
+											<p:outputLabel value="TEMPERATURA:" style="font-size:9px" />
+											<p:outputLabel value="#{impressao.temperaturaEnvio}"
+												style="font-size:9px" />
+
+											<p:outputLabel value="TIPO DE ENVIO:" style="font-size:9px" />
+											<p:outputLabel value="#{impressao.tipo}"
+												style="font-size:9px" />
+
+											<p:outputLabel value="TOTAL DE PRODUTOS:"
+												style="font-size:9px" />
+											<p:outputLabel value="#{impressao.totalEnviado}"
+												style="font-size:9px" />
+
+											<p:outputLabel value="TOTAL DE PALLETS:"
+												style="font-size:9px" />
+											<p:outputLabel value="#{impressao.totalPallets}"
+												style="font-size:9px" />
+
+
+										</h:panelGrid>
+
+										<h:panelGrid columns="1">
+											<p:outputLabel value="OBSERVAÇÕES:" style="font-size:9px" />
+
+											<p:outputLabel value="#{impressao.obs}" style="font-size:9px" />
+										</h:panelGrid>
+									</p:fieldset>
+
+
+									<p:fieldset legend="CARREGAMENTO 2"
+										rendered="#{impressao.prodEnviado2 != null}">
+										<h:panelGrid columns="2">
+											<p:outputLabel value="PRODUTO:" style="font-size:9px" />
+											<p:outputLabel value="#{impressao.prodEnviado2}"
+												style="font-size:9px" />
+
+											<p:outputLabel value="NOTA FISCAL:" style="font-size:9px" />
+											<p:outputLabel value="#{impressao.nfExpedicao2}"
+												style="font-size:9px" />
+
+											<p:outputLabel value="CHECK-LIST:" style="font-size:9px" />
+											<p:outputLabel value="#{impressao.checkEnviado2}"
+												style="font-size:9px" />
+
+											<p:outputLabel value="TEMPERATURA:" style="font-size:9px" />
+											<p:outputLabel value="#{impressao.temperaturaEnvio2}"
+												style="font-size:9px" />
+
+											<p:outputLabel value="TIPO DE ENVIO:" style="font-size:9px" />
+											<p:outputLabel value="#{impressao.tipo2}"
+												style="font-size:9px" />
+
+											<p:outputLabel value="TOTAL DE PRODUTOS:"
+												style="font-size:9px" />
+											<p:outputLabel value="#{impressao.totalEnviado2}"
+												style="font-size:9px" />
+
+											<p:outputLabel value="TOTAL DE PALLETS:"
+												style="font-size:9px" />
+											<p:outputLabel value="#{impressao.totalPallets2}"
+												style="font-size:9px" />
+
+
+										</h:panelGrid>
+
+										<h:panelGrid columns="1">
+											<p:outputLabel value="OBSERVAÇÕES:" style="font-size:9px" />
+
+											<p:outputLabel value="#{impressao.obs2}"
+												style="font-size:9px" />
+										</h:panelGrid>
+									</p:fieldset>
+
+									<p:fieldset legend="CARREGAMENTO 3"
+										rendered="#{impressao.prodEnviado3 != null}">
+										<h:panelGrid columns="2">
+											<p:outputLabel value="PRODUTO:" style="font-size:9px" />
+											<p:outputLabel value="#{impressao.prodEnviado3}"
+												style="font-size:9px" />
+
+											<p:outputLabel value="NOTA FISCAL:" style="font-size:9px" />
+											<p:outputLabel value="#{impressao.nfExpedicao3}"
+												style="font-size:9px" />
+
+											<p:outputLabel value="CHECK-LIST:" style="font-size:9px" />
+											<p:outputLabel value="#{impressao.checkEnviado3}"
+												style="font-size:9px" />
+
+											<p:outputLabel value="TEMPERATURA:" style="font-size:9px" />
+											<p:outputLabel value="#{impressao.temperaturaEnvio3}"
+												style="font-size:9px" />
+
+											<p:outputLabel value="TIPO DE ENVIO:" style="font-size:9px" />
+											<p:outputLabel value="#{impressao.tipo3}"
+												style="font-size:9px" />
+
+											<p:outputLabel value="TOTAL DE PRODUTOS:"
+												style="font-size:9px" />
+											<p:outputLabel value="#{impressao.totalEnviado3}"
+												style="font-size:9px" />
+
+											<p:outputLabel value="TOTAL DE PALLETS:"
+												style="font-size:9px" />
+											<p:outputLabel value="#{impressao.totalPallets3}"
+												style="font-size:9px" />
+
+
+										</h:panelGrid>
+
+										<h:panelGrid columns="1">
+											<p:outputLabel value="OBSERVAÇÕES:" style="font-size:9px" />
+
+											<p:outputLabel value="#{impressao.obs3}"
+												style="font-size:9px" />
+										</h:panelGrid>
+									</p:fieldset>
+
+									<p:fieldset legend="CARREGAMENTO 4"
+										rendered="#{impressao.prodEnviado4 != null}">
+										<h:panelGrid columns="2">
+											<p:outputLabel value="PRODUTO:" style="font-size:9px" />
+											<p:outputLabel value="#{impressao.prodEnviado4}"
+												style="font-size:9px" />
+
+											<p:outputLabel value="NOTA FISCAL:" style="font-size:9px" />
+											<p:outputLabel value="#{impressao.nfExpedicao4}"
+												style="font-size:9px" />
+
+											<p:outputLabel value="CHECK-LIST:" style="font-size:9px" />
+											<p:outputLabel value="#{impressao.checkEnviado4}"
+												style="font-size:9px" />
+
+											<p:outputLabel value="TEMPERATURA:" style="font-size:9px" />
+											<p:outputLabel value="#{impressao.temperaturaEnvio4}"
+												style="font-size:9px" />
+
+											<p:outputLabel value="TIPO DE ENVIO:" style="font-size:9px" />
+											<p:outputLabel value="#{impressao.tipo4}"
+												style="font-size:9px" />
+
+											<p:outputLabel value="TOTAL DE PRODUTOS:"
+												style="font-size:9px" />
+											<p:outputLabel value="#{impressao.totalEnviado4}"
+												style="font-size:9px" />
+
+											<p:outputLabel value="TOTAL DE PALLETS:"
+												style="font-size:9px" />
+											<p:outputLabel value="#{impressao.totalPallets4}"
+												style="font-size:9px" />
+
+
+										</h:panelGrid>
+										<h:panelGrid columns="1">
+											<p:outputLabel value="OBSERVAÇÕES:" style="font-size:9px" />
+
+											<p:outputLabel value="#{impressao.obs4}"
+												style="font-size:9px" />
+										</h:panelGrid>
+
+									</p:fieldset>
+
+									<p:fieldset legend="CARREGAMENTO 5"
+										rendered="#{impressao.prodEnviado5 != null}">
+										<h:panelGrid columns="2">
+											<p:outputLabel value="PRODUTO:" style="font-size:9px" />
+											<p:outputLabel value="#{impressao.prodEnviado5}"
+												style="font-size:9px" />
+
+											<p:outputLabel value="NOTA FISCAL:" style="font-size:9px" />
+											<p:outputLabel value="#{impressao.nfExpedicao5}"
+												style="font-size:9px" />
+
+											<p:outputLabel value="CHECK-LIST:" style="font-size:9px" />
+											<p:outputLabel value="#{impressao.checkEnviado5}"
+												style="font-size:9px" />
+
+											<p:outputLabel value="TEMPERATURA:" style="font-size:9px" />
+											<p:outputLabel value="#{impressao.temperaturaEnvio5}"
+												style="font-size:9px" />
+
+											<p:outputLabel value="TIPO DE ENVIO:" style="font-size:9px" />
+											<p:outputLabel value="#{impressao.tipo5}"
+												style="font-size:9px" />
+
+											<p:outputLabel value="TOTAL DE PRODUTOS:"
+												style="font-size:9px" />
+											<p:outputLabel value="#{impressao.totalEnviado5}"
+												style="font-size:9px" />
+
+											<p:outputLabel value="TOTAL DE PALLETS:"
+												style="font-size:9px" />
+											<p:outputLabel value="#{impressao.totalPallets5}"
+												style="font-size:9px" />
+
+
+
+										</h:panelGrid>
+
+										<h:panelGrid columns="1">
+											<p:outputLabel value="OBSERVAÇÕES:" style="font-size:9px" />
+
+											<p:outputLabel value="#{impressao.obs5}"
+												style="font-size:9px" />
+										</h:panelGrid>
+
+									</p:fieldset>
+
+									<p:fieldset legend="INSUMO 1"
+										rendered="#{impressao.prodInsumoEnviado != null}">
+										<h:panelGrid columns="2">
+											<p:outputLabel value="PRODUTO:" style="font-size:9px" />
+											<p:outputLabel value="#{impressao.prodInsumoEnviado}"
+												style="font-size:9px" />
+
+											<p:outputLabel value="NOTA FISCAL:" style="font-size:9px" />
+											<p:outputLabel value="#{impressao.nfExpedicaoInsumo}"
+												style="font-size:9px" />
+
+											<p:outputLabel value="TIPO DE ENVIO:" style="font-size:9px" />
+											<p:outputLabel value="#{impressao.tipoInsumo}"
+												style="font-size:9px" />
+
+											<p:outputLabel value="TOTAL DE PALLETS:"
+												style="font-size:9px" />
+											<p:outputLabel value="#{impressao.totalInsumoEnviado}"
+												style="font-size:9px" />
+
+										</h:panelGrid>
+
+										<h:panelGrid columns="1">
+											<p:outputLabel value="OBSERVAÇÕES:" style="font-size:9px" />
+
+											<p:outputLabel value="#{impressao.obsInsumo}"
+												style="font-size:9px" />
+										</h:panelGrid>
+									</p:fieldset>
+
+									<p:fieldset legend="INSUMO 2"
+										rendered="#{impressao.prodInsumoEnviado2 != null}">
+										<h:panelGrid columns="2">
+											<p:outputLabel value="PRODUTO:" style="font-size:9px" />
+											<p:outputLabel value="#{impressao.prodInsumoEnviado2}"
+												style="font-size:9px" />
+
+											<p:outputLabel value="NOTA FISCAL:" style="font-size:9px" />
+											<p:outputLabel value="#{impressao.nfExpedicaoInsumo2}"
+												style="font-size:9px" />
+
+											<p:outputLabel value="TIPO DE ENVIO:" style="font-size:9px" />
+											<p:outputLabel value="#{impressao.tipoInsumo2}"
+												style="font-size:9px" />
+
+											<p:outputLabel value="TOTAL DE PALLETS:"
+												style="font-size:9px" />
+											<p:outputLabel value="#{impressao.totalInsumoEnviado2}"
+												style="font-size:9px" />
+
+
+										</h:panelGrid>
+
+										<h:panelGrid columns="1">
+											<p:outputLabel value="OBSERVAÇÕES:" style="font-size:9px" />
+
+											<p:outputLabel value="#{impressao.obsInsumo2}"
+												style="font-size:9px" />
+										</h:panelGrid>
+									</p:fieldset>
+
+									<p:fieldset legend="INSUMO 3"
+										rendered="#{impressao.prodInsumoEnviado3 != null}">
+										<h:panelGrid columns="2">
+											<p:outputLabel value="PRODUTO:" style="font-size:9px" />
+											<p:outputLabel value="#{impressao.prodInsumoEnviado3}"
+												style="font-size:9px" />
+
+											<p:outputLabel value="NOTA FISCAL:" style="font-size:9px" />
+											<p:outputLabel value="#{impressao.nfExpedicaoInsumo3}"
+												style="font-size:9px" />
+
+											<p:outputLabel value="TIPO DE ENVIO:" style="font-size:9px" />
+											<p:outputLabel value="#{impressao.tipoInsumo3}"
+												style="font-size:9px" />
+
+											<p:outputLabel value="TOTAL DE PALLETS:"
+												style="font-size:9px" />
+											<p:outputLabel value="#{impressao.totalInsumoEnviado3}"
+												style="font-size:9px" />
+
+
+
+										</h:panelGrid>
+
+										<h:panelGrid columns="1">
+											<p:outputLabel value="OBSERVAÇÕES:" style="font-size:9px" />
+
+											<p:outputLabel value="#{impressao.obsInsumo3}"
+												style="font-size:9px" />
+										</h:panelGrid>
+									</p:fieldset>
+
+									<p:fieldset legend="INSUMO 4"
+										rendered="#{impressao.prodInsumoEnviado4 != null}">
+										<h:panelGrid columns="2">
+											<p:outputLabel value="PRODUTO:" style="font-size:9px" />
+											<p:outputLabel value="#{impressao.prodInsumoEnviado4}"
+												style="font-size:9px" />
+
+											<p:outputLabel value="NOTA FISCAL:" style="font-size:9px" />
+											<p:outputLabel value="#{impressao.nfExpedicaoInsumo4}"
+												style="font-size:9px" />
+
+											<p:outputLabel value="TIPO DE ENVIO:" style="font-size:9px" />
+											<p:outputLabel value="#{impressao.tipoInsumo4}"
+												style="font-size:9px" />
+
+											<p:outputLabel value="TOTAL DE PALLETS:"
+												style="font-size:9px" />
+											<p:outputLabel value="#{impressao.totalInsumoEnviado4}"
+												style="font-size:9px" />
+
+
+
+										</h:panelGrid>
+
+										<h:panelGrid columns="1">
+											<p:outputLabel value="OBSERVAÇÕES:" style="font-size:9px" />
+
+											<p:outputLabel value="#{impressao.obsInsumo4}"
+												style="font-size:9px" />
+										</h:panelGrid>
+									</p:fieldset>
+
+									<p:fieldset legend="INSUMO 5"
+										rendered="#{impressao.prodInsumoEnviado5 != null}">
+										<h:panelGrid columns="2">
+											<p:outputLabel value="PRODUTO:" style="font-size:9px" />
+											<p:outputLabel value="#{impressao.prodInsumoEnviado5}"
+												style="font-size:9px" />
+
+											<p:outputLabel value="NOTA FISCAL:" style="font-size:9px" />
+											<p:outputLabel value="#{impressao.nfExpedicaoInsumo5}"
+												style="font-size:9px" />
+
+											<p:outputLabel value="TIPO DE ENVIO:" style="font-size:9px" />
+											<p:outputLabel value="#{impressao.tipoInsumo5}"
+												style="font-size:9px" />
+
+											<p:outputLabel value="TOTAL DE PALLETS:"
+												style="font-size:9px" />
+											<p:outputLabel value="#{impressao.totalInsumoEnviado5}"
+												style="font-size:9px" />
+
+
+
+										</h:panelGrid>
+
+										<h:panelGrid columns="1">
+											<p:outputLabel value="OBSERVAÇÕES:" style="font-size:9px" />
+
+											<p:outputLabel value="#{impressao.obsInsumo5}"
+												style="font-size:9px" />
+										</h:panelGrid>
+
+									</p:fieldset>
+								</h:panelGrid>
+
+								<p:outputLabel />
+								<p:outputLabel value="-----------------X----X----X-------------"
+									style="margin-left:38%;margin-top:20px" />
+								<p:outputLabel />
+
+							</p:dataGrid>
+						</p:outputPanel>
+						<p:panelGrid columns="5" layout="grid"
+							style="padding:10px;font-weight:bold"
+							columnClasses="ui-grid-col-2,ui-grid-col-3,ui-grid-col-1,ui-grid-col-3,ui-grid-col-3"
+							styleClass="panelgrid-noborder">
+							<p:outputLabel />
+							<p:commandButton value="Imprimir / PDF"
+								style="margin-left:10px;width:150px" type="button">
+								<p:printer target="imprimir" />
+							</p:commandButton>
+							<p:outputLabel />
+							<p:commandButton value="Fechar"
+								oncomplete="PF('relatorio').hide()" update="imprimir"
+								style="width:150px;margin-left:15px" />
+							<p:outputLabel />
+						</p:panelGrid>
+					</div>
+
+
+				</p:dialog>
+
+				<p:dialog header="Arquivos desta Carga " resizable="false" id="arquivos"
+					position="top" widgetVar="baixarArquivos" width="50%" height="100%"
+					closable="false" modal="true" showEffect="blind" hideEffect="size"
+					style="margin-top: 70px">
+					
+					<p:panelGrid columns="3" layout="grid"
+						style="padding:10px;font-weight:bold"
+						columnClasses="ui-grid-col-2,ui-grid-col-8,ui-grid-col-2"
+						styleClass="panelgrid-noborder">
+						<p:outputLabel value="Arquivos:" />
+						<p:outputLabel value="#{cargaController.arquivoNome}" />
+						<p:outputLabel/>
+					</p:panelGrid>
+					<p:panelGrid columns="3" layout="grid"
+						style="padding:10px;font-weight:bold"
+						columnClasses="ui-grid-col-2,ui-grid-col-8,ui-grid-col-2"
+						styleClass="panelgrid-noborder">
+						<p:outputLabel value="E-Mail:" />
+						<p:inputText value="#{cargaController.recuperarArquivoEmail}" style="width:350px" />
+						<p:outputLabel/>
+					</p:panelGrid>
+					<p:panelGrid columns="5" layout="grid"
+						style="padding:10px;font-weight:bold"
+						columnClasses="ui-grid-col-2,ui-grid-col-2,ui-grid-col-2,ui-grid-col-2,ui-grid-col-3"
+						styleClass="panelgrid-noborder">
+						<p:outputLabel />
+						<p:commandButton value="Enviar" action="#{cargaController.recuperar()}" style="width:100px" />
+						<p:outputLabel />
+						<p:commandButton value="Fechar"
+							action="#{cargaController.fecharBaixarArquivos()}" style="width:100px"
+							process="@this" />
+						<p:outputLabel />
+					</p:panelGrid>
+				</p:dialog>
+			</h:form>
+		</div>
+	</ui:define>
+</ui:composition>
+

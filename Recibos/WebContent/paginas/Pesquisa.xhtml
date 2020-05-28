@@ -1,0 +1,246 @@
+<ui:composition template="/template/Layout.xhtml"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:p="http://primefaces.org/ui">
+
+	<ui:define name="titulo">Recibos</ui:define>
+
+	<ui:define name="conteudo">
+
+		<div class="ui-fluid">
+
+			<h:form
+				style="margin-left: auto; margin-right:auto; font-weight:bold; font-size: 11px">
+				#{recibosController.init()}
+				<p:panel header="Pesquisar Recibo" style="margin-top:1%">
+					<p:panelGrid columns="4" layout="grid"
+						styleClass="panelgrid-noborder"
+						columnClasses="ui-grid-col-4,ui-grid-col-1,ui-grid-col-3,ui-grid-col-4">
+
+						<p:inputText placeholder="Funcionário"
+							value="#{recibosController.funcionario}" />
+						<p:commandButton icon="fa fa-search" process="@form"
+							action="#{recibosController.buscarRecibo}" update="tbl" />
+						<p:outputLabel />
+						<p:outputLabel />
+
+					</p:panelGrid>
+					<p:dataTable id="tbl" reflow="true" resizeMode="expand"
+						emptyMessage="Lista Vazia" resizableColumns="true"
+						value="#{recibosController.listaRecibos}" scrollable="true"
+						var="recibo" style="margin-top:5px" paginator="true" rows="15"
+						rowsPerPageTemplate="5,10,15" paginatorPosition="bottom"
+						paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} ">
+
+						<p:column headerText="Funcionário " width="15%">
+							<h:outputLabel value="#{recibo.funcionario}" />
+						</p:column>
+
+						<p:column headerText="RG" width="13%">
+							<h:outputLabel value="#{recibo.rg}" />
+						</p:column>
+						<p:column headerText="CPF" width="10%" style="text-align:center">
+							<h:outputLabel value="#{recibo.cpf}" />
+						</p:column>
+						<p:column headerText="Data do Recibo" width="8%"
+							style="text-align:center">
+							<h:outputLabel value="#{recibo.dataRecibo}">
+								<f:convertDateTime pattern="dd/MM/yyyy" locale="pt_BR" />
+							</h:outputLabel>
+						</p:column>
+						<p:column headerText="Valor" width="8%" style="text-align:center">
+							<h:outputLabel value="#{recibo.vlr}">
+								<f:convertNumber type="currency" currencySymbol="R$"
+									locale="pt_BR" />
+							</h:outputLabel>
+						</p:column>
+						<p:column headerText="Data Pag." width="17%"
+							style="text-align:center">
+							<h:outputLabel value="#{recibo.dataPagamento}">
+								<f:convertDateTime pattern="dd/MM/yyyy" locale="pt_BR" />
+							</h:outputLabel>
+
+						</p:column>
+						<p:column width="10%" style="text-align:center">
+							
+							<p:commandButton icon="fa fa-print" style="width:25px"
+								action="#{recibosController.imprimir(recibo)}"
+								title="Clique para imprimir" update="@form" />
+
+							<p:commandButton icon="fa fa-edit" style="width:25px"
+								action="#{recibosController.editar(recibo)}"
+								title="Clique para Editar"/>
+
+							<p:commandButton icon="fa fa-trash" style="width:25px"
+								action="#{recibosController.PrepararExcluirRecibo(recibo)}"
+								oncomplete="PF('confirmarExclusaoCursoDialog').show()"
+								id="excluir" title="Clique para Excluir" />
+						</p:column>
+					</p:dataTable>
+				</p:panel>
+
+				<!--Imprimir 1º via-->
+
+				<p:dialog header="imprimir Recibo" resizable="false" position="top"
+					widgetVar="imprimirDialog" closable="false" width="70%"
+					height="60%" style="position:absolute; margin-top:30px"
+					modal="true" showEffect="fade" hideEffect="fade">
+
+					<p:dataGrid columns="1" var="impressao" id="imprimir"
+						styleClass="panelgrid-noborder"
+						value="#{recibosController.pesquisaDialog}" layout="grid">
+
+						<h:panelGrid columns="1"
+							style="margin-top:10px;margin-left:auto;margin-right:auto; font-size:12px">
+							<p:outputLabel value="OLGBER ESPECIALIDADES EIRELI" />
+						</h:panelGrid>
+
+						<h:panelGrid columns="1"
+							style="margin-left:auto;margin-right:auto; font-size:12px">
+							<p:outputLabel
+								value="CNPJ: 03.293.568/00001-36 / LE: 234.100.542.113" />
+						</h:panelGrid>
+
+						<h:panelGrid columns="1"
+							style="margin-left:auto;margin-right:auto; font-size:12px">
+							<p:outputLabel value="RUA MANOEL NUNES DA COSTA, 290" />
+						</h:panelGrid>
+
+						<h:panelGrid columns="1"
+							style="margin-left:auto;margin-right:auto; font-size:12px">
+							<p:outputLabel value="VILA GALVÃO - CAÇAPAVA / SP" />
+						</h:panelGrid>
+
+						<h:panelGrid columns="1"
+							style="margin-left:auto; margin-right:auto; margin-top:15px">
+							<p:outputLabel value="RECIBO"
+								style="font-size:18px; font-weight:bold; text-decoration: underline" />
+						</h:panelGrid>
+
+						<h:panelGrid columns="1"
+							style="margin-left:8%;font-size:16px; margin-right:8%; margin-top:15px">
+							<p:outputLabel
+								value="Recebemos do(a) funcionária #{impressao.funcionario}, portador(a) do RG #{impressao.rg}, CPF #{impressao.cpf}, 
+							o valor de #{impressao.vlr} #{impressao.valorExtenso} referente a #{impressao.referente}.">
+								<f:convertNumber type="currency" currencySymbol="R$"
+									locale="pt_BR" />
+							</p:outputLabel>
+						</h:panelGrid>
+
+
+						<h:panelGrid columns="2" style="margin-left:45%; margin-top:40px">
+							<p:outputLabel value="Caçapava," />
+							<p:outputLabel value="#{recibosController.data}" />
+						</h:panelGrid>
+						
+						<h:panelGrid columns="1" style="margin-left:10%;margin-top:0px;margin-bottom:20px">
+							<h:graphicImage library="imagens" name="carimbo.png" style="width:180px;position:absolute"/>
+						</h:panelGrid>
+						
+						<h:panelGrid columns="1" style="margin-left:45%; margin-top:40px">
+							<p:outputLabel value="______________________________" />
+						</h:panelGrid>
+
+						<h:panelGrid columns="1"
+							style="margin-left:45%; font-weight:bold ">
+							<p:outputLabel value="OLGBER ESPECIALIDADES EIRELI" />
+						</h:panelGrid>
+						<h:panelGrid columns="1" style="margin-left:85%; font-size:8px ">
+							<p:outputLabel value=" 1º via Empresa" />
+						</h:panelGrid>
+
+						<p:separator style="margin-top: 30px;margin-botton:30px" />
+
+						<!--Imprimir 2º via-->
+
+						<h:panelGrid columns="1"
+							style="margin-top:10px;margin-left:auto;margin-right:auto; font-size:12px">
+							<p:outputLabel value="OLGBER ESPECIALIDADES EIRELI" />
+						</h:panelGrid>
+
+						<h:panelGrid columns="1"
+							style="margin-left:auto;margin-right:auto; font-size:12px">
+							<p:outputLabel
+								value="CNPJ: 03.293.568/00001-36 / LE: 234.100.542.113" />
+						</h:panelGrid>
+
+						<h:panelGrid columns="1"
+							style="margin-left:auto;margin-right:auto; font-size:12px">
+							<p:outputLabel value="RUA MANOEL NUNES DA COSTA, 290" />
+						</h:panelGrid>
+
+						<h:panelGrid columns="1"
+							style="margin-left:auto;margin-right:auto; font-size:12px">
+							<p:outputLabel value="VILA GALVÃO - CAÇAPAVA / SP" />
+						</h:panelGrid>
+
+						<h:panelGrid columns="1"
+							style="margin-left:auto; margin-right:auto; margin-top:15px">
+							<p:outputLabel value="RECIBO"
+								style="font-size:18px; font-weight:bold; text-decoration: underline" />
+						</h:panelGrid>
+
+						<h:panelGrid columns="1"
+							style="margin-left:8%; margin-right:8%;font-size:16px; margin-top:15px">
+							<p:outputLabel
+								value="Recebemos do(a) funcionária #{impressao.funcionario}, portador(a) do RG #{impressao.rg}, CPF #{impressao.cpf}, 
+							o valor de #{impressao.vlr} #{impressao.valorExtenso} referente a #{impressao.referente}.">
+								<f:convertNumber type="currency" currencySymbol="R$"
+									locale="pt_BR" />
+							</p:outputLabel>
+						</h:panelGrid>
+
+
+						<h:panelGrid columns="2" style="margin-left:45%; margin-top:50px">
+							<p:outputLabel value="Caçapava," />
+							<p:outputLabel value="#{recibosController.data}" />
+							
+						</h:panelGrid>
+							
+						<h:panelGrid columns="1" style="margin-left:10%;margin-top:0px;margin-botton:20px">
+							<h:graphicImage library="imagens" name="carimbo.png" style="width:180px;position:absolute"/>
+						</h:panelGrid>
+						
+						<h:panelGrid columns="1" style="margin-left:45%; margin-top:50px">
+							<p:outputLabel value="______________________________" />
+						</h:panelGrid>
+
+						<h:panelGrid columns="1"
+							style="margin-left:45%; font-weight:bold ">
+							<p:outputLabel value="OLGBER ESPECIALIDADES EIRELI" />
+						</h:panelGrid>
+						<h:panelGrid columns="1" style="margin-left:75%; font-size:8px; margin-bottom:20px">
+							<p:outputLabel value=" 2º via #{impressao.funcionario}" />
+						</h:panelGrid>
+
+					</p:dataGrid>
+
+					<h:panelGrid columns="2"
+						style="margin-left:auto; margin-right:auto; border: none; margin-top:15px">
+						<p:commandButton value="Imprimir" style="margin-left:10px"
+							action="#{recibosController.fecharRecibo()}"
+							oncomplete="PF('imprimirDialog').hide()" type="button">
+							<p:printer target="imprimir" />
+						</p:commandButton>
+						<p:commandButton value="Fechar" style="margin-left:10px"
+							action="#{recibosController.fecharRecibo()}" update="@form"
+							onclick="PF('imprimirDialog').hide()" process="@this" />
+					</h:panelGrid>
+				</p:dialog>
+
+				<p:confirmDialog widgetVar="confirmarExclusaoCursoDialog" 
+					responsive="true" message="Deseja excluir este Recibo?">
+					<p:commandButton value="Sim" update="tbl" action="#{recibosController.ExcluiRecibo()}" 
+						oncomplete="PF('confirmarExclusaoCursoDialog').hide()" style="width:50px"/>
+					<p:commandButton value="Não"
+						oncomplete="PF('confirmarExclusaoCursoDialog').hide()" style="width:50px"/>
+				</p:confirmDialog>
+
+			</h:form>
+
+
+		</div>
+	</ui:define>
+</ui:composition>

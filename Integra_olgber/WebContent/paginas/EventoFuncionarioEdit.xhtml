@@ -1,0 +1,155 @@
+<ui:composition template="/template/Layout.xhtml"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:p="http://primefaces.org/ui">
+
+	<ui:define name="titulo">EventoFuncionarioEdit</ui:define>
+
+	<ui:define name="conteudo">
+
+		<div class="ui-fluid">
+			<h:form
+				style="margin-left: auto; margin-right:auto; font-weight:bold; font-size: 10px">
+				<p:fieldset legend="Editar o Evento do Funcionário">
+
+					<p:panelGrid columns="5" layout="grid" style="padding:10px"
+						columnClasses="ui-grid-col-1,ui-grid-col-2,ui-grid-col-1,ui-grid-col-2,ui-grid-col-6"
+						styleClass="panelgrid-noborder">
+
+						<p:outputLabel value="Funcionário:" />
+						<p:outputLabel
+							value="#{eventoFuncionarioController.eventoFuncionario.funcionario.nome}"
+							id="tbl" />
+						<p:outputLabel value="Agência:" />
+						<p:outputLabel
+							value="#{eventoFuncionarioController.eventoFuncionario.funcionario.agencia}"
+							id="agencia" />
+						<p:outputLabel />
+
+					</p:panelGrid>
+					<p:panel header="Dados da Falta do Funcionário"
+						rendered="#{eventoFuncionarioController.eventoFuncionario.dataFalta != null}">
+						<p:panelGrid columns="3" layout="grid" style="padding:10px"
+							columnClasses="ui-grid-col-3,ui-grid-col-4,ui-grid-col-5"
+							styleClass="panelgrid-noborder">
+
+							<p:panelGrid columns="1" layout="grid" style="padding:10px"
+								rendered="#{eventoFuncionarioController.eventoFuncionario.dataFalta != null}"
+								columnClasses="ui-grid-col-12" styleClass="panelgrid-noborder">
+
+								<p:outputLabel value="Data da Falta:" />
+
+								<p:calendar pattern="dd/MM/yyyy" mask="99/99/9999"
+									required="true" requiredMessage="Informe a Data"
+									navigator="true" showOn="button" style="width:70px"
+									value="#{eventoFuncionarioController.eventoFuncionario.dataFalta}"
+									effect="fold" locale="pt"
+									title="Clique para abrir o calendário" />
+
+
+							</p:panelGrid>
+
+							<p:panelGrid columns="1" layout="grid" style="padding:10px"
+								rendered="#{eventoFuncionarioController.eventoFuncionario.dataFalta != null}"
+								columnClasses="ui-grid-col-12" styleClass="panelgrid-noborder">
+
+								<p:outputLabel value="Observação:" />
+								<p:inputTextarea cols="100" rows="6" style="font-size:16px"
+									onkeyup="this.value = this.value.toUpperCase()"
+									value="#{eventoFuncionarioController.eventoFuncionario.obsfalta}"
+									maxlength="250" counterTemplate="{0} Caracteres restantes"
+									counter="display" />
+								<p:outputLabel id="display" style="font-size:10px" />
+
+							</p:panelGrid>
+
+							<p:outputLabel value="Não Possui faltas neste Evento"
+								rendered="#{eventoFuncionarioController.eventoFuncionario.dataFalta == null}" />
+						</p:panelGrid>
+					</p:panel>
+
+					<p:panel header="Dados do Atestado do funcionário"
+						rendered="#{eventoFuncionarioController.eventoFuncionario.dataAtestado != null}">
+						<p:panelGrid columns="3" layout="grid" style="padding:10px"
+							columnClasses="ui-grid-col-3,ui-grid-col-4,ui-grid-col-5"
+							styleClass="panelgrid-noborder">
+
+
+							<p:panelGrid columns="1" layout="grid" style="padding:10px"
+								rendered="#{eventoFuncionarioController.eventoFuncionario.dataAtestado != null}"
+								columnClasses="ui-grid-col-12" styleClass="panelgrid-noborder">
+
+								<p:outputLabel value="Data do Atestado:" />
+
+								<p:calendar pattern="dd/MM/yyyy" mask="99/99/9999"
+									required="true" requiredMessage="Informe a Data"
+									navigator="true" showOn="button" style="width:70px"
+									rendered="#{eventoFuncionarioController.eventoFuncionario.dataAtestado != null}"
+									value="#{eventoFuncionarioController.eventoFuncionario.dataAtestado}"
+									effect="fold" locale="pt"
+									title="Clique para abrir o calendário" />
+
+
+							</p:panelGrid>
+							<p:panelGrid columns="1" layout="grid" style="padding:10px"
+								id="arquivo"
+								rendered="#{eventoFuncionarioController.eventoFuncionario.dataAtestado != null}"
+								columnClasses="ui-grid-col-12" styleClass="panelgrid-noborder">
+
+								<p:outputLabel value="Atestado:" />
+
+								<p:fileUpload auto="true" label="Selecione um Arquivo"
+									allowTypes="/(\.|\/)(pdf)$/"
+									fileUploadListener="#{eventoFuncionarioController.fileUpLoaderHandler}"
+									id="pdf" update="arquivo" required="true"
+									requiredMessage="Informe o Arquivo" />
+								<p:outputLabel />
+
+								<h:outputText
+									value="#{eventoFuncionarioController.arquivoSelecionado}"
+									style="margin-top: 10px" />
+
+								<p:blockUI block="arquivo" trigger="pdf" animate="true">
+									Fazendo Upload do Arquivo...<br />
+									<p:graphicImage library="imagens" name="load.gif" />
+								</p:blockUI>
+
+
+							</p:panelGrid>
+							<p:panelGrid columns="1" layout="grid" style="padding:10px"
+								columnClasses="ui-grid-col-12" styleClass="panelgrid-noborder">
+								<p:outputLabel value="Observação:" />
+								<p:inputTextarea cols="80" rows="4" style="font-size:16px"
+									onkeyup="this.value = this.value.toUpperCase()"
+									value="#{eventoFuncionarioController.eventoFuncionario.obsAtestado}"
+									maxlength="250" counterTemplate="{0} Caracteres restantes"
+									counter="contador" />
+								<p:outputLabel id="contador" style="font-size:10px" />
+							</p:panelGrid>
+
+						</p:panelGrid>
+					</p:panel>
+
+					<p:panelGrid columns="5" layout="grid" style="padding:10px"
+						columnClasses="ui-grid-col-3,ui-grid-col-2,ui-grid-col-2,ui-grid-col-3,ui-grid-col-2"
+						styleClass="panelgrid-noborder">
+						<p:outputLabel />
+						<p:outputLabel />
+						<p:commandButton value="Salvar" action="#{eventoFuncionarioController.salvarEdit}" id="salvar" ajax="true"/>
+						<p:outputLabel />
+						<p:outputLabel />
+
+					</p:panelGrid>
+				</p:fieldset>
+				<p:blockUI block="@form" trigger="salvar" animate="true">
+						SALVANDO EVENTO...<br />
+					<p:graphicImage library="imagens" name="load.gif" />
+				</p:blockUI>
+			</h:form>
+
+
+		</div>
+	</ui:define>
+</ui:composition>

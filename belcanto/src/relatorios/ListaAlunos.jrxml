@@ -1,0 +1,159 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with Jaspersoft Studio version 6.11.0.final using JasperReports Library version 6.11.0-0c4056ccaa4d25a5a8c45672d2f764ea3498bebb  -->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="Simple_Blue" pageWidth="595" pageHeight="842" columnWidth="535" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="886aa43a-212f-4569-ac90-83fa348911f7">
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="One Empty Record"/>
+	<queryString>
+		<![CDATA[]]>
+	</queryString>
+	<field name="dtCadastro" class="java.util.Date">
+		<fieldDescription><![CDATA[dtCadastro]]></fieldDescription>
+	</field>
+	<field name="nome" class="java.lang.String">
+		<fieldDescription><![CDATA[nome]]></fieldDescription>
+	</field>
+	<field name="rg" class="java.lang.String">
+		<fieldDescription><![CDATA[rg]]></fieldDescription>
+	</field>
+	<field name="cpf" class="java.lang.String">
+		<fieldDescription><![CDATA[cpf]]></fieldDescription>
+	</field>
+	<field name="dtNascimento" class="java.util.Date">
+		<fieldDescription><![CDATA[dtNascimento]]></fieldDescription>
+	</field>
+	<variable name="dtCadastro1" class="java.lang.Integer" resetType="Column" calculation="Count">
+		<variableExpression><![CDATA[$F{dtCadastro}]]></variableExpression>
+	</variable>
+	<variable name="nome1" class="java.lang.Integer" resetType="Column" calculation="Count">
+		<variableExpression><![CDATA[$F{nome}]]></variableExpression>
+	</variable>
+	<variable name="rg1" class="java.lang.Integer" resetType="Column" calculation="Count">
+		<variableExpression><![CDATA[$F{rg}]]></variableExpression>
+	</variable>
+	<variable name="cpf1" class="java.lang.Integer" resetType="Column" calculation="Count">
+		<variableExpression><![CDATA[$F{cpf}]]></variableExpression>
+	</variable>
+	<variable name="dtNascimento1" class="java.lang.Integer" resetType="Column" calculation="Count">
+		<variableExpression><![CDATA[$F{dtNascimento}]]></variableExpression>
+	</variable>
+	<title>
+		<band height="72">
+			<frame>
+				<reportElement mode="Opaque" x="-20" y="-20" width="595" height="92" backcolor="#006699" uuid="eda35ea6-19e2-47d4-b009-50396dc2b5f7"/>
+				<staticText>
+					<reportElement x="20" y="20" width="234" height="43" forecolor="#FFFFFF" uuid="f2522048-0747-40a7-8da3-f0cd06e51581"/>
+					<textElement>
+						<font size="34" isBold="true"/>
+					</textElement>
+					<text><![CDATA[RELATÓRIO]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="395" y="20" width="180" height="20" forecolor="#FFFFFF" uuid="c0cd9011-0677-44fa-9de5-8ab73943d8bc"/>
+					<textElement textAlignment="Right">
+						<font size="14" isBold="false"/>
+					</textElement>
+					<text><![CDATA[Lista de Alunos]]></text>
+				</staticText>
+			</frame>
+		</band>
+	</title>
+	<pageHeader>
+		<band height="13"/>
+	</pageHeader>
+	<columnHeader>
+		<band height="30">
+			<line>
+				<reportElement x="-20" y="20" width="595" height="1" forecolor="#666666" uuid="d8d8447b-f108-4842-9ec5-c9225b57bb96"/>
+			</line>
+			<staticText>
+				<reportElement x="-1" y="0" width="111" height="21" uuid="efb9d4c5-b09d-4da1-983d-95ca0d700986">
+					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="fe1fed77-6041-4710-9ac4-d0ac3eeb9a0d"/>
+				</reportElement>
+				<text><![CDATA[Nome]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="110" y="0" width="59" height="21" uuid="176acbce-da87-4ce9-a434-f712b7c9398a">
+					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="2377fb9f-f082-4b25-b2a7-ffa3fd162522"/>
+				</reportElement>
+				<text><![CDATA[RG]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="213" y="0" width="66" height="21" uuid="15ce611b-4910-4df2-9a80-c8947b21244e">
+					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="68bf95a4-3040-42f5-a86c-5ad55cc23945"/>
+				</reportElement>
+				<text><![CDATA[CPF]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="324" y="0" width="65" height="21" uuid="c4302e7d-69e7-4b7f-a62b-7df48fbf0981">
+					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="161feb8c-9992-4de5-a900-0cc40b775a97"/>
+				</reportElement>
+				<text><![CDATA[Dt.Nasc.]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="435" y="0" width="64" height="20" uuid="4369bd71-9d6d-4ed1-b62b-9cb92bff4da6">
+					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="52ef766a-829f-404a-b7f4-f7ab8b5c0e8e"/>
+				</reportElement>
+				<text><![CDATA[Cadastro]]></text>
+			</staticText>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="20">
+			<line>
+				<reportElement positionType="FixRelativeToBottom" x="0" y="19" width="555" height="1" uuid="eedb4d2e-9c8f-44a6-9685-4208b422fd25"/>
+			</line>
+			<textField>
+				<reportElement x="-1" y="1" width="111" height="18" uuid="a5ca1151-783e-4ef5-97ac-4eddd283d3bf">
+					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="fe1fed77-6041-4710-9ac4-d0ac3eeb9a0d"/>
+				</reportElement>
+				<textFieldExpression><![CDATA[$F{nome}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="110" y="1" width="102" height="18" uuid="7abd67d6-c5f4-45da-847e-e6363e505ddf">
+					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="2377fb9f-f082-4b25-b2a7-ffa3fd162522"/>
+				</reportElement>
+				<textFieldExpression><![CDATA[$F{rg}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="213" y="1" width="111" height="18" uuid="ebf88a9a-6748-41cf-85f8-0a9f52346baa">
+					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="68bf95a4-3040-42f5-a86c-5ad55cc23945"/>
+				</reportElement>
+				<textFieldExpression><![CDATA[$F{cpf}]]></textFieldExpression>
+			</textField>
+			<textField pattern="M/d/yy">
+				<reportElement x="324" y="1" width="111" height="18" uuid="1fc1aa50-166a-416f-89ba-44f2ef4ec0fc">
+					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="161feb8c-9992-4de5-a900-0cc40b775a97"/>
+				</reportElement>
+				<textFieldExpression><![CDATA[$F{dtNascimento}]]></textFieldExpression>
+			</textField>
+			<textField pattern="M/d/yy">
+				<reportElement x="433" y="0" width="111" height="18" uuid="ff2ebcb7-16a8-4ae3-923a-9c156651f857">
+					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="52ef766a-829f-404a-b7f4-f7ab8b5c0e8e"/>
+				</reportElement>
+				<textFieldExpression><![CDATA[$F{dtCadastro}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<columnFooter>
+		<band/>
+	</columnFooter>
+	<pageFooter>
+		<band height="17">
+			<textField>
+				<reportElement mode="Opaque" x="0" y="4" width="514" height="13" backcolor="#E6E6E6" uuid="ee0de069-2bd2-48af-b61c-f10cd794ad7b"/>
+				<textElement textAlignment="Right"/>
+				<textFieldExpression><![CDATA["Página "+$V{PAGE_NUMBER}+" de"]]></textFieldExpression>
+			</textField>
+			<textField evaluationTime="Report">
+				<reportElement mode="Opaque" x="515" y="4" width="40" height="13" backcolor="#E6E6E6" uuid="ab24442d-4627-422e-95b7-0e1b0d280d41"/>
+				<textFieldExpression><![CDATA[" " + $V{PAGE_NUMBER}]]></textFieldExpression>
+			</textField>
+			<textField pattern="EEEEE dd MMMMM yyyy">
+				<reportElement x="0" y="4" width="100" height="13" uuid="941aeb10-320b-4181-b10a-d9787cfbef5c"/>
+				<textFieldExpression><![CDATA[new java.util.Date()]]></textFieldExpression>
+			</textField>
+		</band>
+	</pageFooter>
+	<summary>
+		<band/>
+	</summary>
+</jasperReport>

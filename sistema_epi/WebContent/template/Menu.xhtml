@@ -1,0 +1,35 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:p="http://primefaces.org/ui">
+
+
+	<nav class="aw-menu">
+		<h:form style="margin-left:5px">
+
+			
+
+
+			<p:panelMenu style="width:210px">
+				<p:submenu label="Cadastros" >
+					
+					<p:menuitem value="Ponto Diário" outcome="PontoDiario.xhtml" 
+						icon="fa fa-clock-o"/>
+				</p:submenu>
+				<p:submenu label="Pesquisar">
+					<p:menuitem value="Atestados" outcome="Atestados.xhtml"/>
+					<p:menuitem value="Editar Batidas" outcome="Temporarios.xhtml"/>
+					<p:menuitem value="Faltas" outcome="Faltas.xhtml"/>
+					<p:menuitem value="Reg.Treinamento" outcome="RegTreinamento.xhtml"/>		
+				</p:submenu>
+				<p:submenu label="Voltar">
+					<p:menuitem value="Sistema Epi" outcome="Home.xhtml"
+						 />		
+				</p:submenu>
+			</p:panelMenu>
+			
+			<p:calendar value="#{pontoDiarioController.hoje}" locale="pt" style="font-size:10.7px;margin-left:0px"  mode="inline"/>
+		</h:form>
+	</nav>
+
+</ui:composition>

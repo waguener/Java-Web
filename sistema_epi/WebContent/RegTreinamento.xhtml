@@ -1,0 +1,265 @@
+<ui:composition template="/template/Layout.xhtml"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:p="http://primefaces.org/ui">
+
+	<ui:define name="titulo">Registro de Treinamento</ui:define>
+
+	<ui:define name="conteudo">
+
+		<div class="ui-fluid">
+			<h:form id="form"
+				style="margin-left: auto; margin-right:auto; font-weight:bold; font-size: 10px;">
+				#{pontoDiarioController.reg()}
+				<p:panelGrid columns="1" layout="grid" style="width:100%"
+					styleClass="panelgrid-noborder" columnClasses="ui-grid-col-12">
+					<p:outputLabel value="Registro de Treinamento"
+						style="font-size: 22pt;font-family:'Cabin', sans-serif;color:#87CEEB;text-shadow: 2px 2px 3px #000000;" />
+
+				</p:panelGrid>
+				<p:panelGrid columns="2" layout="grid"
+					style="margin-top:0px;width:100%" styleClass="panelgrid-noborder"
+					columnClasses="ui-grid-col-5,ui-grid-col-7">
+					<p:panelGrid columns="3" layout="grid"
+						styleClass="panelgrid-noborder"
+						columnClasses="ui-grid-col-4,ui-grid-col-6,ui-grid-col-2">
+						<p:outputLabel value="Data:"
+							style="font-size: 16pt;font-family:'Cabin', sans-serif;" />
+
+						<p:calendar pattern="dd/MM/yyyy" mask="99/99/9999" size="5"
+							style="font-size: 14pt;font-family:'Cabin', sans-serif;width:180px"
+							value="#{pontoDiarioController.data}" required="true"
+							requiredMessage="Informe a Data" locale="pt" effect="fold"
+							title="Clique para abrir o calendário" />
+						<p:outputLabel />
+
+						<p:outputLabel value="Responsável:"
+							style="font-size: 16pt;font-family:'Cabin', sans-serif;" />
+
+						<p:inputText value="#{pontoDiarioController.resp}"
+							onkeyup="this.value = this.value.toUpperCase()"
+							style="font-size:14px" />
+						<p:outputLabel />
+
+						<p:outputLabel value="Duração:"
+							style="font-size: 16pt;font-family:'Cabin', sans-serif;" />
+
+						<p:selectOneMenu value="#{pontoDiarioController.duracao}"
+							style="font-size: 14pt;width:180px">
+							<f:selectItem itemLabel=".:Selecione:." itemValue="#{null}" />
+							<f:selectItem itemLabel="30 Minutos" itemValue="30 Minutos" />
+							<f:selectItem itemLabel="60 Minutos" itemValue="60 Minutos" />
+						</p:selectOneMenu>
+						<p:outputLabel />
+						<p:commandButton value="Obter Relatório"
+							action="#{pontoDiarioController.regTrein()}"
+							style="width:150px;margin-top:50px;margin-left:100px;height:60px;font-size:14pt"
+							update="reg" process="@form" />
+					</p:panelGrid>
+
+					<p:panelGrid columns="1" layout="grid"
+						styleClass="panelgrid-noborder" columnClasses="ui-grid-col-12">
+						<p:dataTable var="temp" emptyMessage="Lista Vazia" id="tbl"
+							selection="#{pontoDiarioController.tempSelecionado}"
+							value="#{pontoDiarioController.listaTemp }" rowKey="#{temp.id}"
+							paginator="true" rows="30" scrollHeight="390"
+							rowsPerPageTemplate="5,15,30" paginatorPosition="bottom"
+							resizableColumns="true">
+
+							<p:column selectionMode="multiple"
+								style="width:16px;text-align:center" />
+
+							<p:column headerText="Nome" filterMatchMode="contains"
+								width="45%" filterBy="#{temp.nome }">
+								<h:outputText value="#{temp.nome }" />
+							</p:column>
+							<p:column headerText="Agência" sortBy="#{temp.agencia}"
+								width="20%" style="text-align:center">
+								<h:outputText value="#{temp.agencia}" />
+							</p:column>
+							<p:column headerText="Função" width="23%">
+								<h:outputText value="#{temp.funcao}" />
+							</p:column>
+							<p:column headerText="Turno" width="12%" sortBy="#{temp.turno}">
+								<h:outputText value="#{temp.turno}" />
+							</p:column>
+
+						</p:dataTable>
+					</p:panelGrid>
+				</p:panelGrid>
+				<p:dialog header="Registro de Treinamento" resizable="false"
+					position="top" widgetVar="treinamento" width="70%" height="100%"
+					id="reg" closable="true" modal="true" showEffect="blind"
+					hideEffect="size" style="margin-top: 50px">
+					<div style="width: 100%; height: 400px; overflow: auto">
+						<h:panelGrid columns="1" width="100%" id="impressao">
+							<h:panelGrid columns="2">
+								<h:panelGrid columns="1">
+									<p:graphicImage library="imagens" name="logoSite.png"
+										styleClass="logo" style="width:100px" />
+								</h:panelGrid>
+								<h:panelGrid columns="1" style="text-align:center">
+									<p:outputLabel value="FORM-GQ-03: REGISTRO DE TREINAMENTO"
+										style="font-size: 14pt;font-family:'Arial Black', sans-serif;margin-left:80px" />
+								</h:panelGrid>
+							</h:panelGrid>
+							<h:panelGrid columns="2">
+								<h:panelGrid columns="1">
+									<p:outputLabel value="Assunto: Integração"
+										style="font-size: 12pt;font-family:'Arial', sans-serif;" />
+								</h:panelGrid>
+								<h:panelGrid columns="2"
+									style="text-align:center;margin-left:400px">
+									<p:outputLabel value="Data:"
+										style="font-size: 12pt;font-family:'Arial', sans-serif;" />
+									<p:outputLabel value="#{pontoDiarioController.data}"
+										style="font-size: 12pt;font-family:'Arial', sans-serif;">
+										<f:convertDateTime pattern="dd/MM/yyyy" locale="pt_BR" />
+									</p:outputLabel>
+
+								</h:panelGrid>
+								<h:panelGrid columns="1" style="margin-top:-5px">
+									<p:outputLabel value="Local: Sala de Reunião"
+										style="font-size: 12pt;font-family:'Arial', sans-serif;" />
+								</h:panelGrid>
+
+							</h:panelGrid>
+
+							<h:panelGrid columns="3">
+								<h:panelGrid columns="1" width="300px">
+									<p:outputLabel />
+								</h:panelGrid>
+								<h:panelGrid columns="1" style="text-align:center">
+									<p:outputLabel value="Assuntos Abordados"
+										style="font-size: 12pt;font-family:'Arial', sans-serif;text-decoration:underline" />
+								</h:panelGrid>
+								<h:panelGrid columns="1">
+									<p:outputLabel />
+								</h:panelGrid>
+							</h:panelGrid>
+							<h:panelGrid columns="1">
+								<h:panelGrid columns="1">
+									<p:outputLabel
+										value="Foi realizado integração com os funcionários abaixo sobre os seguintes assuntos:"
+										style="font-size: 12pt;font-family:'Arial', sans-serif;" />
+								</h:panelGrid>
+								<h:panelGrid columns="1" style="margin-top:-7px">
+									<p:outputLabel
+										value="1. Missão, valores e política de qualidade da empresa;"
+										style="font-size: 12pt;font-family:'Arial', sans-serif;" />
+								</h:panelGrid>
+								<h:panelGrid columns="1" style="margin-top:-7px">
+									<p:outputLabel
+										value="2. Segurança de alimentos, explicando os perigos físicos, químicos e biológicos;"
+										style="font-size: 12pt;font-family:'Arial', sans-serif;" />
+								</h:panelGrid>
+								<h:panelGrid columns="1" style="margin-top:-7px">
+									<p:outputLabel value="3. Prevenção de material estranho;"
+										style="font-size: 12pt;font-family:'Arial', sans-serif;" />
+								</h:panelGrid>
+								<h:panelGrid columns="1" style="margin-top:-7px">
+									<p:outputLabel
+										value="4. Boas Práticas de Fabricação focando na qualidade da água, controle de pragas, higiene pessoal, higienização correta das mãos, comportamento pessoal (Não usar celular na área de armazenamento, produção e refeitório, proibido consumir produtos que serão embalados, entre outros), organização das linhas de produção, etc.;"
+										style="font-size: 12pt;font-family:'Arial', sans-serif;" />
+								</h:panelGrid>
+								<h:panelGrid columns="1" style="margin-top:-7px">
+									<p:outputLabel
+										value="5. Organização dos produtos Não Conforme;"
+										style="font-size: 12pt;font-family:'Arial', sans-serif;" />
+								</h:panelGrid>
+								<h:panelGrid columns="1" style="margin-top:-7px">
+									<p:outputLabel
+										value="6. Normas internas de segurança do trabalho."
+										style="font-size: 12pt;font-family:'Arial', sans-serif;" />
+								</h:panelGrid>
+							</h:panelGrid>
+							<h:panelGrid columns="2">
+								<h:panelGrid columns="1">
+									<p:outputLabel value="RESPONSÁVEL PELA ORIENTAÇÃO:  "
+										style="font-size: 12pt;font-family:'Arial', sans-serif;font-weight:bold" />
+								</h:panelGrid>
+								<h:panelGrid columns="1">
+									<p:outputLabel value="#{pontoDiarioController.resp}"
+										style="font-size: 12pt;font-family:'Arial', sans-serif;font-weight:bold" />
+								</h:panelGrid>
+							</h:panelGrid>
+							<h:panelGrid columns="2" style="margin-top:-10px">
+								<h:panelGrid columns="1">
+									<p:outputLabel value="DURAÇÃO:  "
+										style="font-size: 12pt;font-family:'Arial', sans-serif;font-weight:bold" />
+								</h:panelGrid>
+								<h:panelGrid columns="1">
+									<p:outputLabel value="#{pontoDiarioController.duracao}"
+										style="font-size: 12pt;font-family:'Arial', sans-serif;font-weight:bold" />
+								</h:panelGrid>
+							</h:panelGrid>
+
+							<h:panelGrid columns="3">
+								<h:panelGrid columns="1" width="300px">
+									<p:outputLabel />
+								</h:panelGrid>
+								<h:panelGrid columns="1" style="text-align:center">
+									<p:outputLabel value="PARTICIPANTES"
+										style="font-size: 12pt;font-family:'Arial', sans-serif;font-weight:bold" />
+								</h:panelGrid>
+								<h:panelGrid columns="1">
+									<p:outputLabel />
+								</h:panelGrid>
+							</h:panelGrid>
+
+							<h:panelGrid columns="4">
+								<h:panelGrid columns="1" width="300px">
+									<p:outputLabel value="Nome"
+										style="font-size: 12pt;font-family:'Arial', sans-serif;font-weight:bold" />
+								</h:panelGrid>
+								<h:panelGrid columns="1" width="200px">
+									<p:outputLabel value="Assinatura"
+										style="font-size: 12pt;font-family:'Arial', sans-serif;font-weight:bold" />
+								</h:panelGrid>
+								<h:panelGrid columns="1" width="250px">
+									<p:outputLabel value="Função"
+										style="font-size: 12pt;font-family:'Arial', sans-serif;font-weight:bold" />
+								</h:panelGrid>
+								<h:panelGrid columns="1" width="200px">
+									<p:outputLabel value="Turno"
+										style="font-size: 12pt;font-family:'Arial', sans-serif;font-weight:bold" />
+								</h:panelGrid>
+							</h:panelGrid>
+
+							<p:dataGrid columns="1" var="temp" styleClass="data-grid"
+								layout="grid" value="#{pontoDiarioController.tempSelecionado}">
+
+								<h:panelGrid columns="4" style="margin-top:-5px">
+									<h:panelGrid columns="1" width="300px">
+										<p:outputLabel value="#{temp.nome}"
+											style="font-size: 10pt;font-family:'Arial', sans-serif;" />
+									</h:panelGrid>
+									<h:panelGrid columns="1" width="200px">
+										<p:outputLabel value="_____________________"
+											style="font-size: 10pt;font-family:'Arial', sans-serif;" />
+									</h:panelGrid>
+									<h:panelGrid columns="1" width="250px">
+										<p:outputLabel value="#{temp.funcao}"
+											style="font-size: 10pt;font-family:'Arial', sans-serif;" />
+									</h:panelGrid>
+									<h:panelGrid columns="1" width="250px">
+										<p:outputLabel value="#{temp.turno}"
+											style="font-size: 10pt;font-family:'Arial', sans-serif;" />
+									</h:panelGrid>
+
+								</h:panelGrid>
+							</p:dataGrid>
+
+						</h:panelGrid>
+						<p:commandButton value="Imprimir"
+							style="margin-left:10px;width:150px" type="button">
+							<p:printer target="impressao" />
+						</p:commandButton>
+					</div>
+				</p:dialog>
+			</h:form>
+		</div>
+	</ui:define>
+</ui:composition>

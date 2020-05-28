@@ -1,0 +1,164 @@
+<ui:composition template="/template/Layout.xhtml"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:p="http://primefaces.org/ui">
+
+	<ui:define name="titulo">Recebimento</ui:define>
+
+	<ui:define name="conteudo">
+		<div class="ui-fluid">
+			<h:form
+				style="width: 100%; font-weight:bold;font-size: 12px; margin-top:1%">
+				
+				<p:focus for="codigo" />
+				<p:fieldset legend="Cadastrar Recebimento de Produto" id="busca"
+					toggleable="false">
+					<h:panelGrid columns="3">
+						<p:outputLabel value="Código do Produto" />
+						<p:inputText
+							onkeyup="$(this).val($(this).val().replace(/[^0-9]/g, ''));"
+							id="codigo" value="#{recebimentoController.cod}" size="11"
+							style="margin-left:20px" dir="rtl" />
+
+						<p:commandButton icon="fa fa-search"
+							style="margin-left:30px;width:50px" process="busca"
+							action="#{recebimentoController.buscarProduto()}"
+							update="produto" />
+
+					</h:panelGrid>
+				</p:fieldset>
+				<p:fieldset style="margin-top:10px;font-weight:bold;font-size:12px">
+					<p:panelGrid columns="6" layout="grid" id="produto"
+						styleClass="panelgrid-noborder" style="font-size:12px "
+						columnClasses="ui-grid-col-1,ui-grid-col-6,ui-grid-col-1,ui-grid-col-2,ui-grid-col-2,ui-grid-col-1">
+
+						<p:outputLabel value="Produto:" />
+						<p:outputLabel
+							value="#{recebimentoController.produto}" />
+						<p:outputLabel value="Data:" />
+						<p:calendar pattern="dd/MM/yyyy" mask="99/99/9999" required="true"
+							requiredMessage="Informe a Data" navigator="true" showOn="button"
+							value="#{recebimentoController.recebimento.dataEntrada}"
+							effect="fold" locale="pt" title="Clique para abrir o calendário" />
+						
+						<p:outputLabel value="Hora Entrada:" />
+						<p:inputText
+							value="#{recebimentoController.recebimento.horaEntrada}" />
+
+					</p:panelGrid>
+
+					<p:panelGrid columns="8" layout="grid"
+						styleClass="panelgrid-noborder"
+						style="font-size:12px;margin-top:10px "
+						columnClasses="ui-grid-col-1,ui-grid-col-2,ui-grid-col-1,ui-grid-col-2,ui-grid-col-1,ui-grid-col-2">
+
+						<p:outputLabel value="Delivery:" />
+						<p:inputText value="#{recebimentoController.recebimento.delivery}"
+							required="true" requiredMessage="Insira o Delivery"
+							style="margin-left:-2px" />
+						<p:outputLabel value="Lote:" />
+						<p:inputText value="#{recebimentoController.recebimento.lote}"
+							style="margin-left:-8px" required="true" requiredMessage="Insira o Lote"/>
+						<p:outputLabel value="Validade:" />
+						<p:calendar pattern="dd/MM/yyyy" mask="99/99/9999" required="true"
+							requiredMessage="Informe a Data" navigator="true" showOn="button"
+							value="#{recebimentoController.recebimento.dataValidade}"
+							effect="fold" locale="pt" title="Clique para abrir o calendário" />
+
+					</p:panelGrid>
+
+					<p:panelGrid columns="10" layout="grid"
+						styleClass="panelgrid-noborder" id="somar"
+						style="font-size:12px;margin-top:10px "
+						columnClasses="ui-grid-col-1,ui-grid-col-2,ui-grid-col-1,ui-grid-col-1,ui-grid-col-1,ui-grid-col-1,ui-grid-col-2,ui-grid-col-1">
+
+						<p:outputLabel value="N.Fiscal:" />
+						<p:inputText
+							value="#{recebimentoController.recebimento.notaFiscal}"
+							style="margin-left:-2px" required="true" requiredMessage="Insira o Número da Nota Fiscal"/>
+						<p:outputLabel value="Peso Fisico:" />
+						<p:inputText
+							onkeyup="$(this).val($(this).val().replace(/[^0-9]/g, ''));"
+							style="width:60px" required="true" requiredMessage="Insira o Peso Fisico"
+							value="#{recebimentoController.recebimento.pesoFisico}" dir="rtl" />
+
+						<p:outputLabel value="Peso Ficha:" />
+						<p:inputText
+							onkeyup="$(this).val($(this).val().replace(/[^0-9]/g, ''));"
+							style="width:60px" required="true" requiredMessage="Insira o Peso Ficha"
+							value="#{recebimentoController.recebimento.pesoFicha}" dir="rtl" />
+						
+							<p:selectOneMenu
+							value="#{recebimentoController.recebimento.uniMedida}"
+							required="true" requiredMessage="selecione a Unidade de Medida">
+							<f:selectItem itemValue="#{null}" itemLabel="Uni.Medida" />
+							<f:selectItem itemValue="KG" itemLabel="KILO" />
+							<f:selectItem itemValue="UN" itemLabel="UNIDADES" />
+						</p:selectOneMenu>
+						
+						<p:commandButton icon="fa fa-arrow-right"
+							title="Clique para Somar Peso Fisico e Peso Ficha"
+							action="#{recebimentoController.subtrair}" process="somar"
+							update="total" style="width:50px" />
+
+						<p:outputLabel value="Diferença:"  />
+						<p:outputLabel
+							value="#{recebimentoController.recebimento.diferenca}" id="total"
+							dir="ltr" />
+					</p:panelGrid>
+
+					<p:panelGrid columns="7" layout="grid"
+						styleClass="panelgrid-noborder"
+						style="font-size:12px;margin-top:10px "
+						columnClasses="ui-grid-col-1,ui-grid-col-2,ui-grid-col-1,ui-grid-col-2,ui-grid-col-1,ui-grid-col-2,ui-grid-col-1">
+
+						<p:outputLabel value="Nº do Rack:" />
+						<p:inputText
+							value="#{recebimentoController.recebimento.numeroRack}" required="true" requiredMessage="Insira o Número do Rack"
+							style="margin-left:-2px" />
+						
+						<p:outputLabel value="Tipo:" />
+						<p:selectOneMenu
+							value="#{recebimentoController.recebimento.tipo}"
+							required="true" requiredMessage="Selecione o Tipo">
+							<f:selectItem itemValue="#{null}" itemLabel="Tipo da Carga" />
+							<f:selectItem itemValue="SEMI-ACABADO" itemLabel="SEMI-ACABADO" />
+							<f:selectItem itemValue="INSUMO" itemLabel="INSUMO" />
+						</p:selectOneMenu>
+						
+						<p:outputLabel value="Responsável:" style="margin-left:-5px" />
+						<p:inputText
+							value="#{recebimentoController.recebimento.responsavel}"
+							onkeyup="this.value = this.value.toUpperCase()" required="true" requiredMessage="Insira o Responsável" />
+
+
+					</p:panelGrid>
+
+					<p:panelGrid columns="6" layout="grid"
+						styleClass="panelgrid-noborder"
+						style="font-size:12px;margin-top:10px "
+						columnClasses="ui-grid-col-1,ui-grid-col-2,ui-grid-col-3,ui-grid-col-2,ui-grid-col-2,ui-grid-col-1">
+
+
+
+
+					</p:panelGrid>
+
+					<p:panelGrid columns="6" layout="grid"
+						styleClass="panelgrid-noborder"
+						style="font-size:12px;margin-top:10px "
+						columnClasses="ui-grid-col-1,ui-grid-col-2,ui-grid-col-1,ui-grid-col-2,ui-grid-col-2,ui-grid-col-1">
+
+						<p:commandButton value="Salvar"
+							action="#{recebimentoController.salvarEdicao()}" style="width:150px"
+							process="@form" />
+					</p:panelGrid>
+
+				</p:fieldset>
+			</h:form>
+		</div>
+	</ui:define>
+</ui:composition>
+

@@ -1,0 +1,236 @@
+<ui:composition template="/template/Layout.xhtml"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:p="http://primefaces.org/ui">
+
+	<ui:define name="titulo">Devolução de Produtos Para Cliente</ui:define>
+
+	<ui:define name="conteudo">
+		<div class="ui-fluid">
+			<h:form id="form"
+				style="width: 100%; font-weight:bold;font-size: 12px; margin-top:1%">
+				#{movimentacaoController.initDevCliente()}
+				<p:focus for="codbar" />
+				<p:panelGrid columns="2" layout="grid"
+					styleClass="panelgrid-noborder"
+					columnClasses="ui-grid-col-6,ui-grid-col-6">
+
+					<p:fieldset legend="Buscar Produto por Cód. Barras"
+						toggleable="false" style="height:90px" id="codigo">
+						<h:panelGrid columns="3">
+
+							<p:outputLabel value="Código de Barras:" />
+							<p:inputText value="#{movimentacaoController.codigoBarras}"
+								id="codbar" onkeydown="bloquearCtrlJ()"
+								style="margin-left:22px;width:250px;height:40px;font-size:20px;font-weight:bold" />
+
+							<p:commandButton icon="fa fa-search" process="codigo"
+								update="codigo,produto"
+								action="#{movimentacaoController.buscarCodBar}"
+								style="width:50px;margin-left:30px" />
+
+
+						</h:panelGrid>
+					</p:fieldset>
+					<p:fieldset legend="Buscar Produto Manual" toggleable="true"
+						collapsed="true">
+						<h:panelGrid columns="3" id="busca">
+
+							<p:outputLabel value="Código" />
+							<p:inputText value="#{movimentacaoController.numCodigo}"
+								
+								onkeyup="this.value = this.value.toUpperCase()" size="11"
+								style="margin-left:20px" dir="rtl" />
+
+							<p:outputLabel />
+							<p:outputLabel value="Lote" />
+							<p:inputText value="#{movimentacaoController.numLote}"
+								
+								onkeyup="this.value = this.value.toUpperCase()" size="11"
+								style="margin-left:20px" dir="rtl" />
+
+							<p:commandButton icon="fa fa-search"
+								style="margin-left:30px;width:50px"
+								action="#{movimentacaoController.buscarDev()}" process="busca"
+								update="tbl" />
+
+
+						</h:panelGrid>
+					</p:fieldset>
+
+					<p:fieldset legend="Produto em Estoque" toggleable="false"
+						style="margin-top:0px;height:100px" id="produto">
+						<h:panelGrid columns="2">
+							<h:panelGrid columns="3" style="width:270px">
+								<p:outputLabel value="Produto:" />
+								<p:outputLabel
+									value="#{movimentacaoController.movimentacao.recebimento.cadastroMaterial.produto}"
+									style="font-size:12px;font-weight:bold;" />
+								<p:outputLabel />
+								<p:outputLabel value="Estoque:" />
+								<p:outputLabel
+									value="#{movimentacaoController.totalEstoque} - #{movimentacaoController.uniMedida}" />
+								<p:outputLabel />
+								<p:outputLabel value="U.D.:" />
+								<p:outputLabel
+									value="#{movimentacaoController.movimentacao.recebimento.numeroRack}" />
+								<p:outputLabel />
+							</h:panelGrid>
+							<h:panelGrid columns="3" >
+								<p:outputLabel value="Lote:" />
+								<p:outputLabel
+									value="#{movimentacaoController.movimentacao.recebimento.lote}"
+									style="font-size:12px;font-weight:bold;" />
+								<p:outputLabel />
+								<p:outputLabel value="Tipo:" />
+								<p:outputLabel
+									value="#{movimentacaoController.movimentacao.recebimento.tipo}" />
+								<p:outputLabel />
+								<p:outputLabel value="Validade:" />
+								<p:outputLabel
+									value="#{movimentacaoController.movimentacao.recebimento.dataValidade}">
+									<f:convertDateTime pattern="dd/MM/yyyy" locale="pt_BR" />
+								</p:outputLabel>
+								<p:outputLabel />
+							</h:panelGrid>
+						</h:panelGrid>
+
+					</p:fieldset>
+
+					<p:fieldset legend="Devolução " toggleable="false"
+						style="margin-top:5px">
+
+						<h:panelGrid columns="3">
+
+							<p:outputLabel value="Qtd:" />
+							<p:inputText id="qtd" value="#{movimentacaoController.t}"
+								style="font-size:12px;font-weight:bold;margin-left:20px"
+								size="11" />
+							<p:outputLabel />
+							<p:outputLabel value="N.F :" />
+							<p:inputText required="true"
+								requiredMessage="Insira A Nota Fiscal"
+								value="#{movimentacaoController.nf}" style="margin-left:20px"
+								size="11" />
+
+							<p:commandButton value="Salvar" id="salvar"
+								style="width:100px;margin-left:25px" process="@form"
+								update="@form"
+								action="#{movimentacaoController.salvarDevCliente()}" />
+						</h:panelGrid>
+
+
+					</p:fieldset>
+				</p:panelGrid>
+				<p:blockUI block="tbl" trigger="salvar" animate="true">
+						SALVANDO ...<br />
+					<p:graphicImage library="imagens" name="load.gif" />
+				</p:blockUI>
+				<!-- Tabela Produtos -->
+				<p:panel header="Devoluções" style="margin-top:5px">
+
+					<p:dataTable widgetVar="tabelaProducao" emptyMessage="Lista Vazia"
+						value="#{movimentacaoController.listaDevCliente}" var="dev"
+						id="tbl2" resizeMode="expand" reflow="true"
+						style="margin-top:5px;font-size:12px" paginator="true" rows="10"
+						rowsPerPageTemplate="3,5,8" paginatorPosition="bottom"
+						paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} ">
+
+						<p:column headerText="Codigo" width="15%"
+							style="text-align:center">
+							<h:outputLabel value="#{dev.recebimento.cadastroMaterial.codigo}" />
+						</p:column>
+
+						<p:column headerText="Produto" width="30%"
+							style="text-align:center">
+							<h:outputLabel
+								value="#{dev.recebimento.cadastroMaterial.produto}" />
+						</p:column>
+
+						<p:column headerText="Lote" width="12%" style="text-align:center">
+							<h:outputLabel value="#{dev.recebimento.lote}" />
+						</p:column>
+
+						<p:column headerText="Quantidade Devolução" width="15%"
+							style="text-align:center">
+							<h:outputLabel
+								value="#{dev.qtdDevCliente} - #{dev.recebimento.uniMedida}" />
+						</p:column>
+
+						<p:column headerText="Data Devolução" width="15%"
+							style="text-align:center">
+							<h:outputLabel value="#{dev.dataDevCliente}">
+								<f:convertDateTime pattern="dd/MM/yyyy" locale="pt_BR" />
+							</h:outputLabel>
+						</p:column>
+						<p:column headerText="N.F. DEv.Cliente" width="10%"
+							style="text-align:center">
+							<h:outputLabel value="#{dev.nfDevCliente} " />
+						</p:column>
+
+					</p:dataTable>
+
+				</p:panel>
+				<p:dialog resizable="false" position="top" widgetVar="verDevCliente"
+					width="70%" height="80%" closable="true" modal="true"
+					showEffect="blind" hideEffect="size" style="margin-top: 50px">
+
+					<p:dataTable widgetVar="tabelaRetirar" emptyMessage="Lista Vazia"
+						value="#{movimentacaoController.listaSaida}" var="estoque"
+						id="tbl" reflow="true" style="margin-top:5px;font-size:11px"
+						paginator="true" rows="12" rowsPerPageTemplate="3,6,12"
+						paginatorPosition="bottom"
+						paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} ">
+
+
+
+						<p:column headerText="Codigo" width="10%"
+							style="text-align:center">
+							<h:outputLabel
+								value="#{estoque.recebimento.cadastroMaterial.codigo}" />
+						</p:column>
+
+						<p:column headerText="Produto" width="36%"
+							style="text-align:center">
+							<p:outputLabel
+								value="#{estoque.recebimento.cadastroMaterial.produto}" />
+						</p:column>
+
+						<p:column headerText="Lote" width="17%" style="text-align:center">
+							<h:outputLabel value="#{estoque.recebimento.lote}" />
+						</p:column>
+
+						<p:column headerText="Nº Rack" width="13%"
+							style="text-align:center">
+							<h:outputLabel value="#{estoque.recebimento.numeroRack}" />
+						</p:column>
+
+						<p:column headerText="Tipo" width="12%" style="text-align:center">
+							<h:outputLabel value="#{estoque.recebimento.tipo}" />
+						</p:column>
+						<p:column headerText="Validade" width="10%"
+							style="text-align:center">
+							<h:outputLabel value="#{estoque.recebimento.dataValidade}">
+								<f:convertDateTime pattern="dd/MM/yyyy" locale="pt_BR" />
+							</h:outputLabel>
+						</p:column>
+						<p:column headerText="Qtd Recebimento" width="12%"
+							style="text-align:center">
+							<h:outputLabel value="#{estoque.recebimento.pesoFicha}" />
+						</p:column>
+						<p:column width="12%" style="text-align:center">
+							<p:commandButton value="Selecionar"
+								action="#{movimentacaoController.selecionado(estoque)}"
+								update=":form:produto,:form:qtd" process="@this" />
+						</p:column>
+					</p:dataTable>
+
+				</p:dialog>
+
+			</h:form>
+		</div>
+	</ui:define>
+</ui:composition>
+

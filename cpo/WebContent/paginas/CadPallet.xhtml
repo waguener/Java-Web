@@ -1,0 +1,213 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:p="http://primefaces.org/ui">
+<h:head>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1" />
+	<title><ui:insert name="titulo">Cadastro de Composição do Pallet</ui:insert></title>
+	<h:outputScript library="javascripts" name="app.js" />
+	<h:outputScript library="javascripts" name="locale-primefaces.js" />
+	<h:outputStylesheet library="styles" name="custom.css" />
+	<h:outputStylesheet library="styles" name="layout.css" />
+	<h:outputStylesheet library="styles" name="components.css" />
+	<style>
+.ui-growl {
+	position: fixed;
+	top: 70px;
+}
+
+.ui-panelmenu {
+	background-color: DodgerBlue !important;
+}
+
+.cores {
+	font-weight: bold;
+	color: #FF8C00 !important;
+	background-image: none !important;
+}
+</style>
+
+	<script type="text/javascript">
+		function onlyNumbers(data) {
+			data.value = data.value.replace(/[^0-9]/g, '');
+
+		};
+	</script>
+
+</h:head>
+<h:body
+	>
+	<p:growl autoUpdate="true" />
+	<div class="box">
+		<h:form id="form"
+			style="width: 80%; font-weight:bold;font-size: 12px;margin-left:10%">
+			#{compMateriaisController.init()}
+			
+			
+			<p:fieldset legend="Buscar Produtos" id="busca"
+					toggleable="false">
+					<h:panelGrid columns="3">
+						<p:outputLabel value="Código" />	
+						<p:inputText value="#{compMateriaisController.cod}"
+							onkeyup="this.value = this.value.toUpperCase()" size="11"
+							style="margin-left:20px" dir="rtl" />
+																		
+						<p:commandButton icon="fa fa-search"
+							style="margin-left:30px;width:50px"
+							action="#{compMateriaisController.buscarProduto()}" process="busca"
+							update="mov" />
+						
+
+					</h:panelGrid>
+				</p:fieldset>
+				<p:fieldset legend="Descrição do Produto" id="mov"
+					style="margin-top:10px;font-weight:bold;font-size:14px">
+					
+
+
+						<p:panelGrid columns="4" layout="grid"
+							styleClass="panelgrid-noborder"
+							columnClasses="ui-grid-col-2,ui-grid-col-2,ui-grid-col-2,ui-grid-col-6">
+
+							<p:outputLabel value="Codigo:" />
+							<p:outputLabel
+								value="#{compMateriaisController.compMateriais.cadastroMaterial.codigo}" />
+							<p:outputLabel value="Produto:" />
+							<p:outputLabel
+								value="#{compMateriaisController.compMateriais.cadastroMaterial.produto}" />
+							
+						</p:panelGrid>
+
+				</p:fieldset>
+
+				<p:fieldset style="margin-top:10px;font-size:14px" id="enter" legend="Composição do Pallet">
+					<p:panelGrid columns="6" layout="grid"
+						styleClass="panelgrid-noborder"
+						columnClasses="ui-grid-col-2,ui-grid-col-2,ui-grid-col-2,ui-grid-col-2,ui-grid-col-2,ui-grid-col-3">
+
+						<p:outputLabel value="Caixa Expedição" />
+						<p:inputText 
+							value="#{compMateriaisController.compMateriais.cxExpedicao}"
+							style="width:100px;margin-left:7px" required="true" requiredMessage="Informe a Quantidade!!"
+							onkeyup="$(this).val($(this).val().replace(/[^0-9]/g, ''));" />
+						<p:outputLabel value="Display" />
+						<p:inputText 
+							value="#{compMateriaisController.compMateriais.display}"
+							style="width:100px;margin-left:7px" required="true" requiredMessage="Informe a Quantidade!!"
+							onkeyup="$(this).val($(this).val().replace(/[^0-9]/g, ''));" />
+						<p:outputLabel value="Divisória" />
+						<p:inputText 
+							value="#{compMateriaisController.compMateriais.divisoria}"
+							style="width:100px;margin-left:7px" 
+							onkeyup="$(this).val($(this).val().replace(/[^0-9]/g, ''));" />
+						<p:outputLabel value="Etiqueta" />
+						<p:inputText 
+							value="#{compMateriaisController.compMateriais.etiqueta}"
+							style="width:100px;margin-left:7px" 
+							onkeyup="$(this).val($(this).val().replace(/[^0-9]/g, ''));" />
+						<p:outputLabel value="Semi-Fabricado" />
+						<p:inputText 
+							value="#{compMateriaisController.compMateriais.semi}"
+							style="width:100px;margin-left:7px"  />
+						<p:outputLabel value="Especialidades" rendered="#{compMateriaisController.esp == true}" />
+						<p:selectOneMenu rendered="#{compMateriaisController.esp == true}"
+								value="#{compMateriaisController.compMateriais.tipo}">
+								<f:selectItem itemValue="#{null}" itemLabel=".:Selecione:." />
+								<f:selectItem itemValue="PRESTIGIO" itemLabel="PRESTIGIO"/>
+								<f:selectItem itemValue="CHOQUITO" itemLabel="CHOQUITO"/>
+								<f:selectItem itemValue="CHARGE" itemLabel="CHARGE"/>
+								<f:selectItem itemValue="LOLLO" itemLabel="LOLLO"/>
+								<f:selectItem itemValue="ALPINO" itemLabel="ALPINO"/>
+							</p:selectOneMenu>
+						<p:outputLabel rendered="#{compMateriaisController.esp != true}"/>
+						<p:outputLabel rendered="#{compMateriaisController.esp != true}"/>
+					</p:panelGrid>
+					
+					<p:panelGrid columns="5" layout="grid"
+						styleClass="panelgrid-noborder"
+						columnClasses="ui-grid-col-3,ui-grid-col-2,ui-grid-col-1,ui-grid-col-2,ui-grid-col-4">
+						<p:outputLabel/>
+						<p:commandButton value="Salvar" id="salvar"
+							action="#{compMateriaisController.salvar}" style="margin-top:15px"
+							process="enter" update="tbl" />
+						<p:outputLabel/>
+						<p:commandButton value="Voltar" 
+							action="#{compMateriaisController.voltar()}" style="margin-top:15px"
+							process="@this" />
+						<p:outputLabel />
+					</p:panelGrid>
+				</p:fieldset>
+				<p:dataTable widgetVar="Materiais " emptyMessage="Lista Vazia"
+						value="#{compMateriaisController.listaMateriais}" var="comp"
+						id="tbl" reflow="true" style="margin-top:5px;font-size:11px"
+						paginator="true" rows="12" rowsPerPageTemplate="3,6,12"
+						paginatorPosition="bottom" 
+						paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} ">
+
+						<p:column headerText="Codigo" width="10%"
+							style="text-align:center"
+							>
+							<h:outputLabel value="#{comp.cadastroMaterial.codigo}" />
+						</p:column>
+
+						<p:column headerText="Produto" width="36%"
+							style="text-align:center">
+							<p:outputLabel value="#{comp.cadastroMaterial.produto}" />
+						</p:column>
+
+						<p:column headerText="CX Expedição" width="17%" style="text-align:center">
+							<h:outputLabel value="#{comp.cxExpedicao}" />
+						</p:column>
+						
+						<p:column headerText="Display" width="13%" style="text-align:center">
+							<h:outputLabel value="#{comp.display}" />
+						</p:column>
+						
+						<p:column headerText="Divisória" width="12%" style="text-align:center">
+							<h:outputLabel value="#{comp.divisoria}" />
+						</p:column>
+						<p:column headerText="Etiqueta" width="10%"
+							style="text-align:center">
+							<h:outputLabel value="#{comp.etiqueta}"/>
+							
+						</p:column>
+						<p:column headerText="Tipo" width="10%"
+							style="text-align:center">
+							<h:outputLabel value="#{comp.tipo}"/>
+							
+						</p:column>
+						<p:column headerText="Semi(KG)" width="10%"
+							style="text-align:center">
+							<h:outputLabel value="#{comp.semi}"/>
+							
+						</p:column>
+
+						<p:column width="12%" style="text-align:center">
+
+							<p:commandButton value="Selecionar"
+								title="Clique para Editar esta Carga" process="@this"
+								action="#{movimentacaoController.escolher(estoque)}" update=":form:mov"/>
+
+							
+						</p:column>
+					</p:dataTable>
+				
+			
+		</h:form>
+		<h:panelGrid columns="3" width="80%"
+			style="margin-left:5%;margin-top:20%">
+			<p:outputLabel value="OLGBER ESPECIALIDADES - 2019"
+				style="font-weight:bold;font-size:10px" />
+			<p:outputLabel />
+			<p:outputLabel value="Desenvolvido por Wagner Elias"
+				style="font-weight:bold;font-family:'Ubuntu', sans-serif;font-size:10px;float:right;margin-right:15px" />
+		</h:panelGrid>
+	</div>
+</h:body>
+</html>
+

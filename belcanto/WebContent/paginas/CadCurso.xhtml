@@ -1,0 +1,297 @@
+<ui:composition template="/template/Layout.xhtml"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:p="http://primefaces.org/ui">
+
+	<ui:define name="titulo">Cadastrar Cursos </ui:define>
+
+	<ui:define name="conteudo">
+		<div class="ui-fluid">
+			<h:form id="form"
+				style="width: 100%; font-weight:bold;font-size: 12px; margin-top:1%">
+				#{cursoController.init()}
+				<p:panelGrid columns="1" layout="grid" style="margin-top:80px"
+					styleClass="panelgrid-noborder" columnClasses="ui-grid-col-12">
+					<p:outputLabel value="Cadastro de Cursos"
+						style="font-size: 26pt;font-family:'Cabin', sans-serif" />
+
+				</p:panelGrid>
+
+				<p:panelGrid columns="8" layout="grid" style="margin-top:20px"
+					styleClass="panelgrid-noborder" id="linha1"
+					columnClasses="ui-grid-col-1,ui-grid-col-4,ui-grid-col-0.5,ui-grid-col-1.5,ui-grid-col-3.5">
+					<p:outputLabel value="Curso" style="font-size: 16pt;" />
+
+					<p:inputText value="#{cursoController.curso.nome}" required="true"
+						requiredMessage="Informe o Nome do Curso"
+						style="margin-left:10px;font-size:14pt;font-weigth:bold;color:#000;"
+						onkeyup="this.value = this.value.toUpperCase()" />
+
+					<p:outputLabel />
+					<p:outputLabel value="Valor Curso" style="font-size: 16pt;" />
+
+					<p:inputText value="#{cursoController.curso.valor}"
+						onkeydown="mascara(this,moeda)" size="6" required="true"
+						requiredMessage="Informe o Valor do Curso"
+						style="margin-left:10px;font-size:14pt;font-weigth:bold;color:#000;">
+						<f:convertNumber minFractionDigits="2" locale="pt_BR" />
+					</p:inputText>
+
+					<p:outputLabel value="Dt. Criação" style="font-size: 16pt;" />
+					<p:calendar pattern="dd/MM/yyyy" mask="99/99/9999" required="true"
+						requiredMessage="Informe a Data" locale="pt" showOn="true"
+						value="#{cursoController.curso.dataCriacao}" size="11"
+						style="margin-left:10px;font-size:14pt;font-weigth:bold;color:#000;" />
+				</p:panelGrid>
+				<p:panelGrid columns="7" layout="grid" style="margin-top:20px"
+					styleClass="panelgrid-noborder" id="linha2"
+					columnClasses="ui-grid-col-1.8,ui-grid-col-3.2,ui-grid-col-0.5,ui-grid-col-1.5,ui-grid-col-3.5">
+
+
+					<p:outputLabel value="Instrumento" style="font-size: 16pt;" />
+					<p:inputText value="#{cursoController.curso.instrumento}"
+						required="true" requiredMessage="Informe o Instrumento"
+						style="margin-left:10px;font-size:14pt;font-weigth:bold;color:#000;"
+						onkeyup="this.value = this.value.toUpperCase()" />
+
+					<p:outputLabel />
+
+					<p:outputLabel value="Descrição" style="font-size: 16pt;" />
+					<p:inputText value="#{cursoController.curso.descricao}" size="40"
+						required="true" requiredMessage="Informe uma Descrição"
+						style="margin-left:10px;font-size:14pt;font-weigth:bold;color:#000;"
+						onkeyup="this.value = this.value.toUpperCase()" />
+					<p:outputLabel value="Ativo" style="font-size: 16pt;" />
+					<p:selectBooleanCheckbox value="#{cursoController.curso.ativo}"
+						required="true" requiredMessage="Informe se está Ativo"
+						style="margin-left:10px;font-size:14pt;font-weigth:bold;color:#000;" />
+
+				</p:panelGrid>
+
+				<p:panelGrid columns="3" layout="grid" style="margin-top:20px"
+					styleClass="panelgrid-noborder" id="linha3"
+					columnClasses="ui-grid-col-2.5,ui-grid-col-2.5,ui-grid-col-7">
+
+					<p:outputLabel value="Valor da Matrícula" style="font-size: 16pt;" />
+
+					<p:inputText value="#{cursoController.curso.valorInscricao}"
+						onkeydown="mascara(this,moeda)" size="6" required="true"
+						requiredMessage="Informe o Valor do Curso"
+						style="margin-left:10px;font-size:14pt;font-weigth:bold;color:#000;">
+						<f:convertNumber minFractionDigits="2" locale="pt_BR" />
+					</p:inputText>
+					<p:outputLabel />
+				</p:panelGrid>
+
+				<p:commandButton value="Salvar" action="#{cursoController.salvar}"
+					style="width:150px;margin:20px" update="tbl" />
+
+				<p:dataTable id="tbl" reflow="true" resizeMode="expand"
+					emptyMessage="Lista Vazia" resizableColumns="true"
+					value="#{cursoController.listar}" scrollable="true" var="curso"
+					style="margin-top:5px" paginator="true" rows="15"
+					rowsPerPageTemplate="5,10,15" paginatorPosition="bottom"
+					paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} ">
+
+					<p:column headerText="Curso " width="15%" filterBy="#{curso.nome}">
+						<h:outputLabel value="#{curso.nome}" />
+					</p:column>
+					<p:column headerText="Instrumento " width="10%">
+						<h:outputLabel value="#{curso.instrumento}" />
+					</p:column>
+					<p:column headerText="Valor Curso" width="10%"
+						style="text-align:center">
+						<h:outputLabel value="#{curso.valor}">
+							<f:convertNumber type="currency" currencySymbol="R$"
+								locale="pt_BR" />
+						</h:outputLabel>
+					</p:column>
+					<p:column headerText="Valor Inscrição" width="10%"
+						style="text-align:center">
+						<h:outputLabel value="#{curso.valorInscricao}">
+							<f:convertNumber type="currency" currencySymbol="R$"
+								locale="pt_BR" />
+						</h:outputLabel>
+					</p:column>
+
+					<p:column headerText="Descrição" width="25%">
+						<h:outputLabel value="#{curso.descricao}" />
+					</p:column>
+					<p:column headerText="Data Criação" width="10%"
+						style="text-align:center">
+						<h:outputLabel value="#{curso.dataCriacao}">
+							<f:convertDateTime pattern="dd/MM/yyyy" locale="pt_BR" />
+						</h:outputLabel>
+					</p:column>
+					<p:column headerText="Ativo " width="8%" style="text-align:center">
+						<h:outputLabel value="Sim" rendered="#{curso.ativo == true}"
+							style="color:green" />
+						<h:outputLabel value="Não" rendered="#{curso.ativo != true}"
+							style="color:red" />
+					</p:column>
+					<p:column width="12%" style="text-align:center">
+
+
+						<p:commandButton icon="fa fa-mortar-board" style="width:25px;"
+							process="@this"
+							action="#{cursoController.abrirAula(curso)}"
+							title="Clique para Adicionar Módulos/Livros"
+							update=":form:tblAula,:form:aula,:form:curso2"/>
+
+						<p:commandButton icon="fa fa-book"
+							style="width:25px;margin-left:10px" process="@this"
+							action="#{cursoController.abrirModulo(curso)}"
+							title="Clique para Adicionar Módulos/Livros"
+							update=":form:tblMod,:form:mod,:form:curso" />
+
+						<p:commandButton icon="fa fa-edit"
+							style="width:25px;margin-left:10px"
+							action="#{cursoController.editar(curso)}" process="tbl"
+							update=":form:linha1,:form:linha2" title="Clique para Editar" />
+					</p:column>
+
+				</p:dataTable>
+				<p:dialog widgetVar="cadMod" resizable="false" width="800px"
+					id="curso" closable="true" position="top" showHeader="true"
+					dynamic="true"
+					header="Módulos Adicionados para o Curso - #{cursoController.cursoMod.nome}"
+					style="margin-top:50px;" modal="true" showEffect="fade"
+					hideEffect="fade">
+
+					<p:panelGrid columns="4" layout="grid" style="margin-top:20px"
+						styleClass="panelgrid-noborder" id="mod"
+						columnClasses="ui-grid-col-2,ui-grid-col-4,ui-grid-col-1,ui-grid-col-2,ui-grid-col-2">
+						<p:outputLabel value="Módulo/Livro" style="font-size: 16pt;" />
+
+						<p:inputText value="#{cursoController.modulo.nome}"
+							style="margin-left:10px;font-size:14pt;font-weigth:bold;color:#000;"
+							onkeyup="this.value = this.value.toUpperCase()" />
+						<p:outputLabel />
+
+						<p:commandButton value="Salvar" style="width:150px" process="mod"
+							action="#{cursoController.salvarMod}" update="tblMod,mod"
+							title="Clique para Adicionar Módulos/Livros" />
+						<p:outputLabel />
+
+					</p:panelGrid>
+					<p:dataTable id="tblMod" reflow="true" resizeMode="expand"
+						emptyMessage="Lista Vazia" resizableColumns="true"
+						value="#{cursoController.listarMod}" scrollable="true"
+						var="modulo" style="margin-top:5px" paginator="true" rows="15"
+						rowsPerPageTemplate="5,10,15" paginatorPosition="bottom"
+						paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} ">
+
+						<p:column headerText="Módulo " width="15%">
+							<h:outputLabel value="#{modulo.nome}" />
+						</p:column>
+						<p:column width="8%" style="text-align:center">
+
+							<p:commandButton icon="fa fa-edit" style="width:25px;"
+								process="@this" update=":form:mod"
+								action="#{cursoController.editarMod(modulo)}"
+								title="Clique para Editar" />
+
+							<p:commandButton icon="fa fa-trash"
+								style="width:25px;margin-left:10px" process="@this"
+								action="#{cursoController.prepararExclusao(modulo)}"
+								update=":form:tblMod"
+								oncomplete="PF('confirmarExclusaoCursoDialog').show()"
+								title="Clique para Excluir" />
+						</p:column>
+					</p:dataTable>
+
+				</p:dialog>
+
+				<p:dialog widgetVar="cadAula" resizable="false" width="800px" id="curso2"
+					closable="true" position="top" showHeader="true" dynamic="true"
+					header="Aulas Complementares Adicionados para o Curso - #{cursoController.cursoMod.nome}"
+					style="margin-top:50px;" modal="true" showEffect="fade"
+					hideEffect="fade">
+
+					<p:panelGrid columns="5" layout="grid" style="margin-top:20px"
+						styleClass="panelgrid-noborder" id="aula"
+						columnClasses="ui-grid-col-3.5,ui-grid-col-4.5,ui-grid-col-1,ui-grid-col-2,ui-grid-col-1">
+						<p:outputLabel value="Aula Complementar" style="font-size: 16pt;" />
+
+						<p:inputText value="#{cursoController.aulaComp.nome}"
+							style="margin-left:10px;font-size:14pt;font-weigth:bold;color:#000;"
+							onkeyup="this.value = this.value.toUpperCase()" />
+
+						<p:outputLabel value="Valor" style="font-size: 16pt;" />
+
+						<p:inputText value="#{cursoController.aulaComp.valor}"
+							onkeydown="mascara(this,moeda)"
+							style="margin-left:10px;font-size:14pt;font-weigth:bold;color:#000;"
+							onkeyup="this.value = this.value.toUpperCase()">
+							<f:convertNumber minFractionDigits="2" locale="pt_BR" />
+						</p:inputText>
+						<p:outputLabel/>
+						<p:commandButton value="Salvar" style="width:150px" process="aula"
+							action="#{cursoController.salvarAula}" update="tblAula,aula"
+							title="Clique para Adicionar Módulos/Livros" />
+
+
+					</p:panelGrid>
+					<p:dataTable id="tblAula" reflow="true" resizeMode="expand"
+						emptyMessage="Lista Vazia" resizableColumns="true"
+						value="#{cursoController.listarAulasComp}" scrollable="true"
+						var="aulas" style="margin-top:5px" paginator="true" rows="15"
+						rowsPerPageTemplate="5,10,15" paginatorPosition="bottom"
+						paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} ">
+
+						<p:column headerText="Aula" width="15%">
+							<h:outputLabel value="#{aulas.nome}" />
+						</p:column>
+						<p:column headerText="Valor " width="15%">
+							<h:outputLabel value="#{aulas.valor}" >
+								<f:convertNumber type="currency" currencySymbol="R$"
+								locale="pt_BR" />
+							</h:outputLabel>
+						</p:column>
+						<p:column width="8%" style="text-align:center">
+
+							<p:commandButton icon="fa fa-edit" style="width:25px;"
+								process="@this" update=":form:aula"
+								action="#{cursoController.editarAula(aulas)}"
+								title="Clique para Editar" />
+
+							<p:commandButton icon="fa fa-trash"
+								style="width:25px;margin-left:10px" process="@this"
+								action="#{cursoController.prepararExclusaoAula(aulas)}"
+								update=":form:tblMod"
+								oncomplete="PF('confirmarExclusaoAulaDialog').show()"
+								title="Clique para Excluir" />
+						</p:column>
+					</p:dataTable>
+
+				</p:dialog>
+				
+				<p:confirmDialog widgetVar="confirmarExclusaoCursoDialog"
+					responsive="true" message="Deseja excluir este Módulo?">
+					<p:commandButton value="Sim" update="tblMod" process="@this"
+						action="#{cursoController.excluirMod}"
+						oncomplete="PF('confirmarExclusaoCursoDialog').hide()"
+						style="width:50px" />
+					<p:commandButton value="Não"
+						oncomplete="PF('confirmarExclusaoCursoDialog').hide()"
+						style="width:50px" />
+				</p:confirmDialog>
+				
+				<p:confirmDialog widgetVar="confirmarExclusaoAulaDialog"
+					responsive="true" message="Deseja excluir essa Aula Complementar?">
+					<p:commandButton value="Sim" update="tblAula" process="@this"
+						action="#{cursoController.excluirAula}"
+						oncomplete="PF('confirmarExclusaoAulaDialog').hide()"
+						style="width:50px" />
+					<p:commandButton value="Não"
+						oncomplete="PF('confirmarExclusaoAulaDialog').hide()"
+						style="width:50px" />
+				</p:confirmDialog>
+
+			</h:form>
+		</div>
+	</ui:define>
+</ui:composition>
+

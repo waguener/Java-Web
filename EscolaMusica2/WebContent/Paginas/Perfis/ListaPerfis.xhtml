@@ -1,0 +1,25 @@
+
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui">
+
+	<p:panel header="Lista de Perfis"
+		rendered="#{perfilController.perfil == null}">
+		<p:commandButton value="Novo Perfil"
+			action="#{perfilController.novoPerfil()}" process="@this"
+			update="@form" />
+		<p:dataTable value="#{perfilController.perfis}" var="perfil">
+			<p:column headerText="Nome">
+				<h:outputText value="#{perfil.nome}"/>
+			</p:column>
+			<p:column headerText="Permissões">
+				<ui:repeat var="permissao" value="#{perfil.permissoes}">
+					<h:outputText value="#{permissao.nome}"/>
+					<br/>
+				</ui:repeat>
+			</p:column>
+		</p:dataTable>
+	</p:panel>
+</ui:composition>

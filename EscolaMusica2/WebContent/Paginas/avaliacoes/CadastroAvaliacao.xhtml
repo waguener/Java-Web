@@ -1,0 +1,56 @@
+<ui:composition template="/Paginas/template/template.xhtml"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui">
+
+	<ui:define name="Titulo">Avaliações</ui:define>
+
+	<ui:define name="Principal">
+
+	 
+		<p:panel header="Cadastro de Avaliações">
+			<h:form id="form-cadastro-avaliacao">
+				<p:growl/>
+				<h:panelGrid columns="2">
+					<h:outputLabel value="Matrícula" />
+					<p:selectOneMenu value="#{avaliacaoController.avaliacao.matricula}"
+						converter="omnifaces.SelectItemsConverter">
+						<f:selectItem itemLabel=".:Selecione:." itemDescription="#{null}" />
+						<f:selectItems value="#{avaliacaoController.listaMatriculas}"
+							var="matricula" itemValue="#{matricula}"
+							itemLabel="#{matricula.aluno.nome} - #{matricula.curso.nome}" />
+					</p:selectOneMenu>
+					<h:outputLabel value="Ano/Bimestre" />
+					<h:panelGrid columns="2">
+						<p:inputText value="#{avaliacaoController.avaliacao.ano}" size="3" />
+						<p:selectOneMenu value="#{avaliacaoController.avaliacao.bimestre}">
+							<f:selectItem itemLabel=".:Selecione:." itemValue="#{null}" />
+							<f:selectItems value="#{avaliacaoController.bimestres}"
+								var="bimestre" itemValue="#{bimestre}" itemLabel="#{bimestre}" />
+						</p:selectOneMenu>
+					</h:panelGrid>
+					<h:outputLabel value="Nota" />
+					<p:inputText value="#{avaliacaoController.avaliacao.nota}" size="2" />
+
+					<h:outputLabel value="Arquivo" />
+					<h:panelGrid columns="2" id="grid-upload">
+						<p:fileUpload auto="true" label="Selecione um Arquivo"
+							fileUploadListener="#{avaliacaoController.fileUpLoaderHandler}"
+							update="grid-upload" />
+						<h:outputText value="#{avaliacaoController.arquivoSelecionado}"
+							style="margin: 10px" />
+					</h:panelGrid>
+
+				</h:panelGrid>
+
+				<p:commandButton value="Salvar" update="@form"
+					action="#{avaliacaoController.salvar}" />
+
+
+			</h:form>
+
+		</p:panel>
+	</ui:define>
+</ui:composition>

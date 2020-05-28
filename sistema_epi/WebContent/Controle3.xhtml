@@ -1,0 +1,296 @@
+<ui:composition template="/template/LayoutPadrao.xhtml"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:p="http://primefaces.org/ui">
+
+	<ui:define name="titulo">Controle Devoluções</ui:define>
+
+	<ui:define name="conteudo">
+		<h:form id="tabela" style="font-size:10px">
+			#{sistemaControllerEntrega.porDevolucao()}
+			
+				<p:tabMenu activeIndex="#{param.i}">
+				<p:menuitem value="Pesquisar Entregas" outcome="Controle2">
+					<f:param name="i" value="0" />
+				</p:menuitem>
+				<p:menuitem value="Pesquisar Devoluções" outcome="Controle3">
+					<f:param name="i" value="1" />
+				</p:menuitem>
+			</p:tabMenu>
+
+			<h:panelGrid columns="3">
+				<p:inputText value="#{sistemaControllerEntrega.nomeDevo}"
+					onkeyup="this.value = this.value.toUpperCase()"
+					placeholder="Funcionário" />
+				<p:commandButton icon="ui-icon-search" value="Pesquisar"
+					action="#{sistemaControllerEntrega.devolucoes()}" process="@form"
+					update="tbl" />
+
+
+			</h:panelGrid>
+			<p:dataTable id="tbl" widgetVar="tabelaEntrega"
+				emptyMessage="Lista Vazia" resizableColumns="true"
+				value="#{sistemaControllerEntrega.devolucoes}" var="devolucao"
+				style="margin-top:5px" paginator="true" rows="10"
+				rowsPerPageTemplate="3,5,8" paginatorPosition="bottom"
+				selection="#{sistemaControllerEntrega.linhasDev}"
+				rowKey="#{devolucao.id}"
+				paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} ">
+
+				<p:column selectionMode="multiple"
+					style="width:16px;text-align:center" />
+				<p:column headerText="Nome" width="20%">
+					<h:outputText value="#{devolucao.nome }" />
+				</p:column>
+				<p:column headerText="CPF" width="17%" style="text-align:center">
+					<h:outputText value="#{devolucao.cpf }" />
+				</p:column>
+
+				<p:column headerText="EPI" width="17%">
+					<h:outputText value="#{devolucao.epi }" />
+				</p:column>
+				<p:column headerText="C.A" width="12%" style="text-align:center">
+					<h:outputText value="#{devolucao.ca}" />
+				</p:column>
+
+
+
+
+				<p:column headerText="Status" style="text-align:center" width="10%">
+					<h:outputText value="#{devolucao.status}" />
+				</p:column>
+				<p:column headerText="Qtd" style="text-align:center" width="5%">
+					<h:outputText value="#{devolucao.qtdDevolvida}" />
+				</p:column>
+				<p:column headerText="Estado" style="text-align:center" width="7%">
+					<h:outputText value="#{devolucao.estado }" />
+				</p:column>
+
+				<p:column headerText="Data Dev." style="text-align:center"
+					width="13%">
+					<h:outputText value="#{devolucao.dataDevolucao }">
+						<f:convertDateTime pattern="dd/MM/yyyy" locale="pt_BR" />
+					</h:outputText>
+				</p:column>
+				<p:column headerText="Hora Dev." style="text-align:center"
+					width="10%">
+					<h:outputText value="#{devolucao.horaDevolucao }" />
+				</p:column>
+				
+			</p:dataTable>
+
+			<p:commandButton value="Imprimir Selecionado" process="tbl"
+				update="tbl" oncomplete="PF('imprimirDialog').show()" />
+			<p:commandButton value="Limpar Seleção"
+				action="#{sistemaControllerEntrega.limparDevolucao()}"
+				process="@this" update="tbl" />
+
+
+		</h:form>
+		<p:dialog header="Imprimir Devolução" widgetVar="imprimirDialog"
+			position="top" style="position:absolute" modal="true"
+			showEffect="fade" resizable="false" closable="false"
+			hideEffect="fade" width="70%" height="30%">
+
+			<p:outputPanel id="imprimir" autoUpdate="true">
+				<h:outputLabel value="Comprovante de Devolução do EPI"
+					style="font-size: 12pt; margin-left: 150px;font-weight: bold " />
+
+				<p:dataGrid columns="1" var="devolvido" styleClass="fonteMenor"
+					emptyMessage="Selecione uma devolução para imprimir!!"
+					value="#{sistemaControllerEntrega.linhasDev}">
+					<h:outputText value="OLGBER ESPECIALIDADES EIRELI"
+						style="font-size:11px;font-weight: bold " />
+					<h:outputText value="CNPJ: 03.293.568/0001-36"
+						style="font-size:11px;font-weight: bold; margin-left:10px  " />
+					<h:outputText value="I.E: 234.100.542.113"
+						style="font-size:11px;font-weight: bold; margin-left:10px  " />
+					<!-- 1º linha -->
+					<h:panelGrid columns="8">
+						<h:outputLabel value="Nome:"
+							style="font-size:10px;font-weight: bold " />
+						<h:outputText value="#{devolvido.nome}" style="font-size:11px" />
+						<h:outputLabel value="Cpf:"
+							style="font-size:10px; margin-left:10px;font-weight: bold " />
+						<h:outputText value="#{devolvido.cpf}" style="font-size:10px" />
+						<h:outputLabel value="Dt. Devolução:"
+							style="font-size:10px; margin-left:10px;font-weight: bold " />
+						<h:outputText value="#{devolvido.dataDevolucao}"
+							style="font-size:10px">
+							<f:convertDateTime pattern="dd/MM/yyyy" locale="pt_BR" />
+						</h:outputText>
+						<h:outputLabel value="Hora Devolução:"
+							style="font-size:10px; margin-left:10px;font-weight: bold " />
+						<h:outputLabel value="#{devolvido.horaDevolucao} "
+							style="font-size:11px" />
+					</h:panelGrid>
+					<!-- 2ºlinha -->
+					<h:panelGrid columns="11">
+						<h:outputLabel value="Item:"
+							style="font-size:10px;font-weight: bold " />
+						<h:outputText value="#{devolvido.epi}" style="font-size:10px" />
+						<h:outputLabel value="QTD:"
+							style="font-size:10px; margin-left:10px;font-weight: bold " />
+						<h:outputLabel value="#{devolvido.qtdDevolvida} "
+							style="font-size:10px" />
+						<h:outputLabel value="C.A:"
+							style="font-size:10px; margin-left:10px;font-weight: bold " />
+						<h:outputLabel value="#{devolvido.ca} " style="font-size:10px" />
+						<h:outputLabel value="Lote:"
+							style="font-size:10px; margin-left:10px;font-weight: bold " />
+						<h:outputLabel value="#{devolvido.lote} " style="font-size:10px" />
+						<h:outputLabel value="Assinatura: "
+							style="font-size:10px; margin-left:10px;font-weight: bold " />
+						<h:outputText value="______________" />
+						<h:outputText value="(1º Via)"
+							style="margin-left:30px;font-size:8px" />
+						<h:panelGrid columns="1">
+
+						</h:panelGrid>
+
+					</h:panelGrid>
+					<h:panelGrid columns="2">
+						<h:outputLabel value="Data da Emissão: #{data.gerarData()}"
+							style=" font-size:10px;font-weight: bold " />
+						<h:outputText value="Hora da Emissão: #{atualizaHora.hoje}"
+							id="txt_count"
+							style="font-size:10px;font-weight: bold; margin-left: 50px;">
+							<p:poll interval="1" listener="#{atualizaHora.atualizarHora}"
+								update="txt_count" />
+						</h:outputText>
+
+					</h:panelGrid>
+					<h:outputText
+						value="Declaro para todos os efeitos legais que recebi os equipamentos de 
+								proteção individual constantes da lista acima, novos e em perfeitas
+								condições de uso e que estou ciente das obrigações 
+								descritas na NR 06, baixadas pela Portaria MTE 3214/78, subitem 6.7.1, a saber :"
+						style="font-size:10px;margin-top:0px;margin-botton:0px;font-style:lucida console" />
+
+
+					<h:outputText
+						value="A) usar, utilizando-o apenas para a finalidade que se destina;"
+						style="font-size:10px;font-style:lucida console" />
+					<h:outputText
+						value="B) responsabilizar-se pela guarda e conservação;"
+						style="font-size:10px;font-style:lucida console" />
+					<h:outputText
+						value="C ) comunicar ao empregador qualquer alteração que o torne impróprio para uso; "
+						style="font-size:10px;font-style:lucida console" />
+					<h:outputText
+						value="D ) cumprir as determinações do empregador sobre o uso adequado."
+						style="font-size:10px;font-style:lucida console" />
+
+
+					<h:outputText
+						value="Declaro também que estou ciente das disposições do Art. 462 
+					e Paragráfo 1 da CLT, e autorizo o desconto salarial proporcional ao custo de 
+					reparação do dano causado por perda ou mal utilização que os EPI's aos meus cuidados 
+					venham apresentar.Declaro ainda que estou ciente das disposições do artigo 158, alínea 
+					(a), da CLT e do item 1.8 da NR 01, em especial daquela do subitem 1.8.1 de que constitui 
+					ato faltoso á recusa injustificada de usar EPI fornecido pela empresa, incorrendo nas penas da Lei."
+						style="font-size:10px;font-style:lucida console" />
+
+
+					<p:separator />
+					<h:outputText value="OLGBER ESPECIALIDADES EIRELI"
+						style="font-size:11px;font-weight: bold " />
+					<h:outputText value="CNPJ: 03.293.568/0001-36"
+						style="font-size:11px;font-weight: bold; margin-left:10px  " />
+					<h:outputText value="I.E: 234.100.542.113"
+						style="font-size:11px;font-weight: bold; margin-left:10px  " />
+						
+					<!-- cópia -->
+					<h:panelGrid columns="8">
+						<h:outputLabel value="Nome:"
+							style="font-size:10px;font-weight: bold " />
+						<h:outputText value="#{devolvido.nome}" style="font-size:11px" />
+						<h:outputLabel value="Cpf:"
+							style="font-size:10px; margin-left:10px;font-weight: bold " />
+						<h:outputText value="#{devolvido.cpf}" style="font-size:11px" />
+						<h:outputLabel value="Dt. Devolução:"
+							style="font-size:10px; margin-left:10px;font-weight: bold " />
+						<h:outputText value="#{devolvido.dataDevolucao}"
+							style="font-size:10px">
+							<f:convertDateTime pattern="dd/MM/yyyy" locale="pt_BR" />
+						</h:outputText>
+						<h:outputLabel value="Hora Devolução:"
+							style="font-size:10px; margin-left:10px;font-weight: bold " />
+						<h:outputLabel value="#{devolvido.horaDevolucao} "
+							style="font-size:10px" />
+					</h:panelGrid>
+					<!-- 2ºlinha -->
+					<h:panelGrid columns="11">
+						<h:outputLabel value="Item:"
+							style="font-size:10px;font-weight: bold " />
+						<h:outputText value="#{devolvido.epi}" style="font-size:10px" />
+						<h:outputLabel value="QTD:"
+							style="font-size:10px; margin-left:10px;font-weight: bold " />
+						<h:outputLabel value="#{devolvido.qtdDevolvida} "
+							style="font-size:10px" />
+						<h:outputLabel value="C.A: "
+							style="font-size:10px; margin-left:10px;font-weight: bold " />
+						<h:outputLabel value="#{devolvido.ca} " style="font-size:10px" />
+						<h:outputLabel value="Lote:"
+							style="font-size:10px; margin-left:10px;font-weight: bold " />
+						<h:outputLabel value="#{devolvido.lote} " style="font-size:10px" />
+						<h:outputLabel value="Assinatura: "
+							style="font-size:10px; margin-left:10px;font-weight: bold " />
+						<h:outputText value="______________" />
+						<h:outputText value="(2º Via)"
+							style="margin-left:30px;font-size:8px" />
+
+
+					</h:panelGrid>
+
+					<h:outputText
+						value="Declaro para todos os efeitos legais que recebi os equipamentos de 
+								proteção individual constantes da lista acima, novos e em perfeitas
+								condições de uso e que estou ciente das obrigações 
+								descritas na NR 06, baixadas pela Portaria MTE 3214/78, subitem 6.7.1, a saber :"
+						style="font-size:10px;margin-top:0px;margin-botton:0px;font-family:lucida console" />
+
+
+					<h:outputText
+						value="A) usar, utilizando-o apenas para a finalidade que se destina;"
+						style="font-size:10px;font-family:lucida console" />
+					<h:outputText
+						value="B) responsabilizar-se pela guarda e conservação;"
+						style="font-size:10px;font-family:lucida console" />
+					<h:outputText
+						value="C ) comunicar ao empregador qualquer alteração que o torne impróprio para uso; "
+						style="font-size:10px;font-family:lucida console" />
+					<h:outputText
+						value="D ) cumprir as determinações do empregador sobre o uso adequado."
+						style="font-size:10px;font-family:lucida console" />
+
+
+					<h:outputText
+						value="Declaro também que estou ciente das disposições do Art. 462 
+					e Paragráfo 1 da CLT, e autorizo o desconto salarial proporcional ao custo de 
+					reparação do dano causado por perda ou mal utilização que os EPI's aos meus cuidados 
+					venham apresentar.Declaro ainda que estou ciente das disposições do artigo 158, alínea 
+					(a), da CLT e do item 1.8 da NR 01, em especial daquela do subitem 1.8.1 de que constitui 
+					ato faltoso á recusa injustificada de usar EPI fornecido pela empresa, incorrendo nas penas da Lei."
+						style="font-size:10px;font-family:lucida console" />
+					<p:separator />
+				</p:dataGrid>
+
+			</p:outputPanel>
+			<div
+				style="margin-left: 35%; margin-right: 40%; margin-top: 50px; margin-bottom: 20px">
+				<p:commandButton value="Imprimir" style="margin-left:10px"
+					type="button">
+					<p:printer target="imprimir" />
+				</p:commandButton>
+				<p:commandButton value="Fechar"
+					oncomplete="PF('imprimirDialog').hide()" update="imprimir" />
+			</div>
+		</p:dialog>
+
+		
+
+	</ui:define>
+</ui:composition>

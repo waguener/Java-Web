@@ -1,0 +1,91 @@
+<ui:composition template="/template/LayoutPadrao.xhtml"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:p="http://primefaces.org/ui">
+
+	<ui:define name="titulo">Pesquisar Entregas</ui:define>
+
+	<ui:define name="conteudo">
+		#{sistemaControllerEntrega.novaLista()}
+		<h:form style="font-size:9px" id="listaEntrega">
+			<p:panel header="Entregas ">
+				<p:inputText value="#{sistemaControllerEntrega.func}"
+					placeholder="Funcionário"
+					onkeyup="this.value = this.value.toUpperCase()" />
+				<p:commandButton value="Pesquisar" id="busca"
+					action="#{sistemaControllerEntrega.listaEntregaNome}"
+					process="@form" update="tbl" />
+
+
+				<p:dataTable id="tbl" widgetVar="tabelaEntrega"
+					resizableColumns="true"
+					value="#{sistemaControllerEntrega.entregaNome}" var="entregas"
+					style="margin-top:5px" paginator="true" rows="12"
+					rowsPerPageTemplate="3,6,12" paginatorPosition="bottom"
+					emptyMessage="Lista Vazia"
+					paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} ">
+
+					<p:column headerText="Nome" width="28%">
+						<h:outputText value="#{entregas.funcionario.nome }" />
+					</p:column>
+					<p:column headerText="EPI" width="25%"
+						sortBy="#{entregas.epi.descricao}">
+						<h:outputText value="#{entregas.epi.descricao }" />
+					</p:column>
+
+					<p:column headerText="Data" style="text-align:center" width="12%">
+						<h:outputText value="#{entregas.data }">
+							<f:convertDateTime pattern="dd/MM/yyyy" locale="pt_BR" />
+						</h:outputText>
+					</p:column>
+					<p:column headerText="Nº do Protocolo" style="text-align:center"
+						width="17%">
+						<h:outputText value="#{entregas.protocolo }" />
+					</p:column>
+
+					<p:column headerText="Qtd" style="text-align:center" width="5%">
+						<h:outputText value="#{entregas.quantidade}" />
+					</p:column>
+					<p:column headerText="Estado" style="text-align:center" width="8%">
+						<h:outputText value="#{entregas.estado }" />
+					</p:column>
+					<p:column headerText="Hora" style="text-align:center" width="8%">
+						<h:outputText value="#{entregas.hora }" />
+					</p:column>
+					<p:column width="5%" style="text-align:center">
+
+
+
+						<p:commandButton icon="fa fa-trash"
+							action="#{sistemaControllerEntrega.prepararExcluirEntrega(entregas)}"
+							style="text-decoration: none"
+							oncomplete="PF('confirmarExclusaoCursoDialog').show()"
+							id="excluir" title="Clique para excluir!!">
+
+						</p:commandButton>
+
+					</p:column>
+
+				</p:dataTable>
+
+				<p:confirmDialog widgetVar="confirmarExclusaoCursoDialog"
+					message="Deseja excluir esta Linha?">
+					<p:commandButton value="Sim"
+						action="#{sistemaControllerEntrega.ExcluirEntrega() }"
+						update="tbl"
+						oncomplete="PF('confirmarExclusaoCursoDialog').hide()" />
+					<p:commandButton value="Não"
+						oncomplete="PF('confirmarExclusaoCursoDialog').hide()" />
+				</p:confirmDialog>
+			</p:panel>
+			
+				<p:blockUI block="tbl" trigger="busca" animate="true">
+						PESQUISANDO FUNCIONÁRIOS...<br />
+				<p:graphicImage library="imagens" name="load.gif" />
+			</p:blockUI>
+		</h:form>
+
+	</ui:define>
+</ui:composition>

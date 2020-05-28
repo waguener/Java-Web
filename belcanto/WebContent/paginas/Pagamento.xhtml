@@ -1,0 +1,373 @@
+<ui:composition template="/template/Layout.xhtml"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:p="http://primefaces.org/ui">
+
+	<ui:define name="titulo">Pagamento</ui:define>
+
+	<ui:define name="conteudo">
+		<div class="ui-fluid">
+			<h:form id="form"
+				style="width: 100%; font-weight:bold;font-size: 12px; margin-top:1%">
+				#{movimentacaoController.initPagamento()}
+				<p:panelGrid columns="1" layout="grid" style="margin-top:80px"
+					styleClass="panelgrid-noborder" columnClasses="ui-grid-col-12">
+					<p:outputLabel value="Pagamentos"
+						style="font-size: 26pt;font-family:'Cabin', sans-serif" />
+
+				</p:panelGrid>
+				<p:panelGrid columns="3" layout="grid" style="margin-top:30px"
+					styleClass="panelgrid-noborder"
+					columnClasses="ui-grid-col-4,ui-grid-col-3,ui-grid-col-5">
+					<p:outputLabel
+						value="Nome: #{movimentacaoController.mensalReceber.matricula.agenda.aluno.nome}"
+						style="font-size: 12pt;font-family:'Cabin', sans-serif" />
+					<p:outputLabel
+						value="RG: #{movimentacaoController.mensalReceber.matricula.agenda.aluno.rg}"
+						style="font-size: 12pt;font-family:'Cabin', sans-serif" />
+					<p:outputLabel
+						value="CPF: #{movimentacaoController.mensalReceber.matricula.agenda.aluno.cpf}"
+						style="font-size: 12pt;font-family:'Cabin', sans-serif" />
+				</p:panelGrid>
+
+				<p:panelGrid columns="3" layout="grid" style="margin-top:10px"
+					styleClass="panelgrid-noborder"
+					columnClasses="ui-grid-col-4,ui-grid-col-3,ui-grid-col-5">
+					<p:outputLabel
+						value="Curso: #{movimentacaoController.mensalReceber.matricula.agenda.curso.nome}"
+						style="font-size: 12pt;font-family:'Cabin', sans-serif" />
+					<p:outputLabel
+						value="Módulo: #{movimentacaoController.mensalReceber.matricula.agenda.modulo.nome}"
+						style="font-size: 12pt;font-family:'Cabin', sans-serif" />
+					<p:outputLabel
+						value="Aula Complementar: #{movimentacaoController.mensalReceber.matricula.agenda.aulaComp.nome}"
+						rendered="#{movimentacaoController.mensalReceber.matricula.agenda.aulaComp != null}"
+						style="font-size: 12pt;font-family:'Cabin', sans-serif" />
+					<p:outputLabel value="Aula Complementar: NÂO"
+						rendered="#{movimentacaoController.mensalReceber.matricula.agenda.aulaComp == null}"
+						style="font-size: 12pt;font-family:'Cabin', sans-serif" />
+				</p:panelGrid>
+
+				<p:separator style="height:10px;background:#ADD8E6" />
+
+				<p:panelGrid columns="3" layout="grid" style="margin-top:10px"
+					styleClass="panelgrid-noborder" id="rec"
+					columnClasses="ui-grid-col-4,ui-grid-col-4,ui-grid-col-4">
+					<p:fieldset legend="Mensalidades">
+						<p:dataTable id="tbl" reflow="true" resizeMode="expand"
+							rowKey="#{mens.id}" emptyMessage="Lista Vazia"
+							resizableColumns="true"
+							selection="#{movimentacaoController.mensalSelecionada}"
+							scrollable="true" value="#{movimentacaoController.mensalidades}"
+							var="mens" style="margin-top:5px" paginator="true" rows="15"
+							rowsPerPageTemplate="5,10,15" paginatorPosition="bottom"
+							paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} ">
+
+							<p:column selectionMode="multiple" 
+								style="width:16px;text-align:center" width="10%"/>
+								
+							<p:column headerText="Parcela" width="15%"
+								style="text-align:center">
+								<h:outputLabel value="#{mens.receber.parcela}"
+									style="font-size:10px" />
+
+							</p:column>
+
+							<p:column headerText="Vencimento" width="28%"
+								style="text-align:center">
+								<h:outputLabel value="#{mens.receber.dtVencimento}"
+									style="font-size:10px">
+									<f:convertDateTime pattern="dd/MM/yyyy" locale="pt_BR" />
+								</h:outputLabel>
+
+							</p:column>
+							<p:column headerText="Valor" width="22%"
+								style="text-align:center">
+								<h:outputLabel value="#{mens.receber.valorReceber}"
+									style="font-size:10px">
+									<f:convertNumber type="currency" currencySymbol="R$"
+										locale="pt_BR" />
+								</h:outputLabel>
+
+							</p:column>
+							<p:column headerText="Status" width="25%"
+								style="text-align:center" >
+								<h:outputLabel value="#{mens.receber.status}"
+									style="font-size:10px" rendered="#{mens.receber.status == 'PENDENTE'}"/>
+								<h:outputLabel value="#{mens.receber.status}"
+									style="font-size:10px;color:green" rendered="#{mens.receber.status == 'PAGO'}"/>
+								<h:outputLabel value="#{mens.receber.status}"
+									style="font-size:10px;color:red" rendered="#{mens.receber.status == 'ATRASO'}"/>
+							</p:column>
+
+
+						</p:dataTable>
+					</p:fieldset>
+
+					<p:fieldset legend="Aula Complementar">
+						<p:dataTable id="tblAula" reflow="true" resizeMode="expand"
+							emptyMessage="Lista Vazia" resizableColumns="true"
+							rowKey="#{mensAula.id}" scrollable="true"
+							selection="#{movimentacaoController.aulaSelecionada}"
+							value="#{movimentacaoController.listarAulasComp}" var="mensAula"
+							style="margin-top:5px" paginator="true" rows="15"
+							rowsPerPageTemplate="5,10,15" paginatorPosition="bottom"
+							paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} ">
+
+							<p:column selectionMode="multiple"
+								style="width:16px;text-align:center" />
+							<p:column headerText="Parcela" width="15%"
+								style="text-align:center">
+								<h:outputLabel value="#{mensAula.receber.parcela}"
+									style="font-size:10px" />
+
+							</p:column>
+
+							<p:column headerText="Vencimento" width="28%"
+								style="text-align:center">
+								<h:outputLabel value="#{mensAula.receber.dtVencimento}"
+									style="font-size:10px">
+									<f:convertDateTime pattern="dd/MM/yyyy" locale="pt_BR" />
+								</h:outputLabel>
+
+							</p:column>
+							<p:column headerText="Valor" width="22%"
+								style="text-align:center">
+								<h:outputLabel value="#{mensAula.receber.valorReceber}"
+									style="font-size:10px">
+									<f:convertNumber type="currency" currencySymbol="R$"
+										locale="pt_BR" />
+								</h:outputLabel>
+
+							</p:column>
+							<p:column headerText="Status" width="25%"
+								style="text-align:center">
+								<h:outputLabel value="#{mensAula.receber.status}" rendered="#{mensAula.receber.status == 'PENDENTE'}"
+									style="font-size:10px" />
+								<h:outputLabel value="#{mensAula.receber.status}" rendered="#{mensAula.receber.status == 'PAGO'}"
+									style="font-size:10px;color:green" />
+								<h:outputLabel value="#{mensAula.receber.status}" rendered="#{mensAula.receber.status == 'ATRASO'}"
+									style="font-size:10px;color:red" />
+							</p:column>
+
+
+						</p:dataTable>
+					</p:fieldset>
+
+					<p:fieldset legend="Matrícula">
+						<p:dataTable id="tblMat" reflow="true" resizeMode="expand"
+							emptyMessage="Lista Vazia" resizableColumns="true"
+							rowKey="#{mensMat.id}" scrollable="true"
+							selection="#{movimentacaoController.matSelecionada}"
+							value="#{movimentacaoController.listarMatReceber}" var="mensMat"
+							style="margin-top:5px" paginator="true" rows="15"
+							rowsPerPageTemplate="5,10,15" paginatorPosition="bottom"
+							paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} ">
+
+							<p:column selectionMode="multiple"
+								style="width:16px;text-align:center" />
+
+							<p:column headerText="Parcela" width="15%"
+								style="text-align:center">
+								<h:outputLabel value="#{mensMat.receber.parcela}"
+									style="font-size:10px" />
+
+							</p:column>
+
+							<p:column headerText="Vencimento" width="28%"
+								style="text-align:center">
+								<h:outputLabel value="#{mensMat.receber.dtVencimento}"
+									style="font-size:10px">
+									<f:convertDateTime pattern="dd/MM/yyyy" locale="pt_BR" />
+								</h:outputLabel>
+
+							</p:column>
+							<p:column headerText="Valor" width="22%"
+								style="text-align:center">
+								<h:outputLabel value="#{mensMat.receber.valorReceber}"
+									style="font-size:10px">
+									<f:convertNumber type="currency" currencySymbol="R$"
+										locale="pt_BR" />
+								</h:outputLabel>
+
+							</p:column>
+							<p:column headerText="Status" width="25%"
+								style="text-align:center">
+								<h:outputLabel value="#{mensMat.receber.status}" rendered="#{mensMat.receber.status == 'PENDENTE'}"
+									style="font-size:10px" />
+								<h:outputLabel value="#{mensMat.receber.status}" rendered="#{mensMat.receber.status == 'PAGO'}"
+									style="font-size:10px;color:green" />
+								<h:outputLabel value="#{mensMat.receber.status}" rendered="#{mensMat.receber.status == 'ATRASO'}"
+									style="font-size:10px;color:red" />
+
+							</p:column>
+
+
+						</p:dataTable>
+					</p:fieldset>
+				</p:panelGrid>
+				<p:panelGrid columns="3" layout="grid" style="margin-top:30px"
+					styleClass="panelgrid-noborder"
+					columnClasses="ui-grid-col-4,ui-grid-col-4,ui-grid-col-4">
+					<p:outputLabel />
+					<p:commandButton value="Fazer Recebimento"
+						style="height:50px;width:150px;font-size:12pt" process="@form"
+						action="#{movimentacaoController.abrirRecebimento()}"
+						update="recibos,tot" />
+					<p:outputLabel />
+				</p:panelGrid>
+
+				<p:dialog widgetVar="recebimento" resizable="false" width="800px"
+					closable="false" position="top" showHeader="true" dynamic="true"
+					header="Recebimento " style="margin-top:50px;" modal="true"
+					showEffect="fade" hideEffect="fade">
+
+					<div style="width: 100%; height: 400px; overflow: auto">
+
+						<p:panelGrid columns="3" layout="grid" style="margin-top:10px"
+							styleClass="panelgrid-noborder" id="recibos"
+							columnClasses="ui-grid-col-4,ui-grid-col-4,ui-grid-col-4">
+
+							<p:outputLabel value="Mensalidade"
+								style="font-size: 12pt;font-family:'Cabin', sans-serif" />
+							<p:outputLabel value="Aula Complementar"
+								style="font-size: 12pt;font-family:'Cabin', sans-serif" />
+							<p:outputLabel value="Matrícula"
+								style="font-size: 12pt;font-family:'Cabin', sans-serif" />
+
+							<p:dataGrid columns="1" var="mensal" styleClass="data-grid"
+								layout="grid" emptyMessage="Não Selecionado"
+								value="#{movimentacaoController.mensalSelecionada}">
+
+								<p:outputLabel value="Parcela #{mensal.receber.parcela}"
+									style="font-size: 10pt;" />
+								<h:outputLabel value="#{mensal.receber.valorReceber}"
+									style="font-size: 10pt;margin-left:10px">
+									<f:convertNumber type="currency" currencySymbol="R$"
+										locale="pt_BR" />
+								</h:outputLabel>
+
+							</p:dataGrid>
+							<p:dataGrid columns="1" var="aula" styleClass="data-grid"
+								layout="grid" value="#{movimentacaoController.aulaSelecionada}"
+								emptyMessage="Não Selecionado">
+
+								<p:outputLabel value="Parcela #{aula.receber.parcela}"
+									style="font-size: 10pt;" />
+								<h:outputLabel value="#{aula.receber.valorReceber}"
+									style="font-size: 10pt;margin-left:10px">
+									<f:convertNumber type="currency" currencySymbol="R$"
+										locale="pt_BR" />
+								</h:outputLabel>
+
+							</p:dataGrid>
+							<p:dataGrid columns="1" var="mat" styleClass="data-grid"
+								layout="grid" value="#{movimentacaoController.matSelecionada}"
+								emptyMessage="Não Selecionado">
+
+								<p:outputLabel value="Parcela #{mat.receber.parcela}"
+									style="font-size: 10pt;" />
+								<h:outputLabel value="#{mat.receber.valorReceber}"
+									style="font-size: 10pt;margin-left:10px">
+									<f:convertNumber type="currency" currencySymbol="R$"
+										locale="pt_BR" />
+								</h:outputLabel>
+
+							</p:dataGrid>
+						</p:panelGrid>
+
+
+						<p:fieldset legend="Dados do Recebimento" id="reci">
+							<p:panelGrid columns="5" layout="grid" style="margin-top:20px"
+								styleClass="panelgrid-noborder"
+								columnClasses="ui-grid-col-1.5,ui-grid-col-4,ui-grid-col-0.5,ui-grid-col-2,ui-grid-col-4">
+
+								<p:outputLabel value="Pago por:" style="font-size: 12pt;" />
+
+								<p:inputText
+									value="#{movimentacaoController.movimentacao.pagante}"
+									style="margin-left:10px;font-size:12pt;font-weigth:bold;color:#000;"
+									onkeyup="this.value = this.value.toUpperCase()" />
+
+								<p:outputLabel />
+								<p:outputLabel value="Recebido Por:" style="font-size: 12pt;" />
+
+								<p:inputText
+									value="#{movimentacaoController.movimentacao.recebidor}"
+									style="margin-left:10px;font-size:12pt;font-weigth:bold;color:#000;"
+									onkeyup="this.value = this.value.toUpperCase()" />
+
+							</p:panelGrid>
+							<p:panelGrid columns="5" layout="grid" style="margin-top:20px"
+								styleClass="panelgrid-noborder"
+								columnClasses="ui-grid-col-2.5,ui-grid-col-2.5,ui-grid-col-1,ui-grid-col-1.5,ui-grid-col-2,ui-grid-col-2">
+
+								<p:outputLabel value="Pagamento com:" style="font-size: 12pt;" />
+
+								<p:selectOneMenu style="width:150px"
+									value="#{movimentacaoController.movimentacao.formaPgt}">
+									<f:selectItem itemValue="#{null}" itemLabel=".:Selecione:." />
+									<f:selectItem itemLabel="DINHEIRO" itemValue="DINHEIRO" />
+									<f:selectItem itemLabel="CARTÃO" itemValue="CARTÃO" />
+									<f:selectItem itemLabel="CHEQUE" itemValue="CHEQUE" />
+									<f:selectItem itemLabel="DEPOSITO OU TRANSF. BANCÁRIA" itemValue="DEPOSITO OU TRANSF. BANCÁRIA" />
+
+								</p:selectOneMenu>
+
+								<p:outputLabel value="Total:" style="font-size: 12pt;" />
+
+								<h:outputLabel value="#{movimentacaoController.valorReceber}"
+									style="font-size: 14pt;margin-left:10px" id="tot">
+									<f:convertNumber type="currency" currencySymbol="R$"
+										locale="pt_BR" />
+								</h:outputLabel>
+
+							</p:panelGrid>
+							<p:panelGrid columns="5" layout="grid" style="margin-top:20px"
+								styleClass="panelgrid-noborder"
+								columnClasses="ui-grid-col-1.5,ui-grid-col-5,ui-grid-col-1.5,ui-grid-col-1,ui-grid-col-3">
+
+								<p:outputLabel value="Valor Pago:" style="font-size: 12pt;" />
+
+								<p:inputText
+									value="#{movimentacaoController.movimentacao.valorRecebido}"
+									onkeydown="mascara(this,moeda)" size="7"
+									style="margin-left:10px;font-size:12pt;font-weigth:bold;color:#000;">
+									<f:convertNumber minFractionDigits="2" locale="pt_BR" />
+									<p:ajax event="blur"
+										listener="#{movimentacaoController.total()}" process="@this"
+										update="troco" />
+								</p:inputText>
+
+								<p:outputLabel />
+								<p:outputLabel value="Troco:" style="font-size: 12pt;" />
+
+								<h:outputLabel
+									value="#{movimentacaoController.movimentacao.troco}"
+									style="font-size: 12pt;margin-left:10px" id="troco">
+									<f:convertNumber type="currency" currencySymbol="R$"
+										locale="pt_BR" />
+								</h:outputLabel>
+
+							</p:panelGrid>
+							<p:panelGrid columns="5" layout="grid" style="margin-top:30px"
+								styleClass="panelgrid-noborder"
+								columnClasses="ui-grid-col-2,ui-grid-col-3,ui-grid-col-2,ui-grid-col-3,ui-grid-col-2">
+								<p:outputLabel />
+								<p:commandButton value="Salvar" action="#{movimentacaoController.salvar()}" update="rec"/>
+								<p:outputLabel />
+								<p:commandButton value="Fechar"
+									action="#{movimentacaoController.fecharRecebimento()}"
+									process="@this"  />
+								<p:outputLabel />
+							</p:panelGrid>
+						</p:fieldset>
+					</div>
+				</p:dialog>
+			</h:form>
+		</div>
+	</ui:define>
+</ui:composition>
+

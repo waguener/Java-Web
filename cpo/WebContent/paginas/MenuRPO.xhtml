@@ -1,0 +1,99 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:p="http://primefaces.org/ui">
+<h:head>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1" />
+	<title><ui:insert name="titulo">Menu de Movimentações</ui:insert></title>
+	<h:outputScript library="javascripts" name="app.js" />
+	<h:outputScript library="javascripts" name="locale-primefaces.js" />
+	<h:outputStylesheet library="styles" name="custom.css" />
+	<h:outputStylesheet library="styles" name="layout.css" />
+	<h:outputStylesheet library="styles" name="components.css" />
+	<style>
+.ui-growl {
+	position: fixed;
+	top: 70px;
+}
+
+.ui-panelmenu {
+	background-color: DodgerBlue !important;
+}
+
+.cores {
+	font-weight: bold;
+	color: #FF8C00 !important;
+	background-image: none !important;
+}
+</style>
+
+	<script type="text/javascript">
+		function onlyNumbers(data) {
+			data.value = data.value.replace(/[^0-9]/g, '');
+
+		};
+	</script>
+
+</h:head>
+<h:body
+	>
+	<p:growl autoUpdate="true" />
+	<div class="box">
+		<h:form id="form"
+			style="width: 100%; font-weight:bold;font-size: 12px">
+			
+			<p:panelGrid columns="5" layout="grid"
+					styleClass="panelgrid-noborder"
+					columnClasses="ui-grid-col-3,ui-grid-col-2,ui-grid-col-1,ui-grid-col-2,ui-grid-col-3">
+				<p:outputLabel/>
+				<p:commandButton value="Cadastrar Composição pallet" action="#{compMateriaisController.cadPallet}"/>
+				<p:outputLabel/>
+				<p:commandButton value="Inventário"/>
+				<p:outputLabel/>
+			</p:panelGrid>
+			<p:fieldset legend="Estoque Armazém">
+
+					<p:dataTable widgetVar="tabelaEstoque" emptyMessage="Lista Vazia" 
+						value="#{compMateriaisController.listaMateriais}" var="comp" id="tbl" 
+						scrollable="true"
+						reflow="true" scrollHeight="450"
+						style="margin-top:5px;font-size:10px" paginator="true" rows="30"
+						rowsPerPageTemplate="5,15,30" paginatorPosition="bottom"
+						paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} ">
+
+
+						<p:column headerText="Codigo" width="10%"
+							style="text-align:center" sortBy="#{comp.cadastroMaterial.codigo}"
+							filterBy="#{comp.cadastroMaterial.codigo}">
+							<h:outputLabel value="#{comp.cadastroMaterial.codigo}" />
+						</p:column>
+
+						<p:column headerText="Produto" width="55%"
+							style="text-align:center"
+							filterBy="#{comp.cadastroMaterial.produto}">
+							<p:outputLabel value="#{comp.cadastroMaterial.produto}" />
+						</p:column>
+						<p:column width="10%">
+							<p:commandButton value="Selecionar"/>
+						</p:column>
+					</p:dataTable>
+				</p:fieldset>
+				
+		</h:form>
+		<h:panelGrid columns="3" width="80%"
+			style="margin-left:5%;margin-top:20%">
+			<p:outputLabel value="OLGBER ESPECIALIDADES - 2019"
+				style="font-weight:bold;font-size:10px" />
+			<p:outputLabel />
+			<p:outputLabel value="Desenvolvido por Wagner Elias"
+				style="font-weight:bold;font-family:'Ubuntu', sans-serif;font-size:10px;float:right;margin-right:15px" />
+		</h:panelGrid>
+	</div>
+</h:body>
+</html>
+

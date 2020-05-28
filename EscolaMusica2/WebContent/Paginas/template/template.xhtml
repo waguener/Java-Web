@@ -1,0 +1,93 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui">
+
+<h:head>
+	<title>Escola Música -<ui:insert name="titulo">Página Inicial</ui:insert>
+	</title>
+	<link type="text/css" rel="stylesheet" href="../../css/style.css" />
+	<style>
+		.menu-template{
+	position: fixed;
+	margin-top: 5px;
+	font-size: 12px;
+}
+.principal-template{
+	position: absolute;
+	margin-left: 260px;
+	min-width: 80%;
+	min-height:70%;
+	margin-top: 15px:
+	
+}
+	</style>
+</h:head>
+<h:body>
+<h:form>
+
+	
+
+	<div class="menu-template">
+		<ui:insert name="Menu">
+		<p:slideMenu style="width:200px; height:200px" >
+			
+			<p:submenu label="Cadastros" icon="ui-icon-document">
+				<p:submenu label="Novo Cadastro" icon="ui-icon-contact" style="margin-top:5px">
+					<p:menuitem value="Cadastrar Alunos" rendered="#{authenticationContext.usuarioLogado.isPossuePermissao('ROLE_USUARIO')}"
+						url="/Paginas/Alunos/CadastroAluno.jsf" icon="fa fas fa-user-plus" />
+					<p:menuitem value="Cadastrar Cursos"
+						url="/Paginas/Cursos/CadastroCurso.jsf" icon="fa fas fa-music"/>
+					<p:menuitem value="Cadastrar avaliação" url="/Paginas/avaliacoes/CadastroAvaliacao.jsf" icon="ui-icon-contact"/>
+					<p:menuitem value="cadastrar Usuário" url="/Paginas/Usuarios/CadastroUsuario.jsf"/>
+				</p:submenu>
+				<p:menuitem value="Matrículas"
+					url="/Paginas/Matriculas/CadastroMatricula.jsf" />
+
+			</p:submenu>
+			<p:submenu label="Listas" icon="fa far fa-list-alt">
+				<p:menuitem value="Alunos" url="/Paginas/Alunos/ListaAlunos.jsf" />
+				<p:menuitem value="Cursos" url="/Paginas/Cursos/ListaCursos.jsf" />
+				<p:menuitem value="Matriculas"
+					url="/Paginas/Matriculas/ListaMatriculas.jsf" style="margin-bottom:20px"/>
+				<p:menuitem value="Avaliações" url="/Paginas/avaliacoes/ListaAvaliacoes.jsf"/>
+				<p:menuitem value="Usuários" url="/Paginas/Usuarios/ListaUsuarios.jsf"/>	
+			</p:submenu>
+			<p:submenu label="Permissões" icon="ui-icon-contact" style="margin-top:5px">
+					<p:menuitem value="Permissões"
+						url="/Paginas/permissoes/Permissoes.jsf" icon="fa fas fa-user-plus" />
+			</p:submenu>
+			<p:submenu label="Perfil" icon="ui-icon-contact" style="margin-top:5px">
+					<p:menuitem value="Cadastrar Perfil"
+						url="/perfis" icon="fa fas fa-user-plus" />
+			</p:submenu>
+			
+			<p:submenu style="margin-bottom:20px" url="/Paginas/avalicoes/CadastroAvaliacao.jsf" />
+			<p:menuitem value="Sair" action="#{authenticationContext.logout}" icon="fa fa-arrow-circle-right"/>
+			<p:separator/>
+		</p:slideMenu>
+		
+	
+	</ui:insert>
+	
+	</div>
+	</h:form>
+	<div class="principal-template">
+		<ui:insert name="Principal">
+			<p:growl autoUpdate="true"/>
+			<h3>Conteúdo que será substituído</h3>
+			<h:outputLabel value="#{authenticationContext.usuarioLogado.nome}"/>
+		</ui:insert>
+	</div>
+
+
+
+
+</h:body>
+
+</html>

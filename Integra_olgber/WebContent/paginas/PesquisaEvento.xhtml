@@ -1,0 +1,106 @@
+<ui:composition template="/template/Layout.xhtml"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:p="http://primefaces.org/ui">
+
+	<ui:define name="titulo">PesquisaEvento</ui:define>
+
+	<ui:define name="conteudo">
+
+		<div class="ui-fluid">
+			<h:form
+				style="margin-left: auto; margin-right:auto; font-weight:bold; font-size: 10px">
+				#{eventoFuncionarioController.iniciarPesquisa()}
+				<p:panel header="Pesquisar Eventos">
+				<p:panelGrid columns="4" layout="grid"
+						styleClass="panelgrid-noborder"
+						columnClasses="ui-grid-col-4,ui-grid-col-1,ui-grid-col-3,ui-grid-col-4">
+
+						<p:inputText value="#{eventoFuncionarioController.nomeFuncionario}" placeholder="Insira o nome do Funcionario" onkeyup="this.value = this.value.toUpperCase()"
+							 />
+						<p:commandButton icon="fa fa-search" process="@form" id="evento"
+							action="#{eventoFuncionarioController.buscar()}" update="tbl" />
+						<p:outputLabel />
+						<p:outputLabel />
+
+					</p:panelGrid>
+					<p:dataTable id="tbl" reflow="true" resizeMode="expand" 
+						emptyMessage="Lista Vazia" resizableColumns="true"
+						 value="#{eventoFuncionarioController.eventoFuncionarios}"  scrollable="true"
+						var="evento" style="margin-top:5px" paginator="true" rows="15"
+						rowsPerPageTemplate="5,10,15" paginatorPosition="bottom"
+						paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} ">
+
+						<p:column headerText="Funcionário" width="15%" style="text-align:center">
+							
+							<p:outputLabel value="#{evento.funcionario.nome}"/>
+						</p:column>
+						
+						<p:column headerText="Tipo" width="10%" style="text-align:center" sortBy="#{evento.tipo}">
+							
+							<p:outputLabel value="#{evento.tipo}"/>
+						</p:column>
+						<p:column headerText="Data do Evento" width="10%" style="text-align:center" >
+							<h:outputLabel value="#{evento.dataEvento}" >
+								<f:convertDateTime pattern="dd/MM/yyyy" locale="pt_BR" />
+							</h:outputLabel>
+						</p:column>
+						<p:column headerText="Faltas" width="5%" style="text-align:center" >
+							
+							<p:outputLabel value="#{evento.falta}"/>
+						</p:column>
+						
+						<p:column headerText="Data da falta" width="10%" style="text-align:center" >
+							<h:outputLabel value="#{evento.dataFalta}" >
+								<f:convertDateTime pattern="dd/MM/yyyy" locale="pt_BR" />
+							</h:outputLabel>
+							<p:outputLabel value="Sem Falta" rendered="#{evento.dataFalta == null}"/>
+						</p:column>
+						<p:column headerText="Data do Atestado" width="10%" style="text-align:center" >
+							<h:outputLabel value="#{evento.dataAtestado}" >
+								<f:convertDateTime pattern="dd/MM/yyyy" locale="pt_BR" />
+							</h:outputLabel>
+							<p:outputLabel value="Sem Atestado" rendered="#{evento.dataAtestado == null}"/>
+						</p:column>
+						<p:column width="10%" style="text-align:center">
+						
+							<p:commandButton icon="fa fa-edit" style="width:25px" action="#{eventoFuncionarioController.editarFuncionarioFalta(evento)}"							
+								title="Clique para Editar" rendered="#{evento.dataFalta != null}"/>
+							
+							<p:commandButton icon="fa fa-edit" style="width:25px" action="#{eventoFuncionarioController.editarFuncionarioAtestado(evento)}"							
+								title="Clique para Editar" rendered="#{evento.arquivo != null}"/>
+
+							<p:commandButton icon="fa fa-trash" style="width:25px" oncomplete="PF('confirmarExclusaoCursoDialog').show()"
+								 title="Clique para Excluir" action="#{eventoFuncionarioController.prepararExcluirEvento(evento)}"/>
+								 
+							<p:commandButton ajax="false" icon="fa fa-download" rendered="#{evento.arquivo != null}" style="width:25px"
+							title="Clique para Baixar o Atestado">
+						
+							<p:fileDownload  style="width:25px" 					
+								 value="#{eventoFuncionarioController.baixarArquivo(evento)}"/>
+							</p:commandButton>	 
+						</p:column>
+					</p:dataTable>
+					
+					<p:blockUI block="tbl" trigger="evento" animate="true">
+						PESQUISANDO EVENTOS...<br />
+						<p:graphicImage library="imagens" name="load.gif" />
+					</p:blockUI>
+				
+				
+				</p:panel>
+				<p:confirmDialog widgetVar="confirmarExclusaoCursoDialog" 
+					responsive="true" message="Deseja excluir este Evento?">
+					<p:commandButton value="Sim" update="tbl" action="#{eventoFuncionarioController.excluirEvento}" 
+						oncomplete="PF('confirmarExclusaoCursoDialog').hide()" style="width:50px"/>
+					<p:commandButton value="Não"
+						oncomplete="PF('confirmarExclusaoCursoDialog').hide()" style="width:50px"/>
+				</p:confirmDialog>
+			</h:form>
+			
+
+		</div>
+	</ui:define>
+</ui:composition>

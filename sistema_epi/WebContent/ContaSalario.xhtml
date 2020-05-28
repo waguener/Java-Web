@@ -1,0 +1,211 @@
+<ui:composition template="/template/Layout2.xhtml"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:p="http://primefaces.org/ui">
+
+	<ui:define name="titulo">Conta Salário</ui:define>
+
+	<ui:define name="conteudo">
+
+		<div class="ui-fluid">
+			<h:form id="form"
+				style="margin-left: auto; margin-right:auto; font-weight:bold; font-size: 10px">
+				#{atualCadController.initBusca()}
+				<p:panelGrid columns="1" layout="grid" style="margin-top:10px"
+					styleClass="panelgrid-noborder" columnClasses="ui-grid-col-12">
+					<p:outputLabel value="Solicitação Conta salário"
+						style="font-size: 22pt;font-family:'Cabin', sans-serif;color:#87CEEB;text-shadow: 2px 2px 3px #000000;" />
+
+				</p:panelGrid>
+				<p:panelGrid columns="4" layout="grid" style="margin-top:20px"
+					styleClass="panelgrid-noborder" id="busca"
+					columnClasses="ui-grid-col-2,ui-grid-col-4,ui-grid-col-1,ui-grid-col-5">
+					<p:outputLabel value="Busca" style="font-size: 16pt;" />
+
+					<p:inputText value="#{atualCadController.nome}"
+						style="margin-left:10px;font-size:14pt;font-weigth:bold;color:#000;"
+						onkeyup="this.value = this.value.toUpperCase()" />
+
+
+					<p:commandButton action="#{atualCadController.buscar()}"
+						id="pesquisar" update="tbl" process="busca" icon="fa fa-search" />
+					<p:outputLabel />
+				</p:panelGrid>
+
+				<p:fieldset legend="Funcionários" style="margin-top:5px">
+
+					<p:dataTable var="cad" emptyMessage="Lista Vazia" id="tbl"
+						value="#{atualCadController.listaCad }" reflow="true"
+						style="margin-top:10px" paginator="true" rows="9"
+						rowsPerPageTemplate="3,6,12" paginatorPosition="bottom"
+						resizableColumns="true">
+
+						<p:column headerText="Foto " width="5%" style="text-align:center">
+							<p:graphicImage library="imagens" name="sem_foto.png"
+								width="34px" height="42px"
+								style="text-align:center;box-shadow: 1px 1px 4px;border-radius: 10px;"
+								rendered="#{cad.funcionarioBean.foto == null}">
+								<f:param name="idCad" value="#{cad.id}" />
+							</p:graphicImage>
+							<p:graphicImage value="#{atualCadController.imagemCad}"
+								width="34px" height="42px" id="content"
+								style="text-align:center;box-shadow: 1px 1px 4px;border-radius: 10px;"
+								rendered="#{atualCadController.imagemCad != null}">
+								<f:param name="idCad" value="#{cad.id}" />
+							</p:graphicImage>
+							<p:tooltip id="toolTipContent" for="content">
+								<p:graphicImage value="#{atualCadController.imagemCad}"
+									width="176px" height="208px"
+									style="text-align:center;box-shadow: 1px 1px 4px;border-radius: 10px;"
+									rendered="#{atualCadController.imagemCad != null}">
+									<f:param name="idCad" value="#{cad.id}" />
+								</p:graphicImage>
+							</p:tooltip>
+						</p:column>
+
+						<p:column headerText="Nome" filterMatchMode="contains" width="26%"
+							sortBy="#{cad.funcionarioBean.nome }">
+							<h:outputText value="#{cad.funcionarioBean.nome }" />
+						</p:column>
+						<p:column headerText="RG" filterMatchMode="contains" width="16%">
+							<h:outputText value="#{cad.funcionarioBean.rg }" />
+						</p:column>
+						<p:column headerText="CPF" filterMatchMode="contains" width="16%">
+							<h:outputText value="#{cad.funcionarioBean.cpf }" />
+						</p:column>
+						<p:column headerText="Nasc." filterMatchMode="contains"
+							width="16%">
+							<h:outputText value="#{cad.dtNascimento }">
+								<f:convertDateTime pattern="dd/MM/yyyy" locale="pt_BR" />
+							</h:outputText>
+						</p:column>
+						<p:column headerText="Idade" filterMatchMode="contains"
+							width="16%">
+							<h:outputText value="#{cad.idade}" />
+						</p:column>
+						<p:column width="4%" style="text-align:center">
+							<p:commandButton icon="fa fa-edit" update=":form:impressao,:form:salario"
+								action="#{atualCadController.imprimirCS(cad)}" process="@this"
+								title="Clique para Imprimir a Solicitação de Conta Salário!" />
+
+						</p:column>
+					</p:dataTable>
+
+				</p:fieldset>
+				<p:blockUI block="tbl" trigger="busca" animate="true">
+						BUSCANDO FUNCIONÁRIOS...<br />
+					<p:graphicImage library="imagens" name="load.gif" />
+				</p:blockUI>
+
+				<p:dialog header="Registro de Treinamento" resizable="false"
+					position="top" widgetVar="imprimir" width="70%" height="100%"
+					id="cs" closable="true" modal="true" showEffect="blind"
+					hideEffect="size" style="margin-top: 40px">
+
+					<div style="width: 100%; height: 400px; overflow: auto">
+
+						<h:panelGrid columns="3" id="salario">
+							<p:outputLabel value="Adicionar Salário:"
+								style="font-size: 10pt;color:#000;margin-left:10px" />
+
+							<p:inputText value="#{atualCadController.salario}"
+								onkeydown="mascara(this,moeda)" size="6" required="true"
+								requiredMessage="Informe o Valor do Salário"
+								style="margin-left:10px;font-size:12pt;font-weigth:bold;color:#000;">
+								<f:convertNumber minFractionDigits="2" locale="pt_BR" />
+							</p:inputText>
+							<p:commandButton value="Adicionar"
+								 update="impressao" style="margin-left:20px"
+								process="salario" />
+						</h:panelGrid>
+
+						<h:panelGrid columns="1" width="100%" id="impressao">
+
+							<h:panelGrid columns="3" style="margin-top:50px">
+								<h:panelGrid columns="1" style="margin-top:10px">
+									<p:graphicImage library="imagens" name="logoSite.png"
+										styleClass="logo" style="width:150px;margin:10px" />
+									<p:outputLabel value="EMBALANDO SUA EMPRESA !"
+										style="font-size: 10pt;color:#000;margin-left:10px" />
+								</h:panelGrid>
+								<h:panelGrid columns="1" style="width:350px">
+								</h:panelGrid>
+								<h:panelGrid columns="1">
+									<p:outputLabel value="OLGBER ESPECIALIDADES LTDA"
+										style="font-size: 8pt;color:#000" />
+									<p:outputLabel value="R.Manuel Nunes da Costa, 290"
+										style="font-size: 8pt;color:#000;margin-top:-10px" />
+									<p:outputLabel value="Vila Galvão, Caçaoava, São Paulo"
+										style="font-size: 8pt;color:#000;margin-top:-10px" />
+									<p:outputLabel value="CEP.: 12286-300"
+										style="font-size: 8pt;color:#000;margin-top:-10px" />
+									<p:outputLabel value="Fone: (12) 3655-5780"
+										style="font-size: 8pt;color:#000;margin-top:-10px" />
+									<p:outputLabel value="www.olgber.com.br"
+										style="font-size: 8pt;color:#000;margin-top:-10px" />
+								</h:panelGrid>
+
+							</h:panelGrid>
+
+							<h:panelGrid columns="1"
+								style="margin-left:120px;margin-top:30px">
+								<p:outputLabel value="SOLICITAÇÃO DE ABERTURA DE CONTA SALÁRIO"
+									style="font-size: 16pt;text-decoration:underline" />
+							</h:panelGrid>
+
+							<h:panelGrid columns="1" style="margin-top:30px;margin-left:15px">
+								<p:outputLabel value="Á" style="font-size: 12pt;color:#000" />
+							</h:panelGrid>
+							<h:panelGrid columns="1" style="margin-top:10px;margin-left:50px">
+								<p:outputLabel value="Banco BRADESCO"
+									style="font-size: 12pt;color:#000" />
+								<p:outputLabel value="Ag: 7354-7 - CAÇAPAVA"
+									style="font-size: 12pt;color:#000" />
+							</h:panelGrid>
+							
+							<h:panelGrid columns="1" style="margin-top:40px">
+								<p:outputLabel
+									value="Solicitamos ao banco Bradesco, Agência Caçapava, a abertura de conta salário para fins de"
+									style="font-size: 9pt;color:#000;margin-left:50px" />
+								<p:outputLabel
+									value="crédito de salários, férias e demais verbas ao (a) empregado #{atualCadController.cadastral.funcionarioBean.nome},"
+									style="font-size: 9pt;color:#000;margin-left:15px" />
+								<p:outputLabel
+									value="CPF nº: #{atualCadController.cadastral.funcionarioBean.cpf}, RG nº: #{atualCadController.cadastral.funcionarioBean.rg}, residente a #{atualCadController.cadastral.endereco.tipoLogradouro} #{atualCadController.cadastral.endereco.logradouro}, nº #{atualCadController.cadastral.endereco.numero}"
+									style="font-size: 9pt;color:#000;margin-left:15px" />
+								<p:outputLabel
+									value="#{atualCadController.cadastral.endereco.bairro}, #{atualCadController.cadastral.endereco.cidade} - #{atualCadController.cadastral.endereco.estado}; admitido em #{atualCadController.dtAdmissao}, na função de #{atualCadController.cadastral.funcionarioBean.funcao},"
+									style="font-size: 9pt;color:#000;margin-left:15px">
+									<f:convertDateTime pattern="dd/MM/yyyy" locale="pt_BR" />
+								</p:outputLabel>
+								<p:outputLabel value="salário de R$#{atualCadController.salario} Mês."
+									style="font-size: 9pt;color:#000;margin-left:15px" />
+							</h:panelGrid>
+							
+							<h:panelGrid columns="1" style="margin-top:40px;margin-left:15px">
+								<p:outputLabel value="Caçapava, #{atualCadController.dataHoje}" style="font-size: 11pt;color:#000" />
+							</h:panelGrid>
+							
+							<h:panelGrid columns="1" style="margin-top:40px;margin-left:15px">
+								<p:outputLabel value="_____________________________" style="font-size: 11pt;color:#000" />
+								<p:outputLabel value="OLGBER ESPECIALIDADES EIRELI" style="font-size: 11pt;color:#000" />
+								<p:outputLabel value="Empregador" style="font-size: 11pt;color:#000" />
+								<p:outputLabel value="CNPJ: 03.293.568/0001-36" style="font-size: 11pt;color:#000" />
+								<p:outputLabel value="I.E.: 234.100.542.113" style="font-size: 11pt;color:#000" />
+								<p:outputLabel value="Setor Recursos Humanos" style="font-size: 11pt;color:#000" />
+								<p:outputLabel value="Administração" style="font-size: 11pt;color:#000" />
+							</h:panelGrid>
+						</h:panelGrid>
+						<p:commandButton value="Imprimir"
+							style="margin-left:10px;width:150px" type="button">
+							<p:printer target="impressao" />
+						</p:commandButton>
+					</div>
+				</p:dialog>
+			</h:form>
+
+		</div>
+	</ui:define>
+</ui:composition>

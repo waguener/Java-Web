@@ -1,0 +1,151 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:p="http://primefaces.org/ui">
+<h:head>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1" />
+	<title><ui:insert name="titulo">BelCanto</ui:insert></title>
+	<h:outputScript library="javascripts" name="app.js" />
+	<h:outputScript library="javascripts" name="locale-primefaces.js" />
+	<h:outputStylesheet library="styles" name="custom.css" />
+	<h:outputStylesheet library="styles" name="layout.css" />
+	<h:outputStylesheet library="styles" name="components.css" />
+	<h:outputStylesheet library="styles" name="growl.css" />
+
+	<style>
+.ui-growl {
+	position: fixed;
+	top: 70px;
+}
+
+.ui-panelmenu {
+	background-color: DodgerBlue !important;
+}
+
+.cores {
+	font-weight: bold;
+	color: #FF8C00 !important;
+	background-image: none !important;
+}
+</style>
+
+	<script type="text/javascript">
+		function onlyNumbers(data) {
+			data.value = data.value.replace(/[^0-9]/g, '');
+
+		};
+	</script>
+	<script>
+		function growlColour() {
+			$(".ui-growl-image-info").parent().parent().addClass("g-info");
+			$(".ui-growl-image-warn").parent().parent().addClass("g-warn");
+			$(".ui-growl-image-error").parent().parent().addClass("g-error");
+			$(".ui-growl-image-fatal").parent().parent().addClass("g-fatal");
+		}
+		function mascara(o, f) {
+			v_obj = o
+			v_fun = f
+			setTimeout("execmascara()", 1)
+		}
+
+		function execmascara() {
+			v_obj.value = v_fun(v_obj.value)
+		}
+
+		function moeda(v) {
+			v = v.replace(/\D/g, ""); // permite digitar apenas numero 
+			v = v.replace(/(\d{1})(\d{15})$/, "$1.$2") // coloca ponto antes dos ultimos digitos 
+			v = v.replace(/(\d{1})(\d{11})$/, "$1.$2") // coloca ponto antes dos ultimos 11 digitos 
+			v = v.replace(/(\d{1})(\d{8})$/, "$1.$2") // coloca ponto antes dos ultimos 8 digitos 
+			v = v.replace(/(\d{1})(\d{5})$/, "$1.$2") // coloca ponto antes dos ultimos 5 digitos 
+			v = v.replace(/(\d{1})(\d{1,2})$/, "$1,$2") // coloca virgula antes dos ultimos 2 digitos 
+			return v;
+		}
+	</script>
+	<script type="text/javascript">
+		function handleDrop(event, ui) {
+			var droppedMatricula = ui.draggable;
+
+			droppedMatricula.fadeOut('fast');
+		}
+	</script>
+</h:head>
+<h:body>
+
+	<p:growl autoUpdate="true" life="3000" id="msg" />
+	<header class="aw-topbar">
+	<div>
+		<ui:insert name="cabecalho">
+			<h:panelGrid columns="2" styleClass="barraLogado">
+				<h:panelGrid columns="2" style="margin-top:-5px">
+					<a href="#" class="aw-toggle  js-toggle"><i class="fa fa-bars"
+						style="font-size: 32px; padding: 10px"></i></a>
+					<p:graphicImage library="imagens" name="belcanto.png"
+						styleClass="logo" style="padding:1px" />
+				</h:panelGrid>
+
+				<h:panelGrid columns="2" style="text-align:center">
+					<h:panelGrid columns="1" style="text-align:center;margin-top:-2px">
+						<p:outputLabel
+							value=" #{authenticationContext.usuarioLogado.nome}"
+							style="font-size:12px;color:#F0F8FF;text-shadow: 2px 2px 3px #000000;" />
+						<p:outputLabel
+							value=" #{authenticationContext.usuarioLogado.tipo}"
+							style="font-size:10px;color:#F0F8FF;text-shadow: 1px 2px 3px #000000;" />
+						<p:commandLink value="Sair" style="color:#F0F8FF;" title="Clique para Sair"
+							action="#{authenticationContext.logout}" styleClass="sair"/>
+					</h:panelGrid>
+					<h:panelGrid columns="1">
+						<p:graphicImage library="imagens" name="noUser.jpg" width="44px"
+							height="42px"
+							style="text-align:center;box-shadow: 1px 1px 4px;border-radius: 70px"
+							rendered="#{authenticationContext.usuarioLogado.foto == null}">
+							<f:param name="idUsuario"
+								value="#{authenticationContext.usuarioLogado.id}" />
+						</p:graphicImage>
+						<p:graphicImage value="#{usuarioController.imagemUsuario}"
+							width="44px" height="42px"
+							style="text-align:center;border-radius: 70px;border:1.5px solid #fff;"
+							rendered="#{usuarioController.imagemUsuario != null}">
+							<f:param name="idUsuario" 
+								value="#{authenticationContext.usuarioLogado.id}" />
+						</p:graphicImage>
+						
+					</h:panelGrid>
+				</h:panelGrid>
+			</h:panelGrid>
+		</ui:insert>
+	</div>
+	</header>
+	<ui:insert name="lateral">
+		<aside class="aw-sidebar  js-sidebar"> <ui:include
+			src="Menu.xhtml" /> </aside>
+	</ui:insert>
+	<div class="aw-content  js-content">
+		<ui:insert name="conteudo">
+			<p:idleMonitor timeout="5000" >
+				 <p:ajax event="idle" listener="#{homeController.deslogar()}" update="@form" />
+			</p:idleMonitor>
+		</ui:insert>
+	</div>
+	<div id="rodape">
+		<ui:insert name="rodape">
+			<p:panelGrid columns="3" layout="grid"
+				styleClass="panelgrid-noborder"
+				columnClasses="ui-grid-col-2,ui-grid-col-7,ui-grid-col-3"
+				style="margin-top:10px">
+				<p:outputLabel />
+
+			</p:panelGrid>
+
+		</ui:insert>
+
+	</div>
+</h:body>
+</html>
+

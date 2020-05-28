@@ -1,0 +1,88 @@
+<ui:composition template="/template/Layout.xhtml"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:p="http://primefaces.org/ui">
+
+	<ui:define name="titulo">PesquisaAgência</ui:define>
+
+	<ui:define name="conteudo">
+
+		<div class="ui-fluid">
+			<h:form
+				style="margin-left: auto; margin-right:auto; font-weight:bold; font-size: 10px">
+				#{agenciaController.iniciarPesquisa()}
+				<p:panel header="Pesquisar Agências">
+				<p:panelGrid columns="4" layout="grid"
+						styleClass="panelgrid-noborder"
+						columnClasses="ui-grid-col-4,ui-grid-col-1,ui-grid-col-3,ui-grid-col-4">
+
+						<p:inputText placeholder="Insira o nome da Agência" onkeyup="this.value = this.value.toUpperCase()"
+							value="#{agenciaController.nome}" />
+						<p:commandButton icon="fa fa-search" process="@form" id="buscar"
+							action="#{agenciaController.porAgencia()}" update="tbl" />
+						<p:outputLabel />
+						<p:outputLabel />
+
+					</p:panelGrid>
+					<p:dataTable id="tbl" reflow="true" resizeMode="expand" 
+						emptyMessage="Lista Vazia" resizableColumns="true"
+						value="#{agenciaController.agencias}" scrollable="true"
+						var="agencia" style="margin-top:5px" paginator="true" rows="15"
+						rowsPerPageTemplate="5,10,15" paginatorPosition="bottom"
+						paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} ">
+
+						<p:column headerText="Agência " width="15%">
+							<h:outputLabel value="#{agencia.nome}" />
+						</p:column>
+
+						<p:column headerText="Endereço" width="10%">
+							<h:outputLabel value="#{agencia.endereco}" />
+						</p:column>
+						<p:column headerText="Bairro" width="10%" style="text-align:center">
+							<h:outputLabel value="#{agencia.bairro}" />
+						</p:column>
+						<p:column headerText="Cidade" width="8%"
+							style="text-align:center">
+							<h:outputLabel value="#{agencia.cidade}">
+								
+							</h:outputLabel>
+						</p:column>
+						<p:column headerText="Telefone" width="8%" style="text-align:center">
+							<h:outputLabel value="#{agencia.telefone}">
+								
+							</h:outputLabel>
+						</p:column>
+						
+						<p:column width="10%" style="text-align:center">
+							
+							<p:commandButton icon="fa fa-edit" style="width:25px"
+								action="#{agenciaController.editarAgencia(agencia)}"
+								title="Clique para Editar"/>
+
+							<p:commandButton icon="fa fa-trash" style="width:25px"
+								action="#{agenciaController.prepararExcluirAgencia(agencia)}"
+								oncomplete="PF('confirmarExclusaoCursoDialog').show()"
+								id="excluir" title="Clique para Excluir" />
+						</p:column>
+					</p:dataTable>
+					<p:blockUI block="tbl" trigger="buscar" animate="true">
+							PESQUISANDO...<br />
+							<p:graphicImage library="imagens" name="load.gif" />
+					</p:blockUI>				
+				
+				</p:panel>
+				<p:confirmDialog widgetVar="confirmarExclusaoCursoDialog" 
+					responsive="true" message="Deseja excluir esta Agência?">
+					<p:commandButton value="Sim" update="tbl" action="#{agenciaController.excluirAgencia}" 
+						oncomplete="PF('confirmarExclusaoCursoDialog').hide()" style="width:50px"/>
+					<p:commandButton value="Não"
+						oncomplete="PF('confirmarExclusaoCursoDialog').hide()" style="width:50px"/>
+				</p:confirmDialog>
+			</h:form>
+			
+
+		</div>
+	</ui:define>
+</ui:composition>

@@ -1,0 +1,352 @@
+<ui:composition template="/template/Layout.xhtml"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:p="http://primefaces.org/ui">
+
+	<ui:define name="titulo">Home</ui:define>
+
+	<ui:define name="conteudo">
+		<div class="ui-fluid">
+			<h:form
+				style="width: 100%; font-weight:bold;font-size: 12px; margin-top:1%">
+				#{homeController.init()}
+				<p:panelGrid columns="3" layout="grid"
+					styleClass="panelgrid-noborder"
+					columnClasses="ui-grid-col-4,ui-grid-col-4,ui-grid-col-4">
+					<p:outputLabel />
+					<h:graphicImage library="imagens" name="cpo.png"
+						style="padding:3px;width:150px" />
+					<p:outputLabel />
+				</p:panelGrid>
+				<p:poll interval="60" listener="#{homeController.init()}" update="@form"/>
+				
+				<p:fieldset legend="Kanban" toggleable="true" toggleSpeed="400">
+					<p:panelGrid columns="4" layout="grid"
+						styleClass="panelgrid-noborder"
+						columnClasses="ui-grid-col-3,ui-grid-col-3,ui-grid-col-3,ui-grid-col-3">
+						<p:panel >
+							<p:panelGrid columns="1" layout="grid"
+								columnClasses="ui-grid-col-12">
+								<h:graphicImage library="imagens" name="caminhaoChegada.png"
+									style="width:50%;margin-left: 15%" />
+
+
+								<p:panelGrid columns="3" layout="grid" 
+									columnClasses="ui-grid-col-5,ui-grid-col-5,ui-grid-col-2">
+
+									<p:outputLabel value="Inicio:"
+										style="font-size:12px;margin-left:-10%" />
+
+									<p:outputLabel value="#{homeController.carga.hora_chegada}"
+										style="font-size:12px" />
+
+									<p:outputLabel/>
+
+									<p:outputLabel value="Retorno:"
+										style="font-size:12px;margin-left:-10%" />
+
+									<p:outputLabel style="font-size:12px" value="#{homeController.carga.tempo_retorno}"/>
+
+									<p:outputLabel />
+
+									<p:outputLabel value="Parado:"
+										style="font-size:12px;margin-left:-10%" />
+
+									<p:outputLabel style="font-size:12px" value="#{homeController.carga.hora_total_parado}"/>
+									<p:outputLabel />
+
+								</p:panelGrid>
+
+
+							</p:panelGrid>
+						</p:panel>
+
+						<p:panel>
+							<p:panelGrid columns="1" layout="grid"
+								columnClasses="ui-grid-col-12">
+								<h:graphicImage library="imagens" id="img2"
+									name="caminhaoDescarregamento.png"
+									style="width:50%;margin-left: 15%" />
+
+
+								<p:panelGrid columns="3" layout="grid"
+									columnClasses="ui-grid-col-4,ui-grid-col-2,ui-grid-col-6">
+
+									<p:outputLabel value="Inicio:"
+										style="font-size:12px;;margin-left:-30%" />
+									<p:outputLabel />
+									<p:outputLabel style="font-size:12px" value="#{homeController.carga.hora_inicio_descarregamento}" />
+
+
+									<p:outputLabel value="Término:"
+										style="font-size:12px;;margin-left:-30%" />
+									<p:outputLabel />
+									<p:outputLabel style="font-size:12px" value="#{homeController.carga.hora_termino_descarregamento}" />
+
+
+									<p:outputLabel value="Total:"
+										style="font-size:12px;margin-left:-30%" />
+									<p:outputLabel />
+									<p:outputLabel style="font-size:12px" value="#{homeController.carga.hora_total_descarregamento}" />
+
+								</p:panelGrid>
+
+							</p:panelGrid>
+						</p:panel>
+
+						<p:panel>
+							<p:panelGrid columns="1" layout="grid"
+								columnClasses="ui-grid-col-12">
+								<h:graphicImage library="imagens"
+									name="caminhaoCarregamento.png"
+									style="width:50%;margin-left: 15%" />
+
+
+
+								<p:panelGrid columns="3" layout="grid"
+									columnClasses="ui-grid-col-4,ui-grid-col-2,ui-grid-col-6">
+
+									<p:outputLabel value="Inicio:"
+										style="font-size:12px;margin-left:-30%" />
+									<p:outputLabel />
+									<p:outputLabel style="font-size:12px" value="#{homeController.carga.hora_inicio_carregamento}"/>
+
+									<p:outputLabel value="Término:"
+										style="font-size:12px;;margin-left:-30%" />
+									<p:outputLabel />
+									<p:outputLabel style="font-size:12px" value="#{homeController.carga.hora_termino_carregamento}"/>
+
+
+									<p:outputLabel value="Total:"
+										style="font-size:12px;;margin-left:-30%" />
+									<p:outputLabel />
+									<p:outputLabel style="font-size:12px" value="#{homeController.carga.hora_total_carregamento}"/>
+
+								</p:panelGrid>
+
+							</p:panelGrid>
+						</p:panel>
+
+						<p:panel >
+							<p:panelGrid columns="1" layout="grid"
+								columnClasses="ui-grid-col-12">
+								<h:graphicImage library="imagens" name="caminhaoSaida.png"
+									style="width:50%;margin-left: 15%" />
+
+								<p:panelGrid columns="3" layout="grid"
+									columnClasses="ui-grid-col-3,ui-grid-col-6,ui-grid-col-3">
+
+									<p:outputLabel />
+
+									<p:outputLabel />
+
+								</p:panelGrid>
+								<p:panelGrid columns="3" layout="grid"
+									columnClasses="ui-grid-col-6,ui-grid-col-2,ui-grid-col-4">
+
+									<p:outputLabel value="Tempo Olgber:"
+										style="font-size:12px;margin-left:-20%" />
+									<p:outputLabel />
+									<p:outputLabel style="font-size:12px" value="#{homeController.carga.hora_total_olgber}"/>
+								</p:panelGrid>
+							</p:panelGrid>
+						</p:panel>
+
+
+					</p:panelGrid>
+				</p:fieldset>
+				<p:fieldset legend="Últimas Movimentações" toggleable="true"
+					toggleSpeed="500" style="margin-top:5px">
+					<p:tabView orientation="top" >
+						<p:tab title="Entradas"  >
+							<p:dataTable widgetVar="verMov" emptyMessage="Lista Vazia"
+								value="#{homeController.listaMov}" var="mov" id="tbl"
+								style="font-size:10px" rows="10"
+								scrollable="true" scrollWidth="1000" reflow="true"
+								scrollHeight="250">
+
+
+								<p:column headerText="Codigo" width="70"
+									style="text-align:center">
+									<h:outputLabel
+										value="#{mov.recebimento.codigo}" />
+								</p:column>
+
+								<p:column headerText="Produto" width="240"
+									style="text-align:center">
+									<p:outputLabel
+										value="#{mov.recebimento.produto}" />
+								</p:column>
+
+								<p:column headerText="Lote" width="70" style="text-align:center">
+									<h:outputLabel value="#{mov.recebimento.lote}" />
+								</p:column>
+
+								<!-- Recebimento -->
+								<p:column headerText="Data Entrada" width="70"
+									style="text-align:center">
+									<h:outputLabel value="#{mov.recebimento.dataEntrada}">
+										<f:convertDateTime pattern="dd/MM/yyyy" locale="pt_BR" />
+									</h:outputLabel>
+								</p:column>
+								<p:column headerText="Hora Entrada" width="70"
+									style="text-align:center">
+									<h:outputLabel value="#{mov.recebimento.horaEntrada}" />
+								</p:column>
+								<p:column headerText="U.D. Entrada" width="70"
+									style="text-align:center">
+									<h:outputLabel value="#{mov.recebimento.numeroRack}" />
+								</p:column>
+								<p:column headerText="Qtd Entrada" width="70"
+									style="text-align:center">
+									<h:outputLabel
+										value="#{mov.recebimento.pesoFicha} - #{mov.recebimento.uniMedida}" />
+								</p:column>
+								<p:column headerText="Resp. Entrada" width="150"
+									style="text-align:center">
+									<h:outputLabel value="#{mov.recebimento.responsavel}" />
+								</p:column>
+
+								
+
+							</p:dataTable>
+						</p:tab>
+						<p:tab title="Retirada Armazém">
+							<p:dataTable widgetVar="verMov" emptyMessage="Lista Vazia"
+								value="#{homeController.listaRet}" var="mov" id="tbl2"
+								style="font-size:10px" rows="10"
+								 reflow="true">
+
+								<p:column headerText="Codigo" width="70"
+									style="text-align:center">
+									<h:outputLabel
+										value="#{mov.recebimento.codigo}" />
+								</p:column>
+
+								<p:column headerText="Produto" width="240"
+									style="text-align:center">
+									<p:outputLabel
+										value="#{mov.recebimento.produto}" />
+								</p:column>
+
+								<p:column headerText="Lote" width="70" style="text-align:center">
+									<h:outputLabel value="#{mov.recebimento.lote}" />
+								</p:column>
+								
+								
+								<!-- Retirado -->
+
+								<p:column headerText="Data Retirada" width="70"
+									style="text-align:center">
+									<h:outputLabel value="#{mov.dataRetirada}">
+										<f:convertDateTime pattern="dd/MM/yyyy" locale="pt_BR" />
+									</h:outputLabel>
+								</p:column>
+								<p:column headerText="Hora Retirada" width="70"
+									style="text-align:center">
+									<h:outputLabel value="#{mov.horaSaida}" />
+								</p:column>
+								<p:column headerText="Qtd Retirada" width="70"
+									style="text-align:center">
+									<h:outputLabel rendered="#{mov.qtdRetirada > 0}"
+										value="#{mov.qtdRetirada} - #{mov.recebimento.uniMedida}" />
+								</p:column>
+								<p:column headerText="Resp. Retirar" width="70"
+									style="text-align:center">
+									<h:outputLabel value="#{mov.resp}" />
+								</p:column>
+							</p:dataTable>
+						</p:tab>
+						<p:tab title="Devoluções Armazém">
+							<p:dataTable widgetVar="verMov" emptyMessage="Lista Vazia"
+								value="#{homeController.listaDev}" var="mov" id="tbl3"
+								style="margin-top:5px;font-size:10px" rows="10">
+
+
+								<p:column headerText="Codigo" width="70"
+									style="text-align:center">
+									<h:outputLabel
+										value="#{mov.recebimento.codigo}" />
+								</p:column>
+
+								<p:column headerText="Produto" width="240"
+									style="text-align:center">
+									<p:outputLabel
+										value="#{mov.recebimento.produto}" />
+								</p:column>
+
+								<p:column headerText="Lote" width="70" style="text-align:center">
+									<h:outputLabel value="#{mov.recebimento.lote}" />
+								</p:column>
+								<p:column headerText="Data Devolução" width="70"
+									style="text-align:center">
+									<h:outputLabel value="#{mov.dataRetorno}">
+										<f:convertDateTime pattern="dd/MM/yyyy" locale="pt_BR" />
+									</h:outputLabel>
+								</p:column>
+								<p:column headerText="Hora Devolução" width="70"
+									style="text-align:center">
+									<h:outputLabel value="#{mov.horaRetorno}" />
+								</p:column>
+								<p:column headerText="Qtd Devolução" width="70"
+									style="text-align:center">
+									<h:outputLabel rendered="#{mov.qtdRetorno > 0}"
+										value="#{mov.qtdRetorno} - #{mov.recebimento.uniMedida}" />
+								</p:column>
+								<p:column headerText="Resp. Devolução" width="70"
+									style="text-align:center">
+									<h:outputLabel value="#{mov.respRetorno}" />
+								</p:column>
+							</p:dataTable>
+						</p:tab>
+						<p:tab title="Devoluções Cliente">
+							<p:dataTable widgetVar="verMov" emptyMessage="Lista Vazia"
+								value="#{homeController.listaDevCliente}" var="mov" id="tbl4"
+								style="font-size:10px" rows="10">
+
+
+								<p:column headerText="Codigo" width="70"
+									style="text-align:center">
+									<h:outputLabel
+										value="#{mov.recebimento.codigo}" />
+								</p:column>
+
+								<p:column headerText="Produto" width="240"
+									style="text-align:center">
+									<p:outputLabel
+										value="#{mov.recebimento.produto}" />
+								</p:column>
+
+								<p:column headerText="Lote" width="70" style="text-align:center">
+									<h:outputLabel value="#{mov.recebimento.lote}" />
+								</p:column>
+								
+								<!-- Devolução Cliente -->
+								<p:column headerText="Data Dev.Cliente" width="70"
+									style="text-align:center">
+									<h:outputLabel value="#{mov.dataDevCliente}">
+										<f:convertDateTime pattern="dd/MM/yyyy" locale="pt_BR" />
+									</h:outputLabel>
+								</p:column>
+								<p:column headerText="Qtd Dev.Cliente" width="70"
+									style="text-align:center">
+									<h:outputLabel
+										value="#{mov.qtdDevCliente} - #{mov.recebimento.uniMedida}"
+										rendered="#{mov.qtdDevCliente > 0}" />
+								</p:column>
+								<p:column headerText="N.F. DEv.Cliente" width="70"
+									style="text-align:center" >
+									<h:outputLabel value="#{mov.nfDevCliente} " />
+								</p:column>
+							</p:dataTable>
+						</p:tab>
+					</p:tabView>
+				</p:fieldset>
+			
+			</h:form>
+		</div>
+	</ui:define>
+</ui:composition>
+

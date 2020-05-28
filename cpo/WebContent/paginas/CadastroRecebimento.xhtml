@@ -1,0 +1,299 @@
+<ui:composition template="/template/Layout.xhtml"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:p="http://primefaces.org/ui">
+
+	<ui:define name="titulo">Cadastrar Recebimento</ui:define>
+
+	<ui:define name="conteudo">
+		<div class="ui-fluid">
+			<h:form id="form"
+				style="width: 100%; font-weight:bold;font-size: 12px; margin-top:1%">
+				#{recebimentoController.inicioRecebimento()}
+				<p:focus context="form" />
+				
+				<p:fieldset legend="Cadastrar Recebimento de Produto" id="busca"
+					toggleable="false">
+					<h:panelGrid columns="4">
+						<p:outputLabel value="Código do Produto"
+							style="font-size:18px;color:#000" />
+						<p:inputText
+							onkeyup="$(this).val($(this).val().replace(/[^0-9]/g, ''));"
+							id="codigo" value="#{recebimentoController.cod}" size="11"
+							style="margin-left:20px;font-size:18px;font-weigth:bold;color:#000"
+							dir="rtl" />
+
+						<p:commandButton icon="fa fa-search"
+							style="margin-left:30px;width:50px" process="busca"
+							action="#{recebimentoController.buscarProduto()}" 
+							update="produto,busca,linha1,somar,linha3" />
+
+						<p:commandButton icon="fa fa-refresh"
+							action="#{recebimentoController.repetir()}"
+							rendered="#{recebimentoController.botaoRepetir == true}"
+							process="busca" update="linha1,somar,linha3" />
+					</h:panelGrid>
+				</p:fieldset>
+				<p:fieldset style="margin-top:10px">
+					<p:panelGrid columns="6" layout="grid" id="produto"
+						styleClass="panelgrid-noborder" style="font-size:12px "
+						columnClasses="ui-grid-col-1,ui-grid-col-6,ui-grid-col-1,ui-grid-col-2,ui-grid-col-2,ui-grid-col-1">
+
+						<p:outputLabel value="Produto:" style="font-size:14px;color:#000" />
+						<p:outputLabel
+							value="#{recebimentoController.recebimento.produto}"
+							style="font-size:18px;color:#000" />
+						<p:outputLabel value="Data:" style="font-size:14px;color:#000" />
+						<p:outputLabel
+							value="#{recebimentoController.recebimento.dataEntrada}"
+							style="font-size:18px;color:#000">
+							<f:convertDateTime pattern="dd/MM/yyyy" locale="pt_BR" />
+						</p:outputLabel>
+						<p:outputLabel value="Hora Entrada:"
+							style="font-size:14px;color:#000" />
+						<p:outputLabel
+							value="#{recebimentoController.recebimento.horaEntrada}"
+							style="font-size:18px;color:#000" />
+
+					</p:panelGrid>
+
+
+					<p:panelGrid columns="6" layout="grid"
+						styleClass="panelgrid-noborder" id="linha1"
+						style="font-size:12px;margin-top:10px "
+						columnClasses="ui-grid-col-1,ui-grid-col-2,ui-grid-col-1,ui-grid-col-2,ui-grid-col-1,ui-grid-col-2">
+
+						<p:outputLabel value="Delivery:" style="font-size:14px;color:#000" />
+						<p:inputText value="#{recebimentoController.recebimento.delivery}"
+							required="true" requiredMessage="Insira o Delivery"
+							onfocus="this.style.backgroundColor='#ffffcc';"
+							onblur="this.style.backgroundColor='#ccff66';"
+							style="margin-left:0px;font-size:18px;color:#000" tabindex="1">
+							<p:ajax event="blur"
+								listener="#{recebimentoController.controleCampos1}"
+								process="@this" />
+						</p:inputText>
+
+						<p:outputLabel value="Lote:" style="font-size:14px;color:#000" />
+						<p:inputText value="#{recebimentoController.recebimento.lote}"
+							style="margin-left:-8px;font-size:18px;color:#000"
+							onfocus="this.style.backgroundColor='#ffffcc';"
+							onblur="this.style.backgroundColor='#ccff66';" required="true"
+							requiredMessage="Insira o Lote" id="campo1" tabindex="2">
+							<p:ajax event="blur" 
+								listener="#{recebimentoController.controleCampos2}"
+								process="@this" />
+						</p:inputText>
+
+						<p:outputLabel value="Validade:" style="font-size:14px;color:#000" />
+						<p:calendar pattern="dd/MM/yyyy" mask="99/99/9999" required="true"
+							id="campo2"
+							style="margin-left:0px;font-size:18px;color:#000;width:250px"
+							requiredMessage="Informe a Data" navigator="true"
+							onfocus="this.style.backgroundColor='#ffffcc';"
+							onblur="this.style.backgroundColor='#ccff66';"
+							value="#{recebimentoController.recebimento.dataValidade}"
+							effect="fold" locale="pt" title="Clique para abrir o calendário"
+							tabindex="3">
+							<p:ajax event="blur"
+								listener="#{recebimentoController.controleCampos3}"
+								process="@this" />
+						</p:calendar>
+
+					</p:panelGrid>
+
+					<p:panelGrid columns="10" layout="grid"
+						styleClass="panelgrid-noborder" id="somar"
+						style="font-size:12px;margin-top:10px "
+						columnClasses="ui-grid-col-1,ui-grid-col-2,ui-grid-col-1,ui-grid-col-1,ui-grid-col-1,ui-grid-col-1,ui-grid-col-2,ui-grid-col-1">
+
+						<p:outputLabel value="N.Fiscal:" style="font-size:14px;color:#000" />
+						<p:inputText
+							value="#{recebimentoController.recebimento.notaFiscal}"
+							style="margin-left:-2px;font-size:18px;color:#000" id="campo3"
+							onfocus="this.style.backgroundColor='#ffffcc';"
+							onblur="this.style.backgroundColor='#ccff66';" required="true"
+							requiredMessage="Insira o Número da Nota Fiscal" tabindex="4">
+							<p:ajax event="blur"
+								listener="#{recebimentoController.controleCampos4}"
+								process="@this" />
+						</p:inputText>
+						<p:outputLabel value="Fisico:"
+							style="font-size:14px;color:#000;margin-left:5px" />
+						<p:inputText
+							onkeyup="$(this).val($(this).val().replace(/[^0-9]/g, ''));"
+							style="width:90px;font-size:18px;color:#000;margin-left:-15px"
+							required="true" id="campo4"
+							onfocus="this.style.backgroundColor='#ffffcc';"
+							onblur="this.style.backgroundColor='#ccff66';"
+							requiredMessage="Insira o Peso ou Quantidade Fisica"
+							value="#{recebimentoController.recebimento.pesoFisico}" dir="rtl"
+							tabindex="5">
+							<p:ajax event="blur"
+								listener="#{recebimentoController.controleCampos5}"
+								process="@this" />
+						</p:inputText>
+
+						<p:outputLabel value="Ficha:"
+							style="font-size:14px;color:#000;margin-left:5px" />
+						<p:inputText
+							onkeyup="$(this).val($(this).val().replace(/[^0-9]/g, ''));"
+							style="width:90px;font-size:18px;color:#000;margin-left:-15px"
+							required="true" id="campo5"
+							onfocus="this.style.backgroundColor='#ffffcc';"
+							onblur="this.style.backgroundColor='#ccff66';"
+							requiredMessage="Insira o Peso ou Quantidade da Ficha"
+							value="#{recebimentoController.recebimento.pesoFicha}" dir="rtl"
+							tabindex="6">
+							
+							<p:ajax event="blur"
+								listener="#{recebimentoController.controleCampos6}"
+								process="@this" update="total" />
+						</p:inputText>
+
+						<p:selectOneMenu style="font-size:18px;color:#000;margin-left:7px"
+							value="#{recebimentoController.recebimento.uniMedida}"
+							id="campo6" onfocus="this.style.backgroundColor='#ffffcc';"
+							onblur="this.style.backgroundColor='#ccff66';" required="true"
+							requiredMessage="selecione a Unidade de Medida" tabindex="7">
+							<f:selectItem itemValue="#{null}" itemLabel="Uni.Medida" />
+							<f:selectItem itemValue="KG" itemLabel="KILO" />
+							<f:selectItem itemValue="UN" itemLabel="UNIDADES" />
+							<f:selectItem itemValue="MTs" itemLabel="METROS" />
+							<p:ajax event="blur"
+								listener="#{recebimentoController.controleCampos7}"
+								process="@this" />
+						</p:selectOneMenu>
+
+
+
+						<p:outputLabel value="Diferença:"
+							style="font-size:14px;color:#000" />
+						<p:outputLabel
+							value="#{recebimentoController.recebimento.diferenca}" id="total"
+							dir="ltr" style="font-size:14px;color:#000" />
+					</p:panelGrid>
+
+					<p:panelGrid columns="6" layout="grid" id="linha3"
+						styleClass="panelgrid-noborder"
+						style="font-size:12px;margin-top:10px "
+						columnClasses="ui-grid-col-1,ui-grid-col-2,ui-grid-col-1,ui-grid-col-3,ui-grid-col-1,ui-grid-col-3">
+
+						<p:outputLabel value="U.D:" style="font-size:14px;color:#000" />
+						<p:inputText id="ud" tabindex="8"
+							value="#{recebimentoController.recebimento.numeroRack}"
+							required="true" requiredMessage="Insira a U.D!!!"
+							onfocus="this.style.backgroundColor='#ffffcc';"
+							onblur="this.style.backgroundColor='#ccff66';"
+							style="margin-left:-2px;font-size:18px;color:#000">
+
+							<p:ajax event="blur" listener="#{recebimentoController.testeUd}"
+								process="ud" update="alerta" />
+						</p:inputText>
+
+						<p:outputLabel value="Tipo:" style="font-size:14px;color:#000" />
+						<p:selectOneMenu value="#{recebimentoController.recebimento.tipo}"
+							style="font-size:18px;color:#000;margin-left:-8px" id="campo8"
+							onfocus="this.style.backgroundColor='#ffffcc';"
+							onblur="this.style.backgroundColor='#ccff66';" required="true"
+							requiredMessage="Selecione o Tipo" tabindex="9">
+							<f:selectItem itemValue="#{null}" itemLabel="Tipo da Carga" />
+							<f:selectItem itemValue="SEMI-ACABADO" itemLabel="SEMI-ACABADO" />
+							<f:selectItem itemValue="INSUMO" itemLabel="INSUMO" />
+							<p:ajax event="blur"
+								listener="#{recebimentoController.controleCampos9}"
+								process="@this"  />
+						</p:selectOneMenu>
+
+						<p:outputLabel value="Responsável:"
+							style="margin-left:-5px;font-size:14px;color:#000" />
+						<p:inputText style="font-size:18px;color:#000;margin-left:15px"
+							value="#{recebimentoController.recebimento.responsavel}"
+							id="campo9" onfocus="this.style.backgroundColor='#ffffcc';"
+							onblur="this.style.backgroundColor='#ccff66';"
+							onkeyup="this.value = this.value.toUpperCase()" required="true"
+							requiredMessage="Insira o Responsável" tabindex="10">
+							<p:ajax event="blur"
+								listener="#{recebimentoController.controleCampos10}"
+								process="@this" update="salvar" />
+						</p:inputText>
+						<p:outputLabel />
+						<p:outputLabel value="#{recebimentoController.msg}" style="color:#e60000"
+							 id="alerta"/>
+
+
+					</p:panelGrid>
+
+
+
+					<p:panelGrid columns="6" layout="grid"
+						styleClass="panelgrid-noborder"
+						style="font-size:12px;margin-top:10px "
+						columnClasses="ui-grid-col-1,ui-grid-col-2,ui-grid-col-1,ui-grid-col-2,ui-grid-col-2,ui-grid-col-1">
+
+						<p:commandButton value="Salvar"
+							disabled="#{recebimentoController.botaoSalvar != true}"
+							action="#{recebimentoController.salvar()}"
+							style="width:150px;height:50px;font-size:16pt" id="salvar"
+							process="@form" update=":form:codbar" />
+					</p:panelGrid>
+
+				</p:fieldset>
+				<p:dialog header="Código de Barras " resizable="false"
+					position="top" widgetVar="verCodBar" width="30%" height="50%"
+					closable="false" modal="true" showEffect="blind" hideEffect="size"
+					style="margin-top: 70px">
+					<h:panelGrid columns="1" id="codbar" style="margin-top:7px">
+						<p:outputLabel
+							value="#{recebimentoController.movimentacao.recebimento.produto}"
+							style="font-size:7px;margin:0px;margin-left:36px" />
+
+						<h:panelGrid columns="3" style="margin:0px">
+
+							<h:panelGrid columns="2" style="margin-top:-10px">
+								<p:outputLabel value="Cod:"
+									style="font-size:9px;margin:0px;margin-left:30px" />
+								<p:outputLabel
+									value="#{recebimentoController.movimentacao.recebimento.codigo}"
+									style="font-size:9px;margin:0px" />
+							</h:panelGrid>
+							<h:panelGrid columns="2" style="margin-top:-10px">
+								<p:outputLabel value="Lt:" style="font-size:7px;margin:0px" />
+								<p:outputLabel
+									value="#{recebimentoController.movimentacao.recebimento.lote}"
+									style="font-size:9px;margin:0px" />
+							</h:panelGrid>
+							<h:panelGrid columns="2" style="margin-top:-10px">
+								<p:outputLabel value="UD:" style="font-size:7px;margin:0px" />
+								<p:outputLabel
+									value="#{recebimentoController.movimentacao.recebimento.numeroRack}"
+									style="font-size:9px;margin:0px" />
+							</h:panelGrid>
+						</h:panelGrid>
+
+						<p:barcode value="#{recebimentoController.movimentacao.codbar}"
+							type="code128" height="155" width="250"
+							style="margin-left:10px;margin-top:-8px" />
+					</h:panelGrid>
+					<h:panelGrid columns="2">
+						<p:commandButton value="Imprimir"
+							action="#{recebimentoController.imprimirCodBar()}"
+							style="margin-left:10px;width:150px" type="button">
+							<p:printer target="codbar" />
+						</p:commandButton>
+						<p:commandButton value="Fechar"
+							action="#{recebimentoController.imprimirCodBar()}" />
+					</h:panelGrid>
+				</p:dialog>
+				<p:blockUI block="@form" trigger="salvar" animate="true">
+						SALVANDO ...<br />
+					<p:graphicImage library="imagens" name="load.gif" />
+				</p:blockUI>
+
+			</h:form>
+		</div>
+	</ui:define>
+</ui:composition>
+

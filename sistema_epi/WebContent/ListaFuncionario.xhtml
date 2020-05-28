@@ -1,0 +1,88 @@
+<ui:composition template="/template/LayoutPadrao.xhtml"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:fn="http://java.sun.com/jsp/jstl/functions">
+
+	<ui:define name="titulo">Lista de Funcionários</ui:define>
+
+	<ui:define name="conteudo">
+
+		<h:form style="font-size:9px">
+			#{sistemaControllerFuncionario.hoje()}
+			<p:panel header="Funcionários Cadastrados" >
+			<p:inputText id="nome"
+				onkeyup="this.value = this.value.toUpperCase()"
+				value="#{sistemaControllerFuncionario.nome}"
+				placeholder="Funcionário" />
+
+			<p:commandButton icon="ui-icon-search" value="Pesquisar"
+				action="#{sistemaControllerFuncionario.pesquisar}" process="@form"
+				update="tbl"/>
+				
+
+			<p:dataTable var="funcionario" emptyMessage="Lista Vazia" id="tbl"
+				value="#{sistemaControllerFuncionario.funcSalvos }"
+				style="margin-top:10px" paginator="true" rows="6"
+				rowsPerPageTemplate="3,6,12" paginatorPosition="bottom"
+				resizableColumns="true">
+				
+				<p:column headerText="Foto " width="5%" style="text-align:center">
+						<p:graphicImage library="imagens" name="sem_foto.png" width="34px"
+							height="42px" style="text-align:center;box-shadow: 1px 1px 4px;border-radius: 10px;"
+							rendered="#{funcionario.foto == null}">
+							<f:param name="idFunc" value="#{funcionario.id}" />
+						</p:graphicImage>
+						<p:graphicImage value="#{sistemaControllerFuncionario.imagemFunc}"
+							width="34px" height="42px"
+							style="text-align:center;box-shadow: 1px 1px 4px;border-radius: 10px;"
+							rendered="#{sistemaControllerFuncionario.imagemFunc != null}">
+							<f:param name="idFunc" value="#{funcionario.id}" />
+						</p:graphicImage>
+					</p:column>
+				<p:column headerText="Nome" filterMatchMode="contains" width="16%">
+					<h:outputText value="#{funcionario.nome }" />
+				</p:column>
+				<p:column headerText="RG" width="9%" style="text-align:center">
+					<h:outputText value="#{funcionario.rg}" />
+				</p:column>
+				<p:column headerText="CPF" width="12%" style="text-align:center">
+					<h:outputText value="#{funcionario.cpf}" />
+				</p:column>
+				<p:column headerText="Agência" sortBy="#{funcionario.agencia}"
+					width="10%" style="text-align:center">
+					<h:outputText value="#{funcionario.agencia}" />
+				</p:column>
+				<p:column headerText="Função" width="10%">
+					<h:outputText value="#{funcionario.funcao}" />
+				</p:column>
+				<p:column headerText="Situação" width="8%" style="text-align:center"
+					sortBy="#{funcionario.status }">
+					<h:outputText value="#{funcionario.status }" />
+				</p:column>
+				<p:column headerText="Turno" sortBy="#{funcionario.turno}"
+					style="text-align:center" width="7%">
+					<h:outputText value="#{funcionario.turno}" />
+				</p:column>
+				<p:column headerText="Data do Cadastro"
+					sortBy="#{funcionario.dataCriacao}" style="text-align:center"
+					width="9%">
+					<h:outputText value="#{funcionario.dataCriacao}">
+						<f:convertDateTime pattern="dd/MM/yyyy" locale="pt_BR" />
+					</h:outputText>
+				</p:column>
+				<p:column width="4%" style="text-align:center">
+					<p:commandButton icon="fa fa-edit"
+						action="#{sistemaControllerFuncionario.editarFuncionario(funcionario)}"
+						id="edit" title="Clique para editar!" />
+
+				</p:column>
+				
+			</p:dataTable>
+			</p:panel>
+		</h:form>
+
+	</ui:define>
+</ui:composition>

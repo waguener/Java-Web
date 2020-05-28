@@ -1,0 +1,73 @@
+<ui:composition template="/template/LayoutPadrao.xhtml"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:p="http://primefaces.org/ui">
+
+	<ui:define name="titulo">Controle</ui:define>
+
+	<ui:define name="conteudo">
+		<h:form>
+			<h:panelGrid columns="2">
+				<p:inputText placeholder="Nome" />
+				<p:commandButton value="Pesquisar" />
+			</h:panelGrid>
+
+			<h:form id="foto">
+
+				<h:panelGrid columns="2">
+					<p:panel id="panelFotoId" header="Foto"
+						style="width: 360px;height: 300px;">
+						<p:imageCropper value="#{photoController.imagemRecortada}"
+							initialCoords="225,75,300,125" id="imageCropperFotoId"
+							rendered="#{photoController.exibeImagemCapturada}"
+							image="/imagens/#{photoController.foto}.png" />
+					</p:panel>
+					<p:panel header="Foto Recortada"
+						style="width: 360px;height: 300px;">
+						<p:graphicImage
+							value="/imagens/#{photoController.fotoRecortada}.png"
+							cache="false" />
+					</p:panel>
+					<h:column>
+						<p:commandLink id="webcamId" onclick="PF('dialogCamera').show();">
+							<p:graphicImage value="/imagens/webcam.png" style="border: none;" />
+						</p:commandLink>
+						<p:commandLink action="#{photoController.recortar()}"
+							process="@this imageCropperFotoId" style="margin-left: 10px;"
+							disabled="#{not photoController.exibeImagemCapturada}">
+							<p:graphicImage value="/imagens/tesoura.png"
+								style="border: none;" />
+						</p:commandLink>
+					</h:column>
+				</h:panelGrid>
+				<p:dialog widgetVar="dialogCamera" resizable="false"
+					showHeader="false" width="360" height="300">
+
+					<h:panelGrid>
+						<p:photoCam widgetVar="photoCam"
+							listener="#{photoController.oncapture}" />
+						<h:panelGrid columns="2">
+							<p:commandButton value="Capturar" type="button"
+								onclick="PF('photoCam').capture()" update="foto"/>
+							<p:commandButton value="Fechar" type="button"
+								onclick="PF('dialogCamera').hide()" />
+						</h:panelGrid>
+					</h:panelGrid>
+				</p:dialog>
+				<p:ajaxStatus onstart="dialogAguarde.show()"
+					oncomplete="dialogAguarde.hide();" />
+				<p:dialog widgetVar="dialogAguarde" showHeader="false"
+					resizable="false" closable="false">
+                Aguarde...
+            </p:dialog>
+
+			</h:form>
+
+
+
+		</h:form>
+
+	</ui:define>
+</ui:composition>

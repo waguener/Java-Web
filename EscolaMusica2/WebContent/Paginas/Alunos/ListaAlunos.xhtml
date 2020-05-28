@@ -1,0 +1,46 @@
+
+<ui:composition template="/Paginas/template/template.xhtml"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui">
+	
+	<ui:define name="Principal">
+
+	<p:button value="Novo Aluno" outcome="CadastroAluno" />
+
+	<h:form>
+		<p:dataTable widgetVar="tabelaAluno" value="#{alunoController.alunos}"
+			var="aluno" style="margin-top:10px;width:70%" paginator="true"
+			rows="5" rowsPerPageTemplate="3,5,10" paginatorPosition="bottom">
+			<p:column headerText="Foto" width="15%" >
+				<p:graphicImage value="#{alunoController.imagemAluno}" height="25%">
+					<f:param name="idAluno" value="#{aluno.id}"/>
+				</p:graphicImage>
+			</p:column>
+			<p:column headerText="Nome">
+				<h:outputText value="#{aluno.nome}"/>
+			</p:column>
+			<p:column style="text-align:center" width="15%">
+				<p:commandButton icon="fa fa-pencil-square-o"
+					action="#{alunoController.editar(aluno)}" title="Clique para Editar"/>
+
+				<p:commandButton icon="fa fa-trash"
+					action="#{alunoController.prepararExclusao(aluno)}"
+					oncomplete="PF('confirmarExclusaoCursoDialog').show()" title="Clique para Excluir" />
+			</p:column>
+		</p:dataTable>
+
+		<p:confirmDialog widgetVar="confirmarExclusaoCursoDialog"
+			message="Deseja excluir este curso">
+			<p:commandButton value="Sim" action="#{alunoController.excluir}"
+				update="@form"
+				oncomplete="PF('confirmarExclusaoCursoDialog').hide()" />
+			<p:commandButton value="Não"
+				oncomplete="PF('confirmarExclusaoCursoDialog').hide()" />
+
+		</p:confirmDialog>
+	</h:form>
+</ui:define>
+</ui:composition>
