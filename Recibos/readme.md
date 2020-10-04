@@ -1,1 +1,1 @@
->Projeto para registro e impressões de recibos para em presa Olgber
+>Projeto para registro e impressões de recibos para empresa Olgber
